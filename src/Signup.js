@@ -2,16 +2,27 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebase";
+const [name, setName] = useState("");
+
+import {
+  createUserWithEmailAndPassword,
+  updateProfile
+} from "firebase/auth";
 
 export default function Signup({ onBack }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, {
+      displayName: name
+    });
       alert("Kayıt başarılı! Giriş yapabilirsiniz.");
       onBack(); // Giriş ekranına dön
     } catch (err) {
@@ -22,6 +33,14 @@ export default function Signup({ onBack }) {
   return (
     <form onSubmit={handleSignup} className="space-y-4 max-w-sm mx-auto mt-10 p-4 border rounded shadow">
       <h2 className="text-xl font-semibold text-center">Kayıt Ol</h2>
+      <input
+        type="text"
+        placeholder="Ad Soyad"
+        className="w-full p-2 border rounded"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
       <input
         type="email"
         placeholder="Email"
