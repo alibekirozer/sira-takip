@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile
 } from "firebase/auth";
-import { auth } from "../firebase"; // Eğer firebase.js src içindeyse ../ ile gelmeli
+import { auth } from "./firebase"; // Eğer firebase.js src içindeyse ../ ile gelmeli
 
 export default function Signup({ onBack }) {
   const [name, setName] = useState("");
