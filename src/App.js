@@ -171,14 +171,12 @@ export default function SiraTakip() {
           Hoş geldin, <span className="font-semibold text-blue-600">{userName}</span>
         </p>
         {/* Tema Butonu */}
-      <div className="flex items-center gap-2">
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="px-3 py-1 rounded border text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition"
         >
           {darkMode ? "☀️" : "🌙"}
         </button>
-      </div>
         {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
           <a
             href="/admin"
