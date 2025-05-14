@@ -9,13 +9,21 @@ export default function MainApp() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    console.log("👤 Giriş yapan kullanıcı:", firebaseUser); // test
+    setUser(firebaseUser);
+    setLoading(false);
+  });
+  return () => unsubscribe();
+}, []);
+
+/*  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
     });
-
     return () => unsubscribe();
-  }, []);
+  }, []); */
 
   if (loading) return <div className="text-center mt-10">Yükleniyor...</div>;
 
