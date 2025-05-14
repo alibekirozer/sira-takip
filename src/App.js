@@ -28,6 +28,7 @@ export default function SiraTakip() {
   const [benimAdim, setBenimAdim] = useState("");
   const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
+  const userName = auth.currentUser?.displayName || "Kullanıcı";
 
   const durumRengi = (status) => {
     switch (status) {
@@ -178,6 +179,9 @@ export default function SiraTakip() {
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen p-6 space-y-4`}>
       <div className="flex justify-between items-start">
         <h1 className="text-2xl font-bold">Koçsistem Çağrı Takip</h1>
+        <p className="text-sm text-gray-600 text-right mb-2">
+          Hoş geldin, {userName}
+        </p>
         <button
          onClick={() => signOut(auth)}
             className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"
