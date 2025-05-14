@@ -213,53 +213,50 @@ export default function SiraTakip() {
       </button>
     </div>
 
-    {/* Ana İçerik */}
-    <div className="flex flex-col lg:flex-row gap-4 mt-6">
-      {/* Aktif Listesi */}
-      <div className="lg:w-3/4 space-y-4">
-        {activeList.map((emp, i) => (
-          <div
-            key={emp.name}
-            className={clsx(
-              "border-2 rounded-lg p-4 shadow-sm transition-all duration-200 text-sm",
-              durumRengi(emp.status),
-              i === siradakiIndex() &&
-                (darkMode
-                  ? "scale-[1.02] border-4 border-green-600 bg-slate-800"
-                  : "scale-[1.02] border-4 border-green-600 bg-gray-50")
-            )}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-lg font-semibold">{emp.name}</p>
-              <div className="flex flex-wrap gap-2">
+    {showSelector && (
+        <div className={`mb-4 p-4 border rounded ${darkMode ? "bg-slate-800 border-gray-600" : "bg-gray-50"}`}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-2">
+            {allEmployees.map((name) => (
+              <label key={name} className="flex items-center space-x-2">
+                <input type="checkbox" checked={selectedNames.includes(name)} onChange={() => toggleName(name)} />
+                <span>{name}</span>
+                <button onClick={() => removeName(name)} className="text-red-500 text-xs font-bold ml-2" title="Kalıcı olarak sil">-</button>
+              </label>
+            ))}
+          </div>
+          <div className="flex space-x-2 mt-2">
+            <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Yeni isim" className="border p-1 rounded" />
+            <button onClick={addNewName} className="bg-green-500 text-white px-2 rounded">Ekle</button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex">
+        <div className="w-3/4 pr-4 space-y-4">
+          {activeList.map((emp, i) => (
+            <div key={emp.name} className={clsx("border-2 rounded p-1.5 shadow-sm transition-all duration-200 w-full text-sm", durumRengi(emp.status),
+              i === siradakiIndex() && (darkMode ? "scale-[1.02] border-4 border-green-600 bg-slate-800" : "scale-[1.02] border-4 border-green-600 bg-gray-50"))}>
+              <div className="flex items-center justify-between mb-2">
+              <p className="text-lg font-semibold mr-4">{emp.name}</p>
                 <button onClick={() => durumGuncelle(i, "Molada")} className="text-sm px-2 py-1 bg-yellow-200 text-black rounded">Molada</button>
                 <button onClick={() => durumGuncelle(i, "İzinli")} className="text-sm px-2 py-1 bg-gray-300 text-black rounded">İzinli</button>
                 <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="text-sm px-2 py-1 bg-orange-300 text-black rounded">Çalışıyor</button>
-                <button onClick={() => durumGuncelle(i, "Müsait")} className="text-sm px-2 py-1 bg-green-300 text-black rounded">Müsait</button>
-              </div>
+                <button onClick={() => durumGuncelle(i, "Müsait")} className="text-sm px-2 py-1 bg-green-300 text-black rounded mr-4">Müsait</button>
               <p className="text-sm italic">Durum: {emp.status}</p>
+              </div>
+              {i === siradakiIndex() && <button onClick={ileriAl} className="mt-3 block bg-green-500 text-white px-2 py-1 rounded">Çağrı Aldım</button>}
             </div>
-            {i === siradakiIndex() && (
-              <button
-                onClick={ileriAl}
-                className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
-              >
-                ✅ Çağrı Aldım
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Çağrı Kayıtları */}
-      <div className="lg:w-1/4 max-h-[900px] overflow-y-auto border-l pl-4">
-        <h2 className="text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-        <ul className="list-disc pl-6 text-sm space-y-1">
-          {(logByDate[todayKey] || []).map((entry, index) => (
-            <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
           ))}
-        </ul>
+        </div>
+        <div className="w-1/4 overflow-y-auto h-[900px] pl-4">
+          <h2 className="text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
+          <ul className="list-disc pl-6 text-sm">
+            {(logByDate[todayKey] || []).map((entry, index) => (
+              <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-)};
+  );
+}
