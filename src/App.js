@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { ref, set, onValue } from "firebase/database";
 import { db } from "./firebase";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase";
+
 
 const initialEmployees = [
   "Oğuz", "Mustafa", "Beyza", "Havva", "Nurefşan", "Betül",
@@ -175,6 +178,12 @@ export default function SiraTakip() {
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen p-6 space-y-4`}>
       <div className="flex justify-between items-start">
         <h1 className="text-2xl font-bold">Koçsistem Çağrı Takip</h1>
+        <button
+         onClick={() => signOut(auth)}
+            className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"
+        >
+            🔓 Çıkış Yap
+        </button>
         <div className="flex flex-col items-end space-y-2">
           <div className="text-base font-medium">
             {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}
