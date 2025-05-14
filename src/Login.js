@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase"; // yol firebase.js dosyana göre uyarlanmalı
+import { auth } from "./firebase";
+import Signup from "./Signup";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showSignup, setShowSignup] = useState(false);
+
+  if (showSignup) {
+    return <Signup onBack={() => setShowSignup(false)} />;
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -38,9 +44,22 @@ export default function Login() {
         required
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
+
       <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
         Giriş Yap
       </button>
+
+      {/* ✅ Kayıt bağlantısı buraya taşındı */}
+      <p className="text-sm text-center">
+        Hesabın yok mu?{" "}
+        <button
+          type="button"
+          onClick={() => setShowSignup(true)}
+          className="text-blue-500 underline"
+        >
+          Kayıt Ol
+        </button>
+      </p>
     </form>
   );
 }
