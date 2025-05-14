@@ -1,7 +1,7 @@
 // src/components/AdminPanel.js
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { dbf } from "./firebase";
+import { firestoreDB } from "./firebase";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -9,7 +9,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const querySnapshot = await getDocs(collection(dbf, "users"));
+      const querySnapshot = await getDocs(collection(firestoreDB, "users"));
       const userList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
       setLoading(false);

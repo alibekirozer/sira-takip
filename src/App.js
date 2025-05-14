@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { ref, set, onValue } from "firebase/database";
-import { db } from "./firebase";
+import { firestoreDB } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
@@ -57,7 +57,7 @@ export default function SiraTakip() {
   }, []);
 
   useEffect(() => {
-    const dataRef = ref(db, "siraTakip");
+    const dataRef = ref(firestoreDB, "siraTakip");
     onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -69,7 +69,7 @@ export default function SiraTakip() {
         setLogByDate(data.logByDate || {});
         if (!data.logByDate?.[todayKey]) {
           const updated = { ...data.logByDate, [todayKey]: [] };
-          set(ref(db, "siraTakip/logByDate"), updated);
+          set(ref(firestoreDB, "siraTakip/logByDate"), updated);
           setLogByDate(updated);
         }
       }
@@ -131,7 +131,7 @@ export default function SiraTakip() {
   };
 
   const guncelleFirebase = (yeniVeriler) => {
-    set(ref(db, "siraTakip"), {
+    set(ref(firestoreDB, "siraTakip"), {
       activeList, currentIndex, callCount, log,
       allEmployees, selectedNames, logByDate, ...yeniVeriler
     });

@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { dbf } from "./firebase"; 
+import { firestoreDB } from "./firebase"; 
 
 
 export default function Signup({ onBack }) {
@@ -24,7 +24,7 @@ export default function Signup({ onBack }) {
       await updateProfile(auth.currentUser, {
         displayName: name
       });
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
+      await setDoc(doc(firestoreDB, "users", auth.currentUser.uid), {
         uid: auth.currentUser.uid,
         name,
         email,
