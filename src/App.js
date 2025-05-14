@@ -152,76 +152,114 @@ export default function SiraTakip() {
     }
   };
 
-  return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen p-6 space-y-4`}>
-      <div className="flex justify-between items-start">
-        <div className="flex flex-col items-end space-y-1 mb-2">
-          <p className="text-sm text-gray-600">
-            Hoş geldin, {userName}
-          </p>
-          <button
-           onClick={() => signOut(auth)}
-              className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"
-          >
-              🔓 Çıkış Yap
-          </button>
-          {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
-            <a
-              href="/admin"
-              className="text-sm text-blue-500 underline hover:text-blue-700"
-            >
-              Admin Panel
-            </a>
-          )}
-        </div>
-        <h1 className="text-2xl font-bold">Koçsistem Çağrı Takip</h1>
-        <div className="flex flex-col items-end space-y-2">
-          <div className="text-base font-medium">
-            {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}
-          </div>
-          <button onClick={() => setDarkMode(!darkMode)} className="px-3 py-1 rounded border border-gray-400 text-sm">
-            {darkMode ? "☀️" : "🌙"}
-          </button>
+ return (
+  <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen px-6 py-4 space-y-6`}>
+    {/* Üst Bar */}
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+      {/* Başlık ve Saat */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">KoçSistem Çağrı Takip</h1>
+        <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+          <span>🕒</span>
+          <span>{time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}</span>
         </div>
       </div>
 
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between sm:space-x-4 space-y-2 sm:space-y-0">
+      {/* Tema Butonu */}
+      <div className="flex items-center gap-2">
         <button
-          onClick={() => {
-            const yeniSayi = callCount + 1;
-            setCallCount(yeniSayi);
-            guncelleFirebase({ callCount: yeniSayi });
-          }}
-          className={`px-4 py-2 rounded font-semibold text-white ${blink ? "bg-red-600" : "bg-red-400"}`}
-        >📞 Çağrı! ({callCount})</button>
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-3 py-1 rounded border text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+        >
+          {darkMode ? "☀️ Aydınlık" : "🌙 Karanlık"}
+        </button>
       </div>
 
-      <div className="flex">
-        <div className="w-3/4 pr-4 space-y-4">
-          {activeList.map((emp, i) => (
-            <div key={emp.name} className={clsx("border-2 rounded p-1.5 shadow-sm transition-all duration-200 w-full text-sm", durumRengi(emp.status),
-              i === siradakiIndex() && (darkMode ? "scale-[1.02] border-4 border-green-600 bg-slate-800" : "scale-[1.02] border-4 border-green-600 bg-gray-50"))}>
-              <div className="flex items-center justify-between mb-2">
-              <p className="text-lg font-semibold mr-4">{emp.name}</p>
+      {/* Kullanıcı Bilgisi ve İşlemler */}
+      <div className="flex flex-col items-end space-y-1">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Hoş geldin, <span className="font-semibold text-blue-600">{userName}</span>
+        </p>
+        {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+          <a
+            href="/admin"
+            className="text-xs text-blue-500 underline hover:text-blue-600"
+          >
+            🔧 Admin Panel
+          </a>
+        )}
+        <button
+          onClick={() => signOut(auth)}
+          className="mt-1 px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm transition"
+        >
+          🔓 Çıkış Yap
+        </button>
+      </div>
+    </div>
+
+    {/* Çağrı Butonu */}
+    <div className="flex justify-center sm:justify-start mt-4">
+      <button
+        onClick={() => {
+          const yeniSayi = callCount + 1;
+          setCallCount(yeniSayi);
+          guncelleFirebase({ callCount: yeniSayi });
+        }}
+        className={`px-6 py-2 rounded-md font-semibold text-white shadow-md transition ${
+          blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
+        }`}
+      >
+        📞 Yeni Çağrı ({callCount})
+      </button>
+    </div>
+
+    {/* Ana İçerik */}
+    <div className="flex flex-col lg:flex-row gap-4 mt-6">
+      {/* Aktif Listesi */}
+      <div className="lg:w-3/4 space-y-4">
+        {activeList.map((emp, i) => (
+          <div
+            key={emp.name}
+            className={clsx(
+              "border-2 rounded-lg p-4 shadow-sm transition-all duration-200 text-sm",
+              durumRengi(emp.status),
+              i === siradakiIndex() &&
+                (darkMode
+                  ? "scale-[1.02] border-4 border-green-600 bg-slate-800"
+                  : "scale-[1.02] border-4 border-green-600 bg-gray-50")
+            )}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-lg font-semibold">{emp.name}</p>
+              <div className="flex flex-wrap gap-2">
                 <button onClick={() => durumGuncelle(i, "Molada")} className="text-sm px-2 py-1 bg-yellow-200 text-black rounded">Molada</button>
                 <button onClick={() => durumGuncelle(i, "İzinli")} className="text-sm px-2 py-1 bg-gray-300 text-black rounded">İzinli</button>
                 <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="text-sm px-2 py-1 bg-orange-300 text-black rounded">Çalışıyor</button>
-                <button onClick={() => durumGuncelle(i, "Müsait")} className="text-sm px-2 py-1 bg-green-300 text-black rounded mr-4">Müsait</button>
-              <p className="text-sm italic">Durum: {emp.status}</p>
+                <button onClick={() => durumGuncelle(i, "Müsait")} className="text-sm px-2 py-1 bg-green-300 text-black rounded">Müsait</button>
               </div>
-              {i === siradakiIndex() && <button onClick={ileriAl} className="mt-3 block bg-green-500 text-white px-2 py-1 rounded">Çağrı Aldım</button>}
+              <p className="text-sm italic">Durum: {emp.status}</p>
             </div>
+            {i === siradakiIndex() && (
+              <button
+                onClick={ileriAl}
+                className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
+              >
+                ✅ Çağrı Aldım
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Çağrı Kayıtları */}
+      <div className="lg:w-1/4 max-h-[900px] overflow-y-auto border-l pl-4">
+        <h2 className="text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
+        <ul className="list-disc pl-6 text-sm space-y-1">
+          {(logByDate[todayKey] || []).map((entry, index) => (
+            <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
           ))}
-        </div>
-        <div className="w-1/4 overflow-y-auto h-[900px] pl-4">
-          <h2 className="text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-          <ul className="list-disc pl-6 text-sm">
-            {(logByDate[todayKey] || []).map((entry, index) => (
-              <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
-            ))}
-          </ul>
-        </div>
+        </ul>
       </div>
     </div>
-  );
-}
+  </div>
+)};
