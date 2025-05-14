@@ -5,6 +5,7 @@ import { ref, set, onValue } from "firebase/database";
 import { db } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
+import AdminPanel from "./AdminPanel";
 
 
 const initialEmployees = [
@@ -182,6 +183,7 @@ export default function SiraTakip() {
         <p className="text-sm text-gray-600 text-right mb-2">
           Hoş geldin, {userName}
         </p>
+        {auth.currentUser?.email === "muhammedalibekir@gmail.com" && <AdminPanel />}
         <button
          onClick={() => signOut(auth)}
             className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"

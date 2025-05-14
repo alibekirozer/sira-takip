@@ -4,7 +4,10 @@ import {
   createUserWithEmailAndPassword,
   updateProfile
 } from "firebase/auth";
-import { auth } from "./firebase"; // Eğer firebase.js src içindeyse ../ ile gelmeli
+import { auth } from "./firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { dbf } from "./firebase"; 
+
 
 export default function Signup({ onBack }) {
   const [name, setName] = useState("");
@@ -21,7 +24,13 @@ export default function Signup({ onBack }) {
       await updateProfile(auth.currentUser, {
         displayName: name
       });
-
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        uid: auth.currentUser.uid,
+        name,
+        email,
+        createdAt: new Date(),
+        role: "user" // admin / user gibi ileride ayrıştırmak için
+      });
       alert("Kayıt başarılı! Giriş yapabilirsiniz.");
       onBack(); // Giriş ekranına dön
     } catch (err) {
