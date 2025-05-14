@@ -165,21 +165,20 @@ export default function SiraTakip() {
         </div>
       </div>
 
-      {/* Tema Butonu */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-3 py-1 rounded border text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition"
-        >
-          {darkMode ? "☀️ Aydınlık" : "🌙 Karanlık"}
-        </button>
-      </div>
-
       {/* Kullanıcı Bilgisi ve İşlemler */}
       <div className="flex flex-col items-end space-y-1">
         <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Hoş geldin, <span className="font-semibold text-blue-600">{userName}</span>
         </p>
+        {/* Tema Butonu */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-3 py-1 rounded border text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
+      </div>
         {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
           <a
             href="/admin"
