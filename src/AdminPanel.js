@@ -1,7 +1,7 @@
 // src/components/AdminPanel.js
 import { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { firestoreDB } from "../firebase";
+import { firestoreDB } from "./firebase";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
