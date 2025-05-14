@@ -20,7 +20,6 @@ export default function SiraTakip() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [callCount, setCallCount] = useState(0);
   const [blink, setBlink] = useState(false);
-  const [showSelector, setShowSelector] = useState(false);
   const [newName, setNewName] = useState("");
   const [log, setLog] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
@@ -153,29 +152,6 @@ export default function SiraTakip() {
     }
   };
 
-  const addNewName = () => {
-    if (newName && !allEmployees.includes(newName)) {
-      const updatedAll = [...allEmployees, newName];
-      const updatedSelected = [...selectedNames, newName];
-      const updatedList = [...activeList, { name: newName, status: "Çalışıyor" }];
-      setAllEmployees(updatedAll);
-      setSelectedNames(updatedSelected);
-      setActiveList(updatedList);
-      guncelleFirebase({ allEmployees: updatedAll, selectedNames: updatedSelected, activeList: updatedList });
-    }
-    setNewName("");
-  };
-
-  const removeName = (name) => {
-    const updatedAll = allEmployees.filter((n) => n !== name);
-    const updatedSelected = selectedNames.filter((n) => n !== name);
-    const updatedList = activeList.filter((emp) => emp.name !== name);
-    setAllEmployees(updatedAll);
-    setSelectedNames(updatedSelected);
-    setActiveList(updatedList);
-    guncelleFirebase({ allEmployees: updatedAll, selectedNames: updatedSelected, activeList: updatedList });
-  };
-
   return (
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen p-6 space-y-4`}>
       <div className="flex justify-between items-start">
@@ -183,6 +159,12 @@ export default function SiraTakip() {
           <p className="text-sm text-gray-600">
             Hoş geldin, {userName}
           </p>
+          <button
+           onClick={() => signOut(auth)}
+              className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"
+          >
+              🔓 Çıkış Yap
+          </button>
           {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
             <a
               href="/admin"
@@ -193,12 +175,6 @@ export default function SiraTakip() {
           )}
         </div>
         <h1 className="text-2xl font-bold">Koçsistem Çağrı Takip</h1>
-        <button
-         onClick={() => signOut(auth)}
-            className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"
-        >
-            🔓 Çıkış Yap
-        </button>
         <div className="flex flex-col items-end space-y-2">
           <div className="text-base font-medium">
             {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}
@@ -210,13 +186,6 @@ export default function SiraTakip() {
       </div>
 
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between sm:space-x-4 space-y-2 sm:space-y-0">
-        <select value={benimAdim} onChange={(e) => setBenimAdim(e.target.value)} className="border rounded px-2 py-1">
-          <option value="">Çalışan (seçiniz)</option>
-          {allEmployees.map((name) => <option key={name} value={name}>{name}</option>)}
-        </select>
-        <button onClick={() => setShowSelector(!showSelector)} className="bg-blue-500 text-white px-4 py-2 rounded">
-          {showSelector ? "Çalışan Seçimini Gizle" : "Çalışan Listesi"}
-        </button>
         <button
           onClick={() => {
             const yeniSayi = callCount + 1;
@@ -226,24 +195,6 @@ export default function SiraTakip() {
           className={`px-4 py-2 rounded font-semibold text-white ${blink ? "bg-red-600" : "bg-red-400"}`}
         >📞 Çağrı! ({callCount})</button>
       </div>
-
-      {showSelector && (
-        <div className={`mb-4 p-4 border rounded ${darkMode ? "bg-slate-800 border-gray-600" : "bg-gray-50"}`}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-2">
-            {allEmployees.map((name) => (
-              <label key={name} className="flex items-center space-x-2">
-                <input type="checkbox" checked={selectedNames.includes(name)} onChange={() => toggleName(name)} />
-                <span>{name}</span>
-                <button onClick={() => removeName(name)} className="text-red-500 text-xs font-bold ml-2" title="Kalıcı olarak sil">-</button>
-              </label>
-            ))}
-          </div>
-          <div className="flex space-x-2 mt-2">
-            <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Yeni isim" className="border p-1 rounded" />
-            <button onClick={addNewName} className="bg-green-500 text-white px-2 rounded">Ekle</button>
-          </div>
-        </div>
-      )}
 
       <div className="flex">
         <div className="w-3/4 pr-4 space-y-4">
