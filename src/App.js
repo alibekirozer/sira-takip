@@ -7,7 +7,10 @@ import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
 
+
 export default function SiraTakip() {
+  const [allEmployees, setAllEmployees] = useState([]);
+  const [selectedNames, setSelectedNames] = useState([]);
   const [activeList, setActiveList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [callCount, setCallCount] = useState(0);
@@ -46,6 +49,28 @@ export default function SiraTakip() {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+  const dataRef = ref(realtimeDB, "siraTakip");
+  onValue(dataRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      setActiveList(data.activeList || []);
+      setCurrentIndex(data.currentIndex || 0);
+      setCallCount(data.callCount || 0);
+      setAllEmployees(data.allEmployees || []);
+      setSelectedNames(data.selectedNames || []);
+      setLogByDate(data.logByDate || {});
+
+      // Eğer bugünkü kayıt yoksa başlat
+      if (!data.logByDate?.[todayKey]) {
+        const updated = { ...data.logByDate, [todayKey]: [] };
+        set(ref(realtimeDB, "siraTakip/logByDate"), updated);
+        setLogByDate(updated);
+      }
+    }
+  });
+}, []);
 
   useEffect(() => {
     if (callCount > 0) {
