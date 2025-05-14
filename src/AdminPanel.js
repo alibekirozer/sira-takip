@@ -1,7 +1,8 @@
-// src/components/AdminPanel.js
 import { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { firestoreDB } from "./firebase";
+import { ref, get, set } from "firebase/database";
+import { realtimeDB } from "./firebase";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -18,59 +19,58 @@ export default function AdminPanel() {
     fetchUsers();
   }, []);
 
-  const toggleRole = async (userId, currentRole) => {
-    const newRole = currentRole === "admin" ? "user" : "admin";
-    await updateDoc(doc(firestoreDB, "users", userId), { role: newRole });
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user
-      )
-    );
+  const toggleRole = async (user) => {
+    const newRole = user.role === "admin" ? "user" : "admin";
+    await updateDoc(doc(firestoreDB, "users", user.uid), { role: newRole });
+    setUsers((prev) => prev.map((u) => (u.uid === user.uid ? { ...u, role: newRole } : u)));
   };
 
-  const deleteUser = async (userId) => {
-    await deleteDoc(doc(firestoreDB, "users", userId));
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+  const deleteUser = async (user) => {
+    if (!window.confirm(`${user.name} adlı kullanıcı silinsin mi?`)) return;
+
+    await deleteDoc(doc(firestoreDB, "users", user.uid));
+
+    // Realtime DB'den de kaldır
+    const snapshot = await get(ref(realtimeDB, "siraTakip/activeList"));
+    const list = snapshot.val() || [];
+    const updatedList = list.filter((emp) => emp.uid !== user.uid);
+    await set(ref(realtimeDB, "siraTakip/activeList"), updatedList);
+
+    setUsers((prev) => prev.filter((u) => u.uid !== user.uid));
   };
 
-  if (loading) {
-    return <div className="p-4 text-center">Yükleniyor...</div>;
-  }
+  if (loading) return <div className="p-4 text-center">Yükleniyor...</div>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Kayıtlı Kullanıcılar</h2>
+      <h2 className="text-2xl font-bold mb-4">Kullanıcı Yönetimi</h2>
       <table className="w-full border text-sm">
         <thead>
           <tr className="bg-gray-100">
             <th className="p-2 border">Ad Soyad</th>
             <th className="p-2 border">Email</th>
             <th className="p-2 border">Rol</th>
-            <th className="p-2 border">Kayıt Tarihi</th>
             <th className="p-2 border">İşlem</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-50">
+            <tr key={user.uid} className="hover:bg-gray-50">
               <td className="p-2 border">{user.name}</td>
               <td className="p-2 border">{user.email}</td>
               <td className="p-2 border capitalize">{user.role}</td>
-              <td className="p-2 border">
-                {user.createdAt?.toDate?.().toLocaleString() || "-"}
-              </td>
               <td className="p-2 border space-x-2">
                 <button
-                  onClick={() => toggleRole(user.id, user.role)}
-                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs"
+                  onClick={() => toggleRole(user)}
+                  className="text-blue-600 hover:underline"
                 >
-                  Rolü Değiştir
+                  🔁 Rolü {user.role === "admin" ? "user" : "admin"} yap
                 </button>
                 <button
-                  onClick={() => deleteUser(user.id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                  onClick={() => deleteUser(user)}
+                  className="text-red-600 hover:underline"
                 >
-                  Sil
+                  🗑 Sil
                 </button>
               </td>
             </tr>
