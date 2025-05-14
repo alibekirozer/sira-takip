@@ -41,6 +41,7 @@ export default function Login() {
   };
 
   return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
   <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto mt-10 p-4 border rounded shadow">
     <div className="text-center">
       <img src={logo} alt="KoçSistem Logo" className="h-20 mx-auto mb-4" />
@@ -95,5 +96,6 @@ export default function Login() {
       </button>
     </p>
   </form>
+  </div>
 );
 }
