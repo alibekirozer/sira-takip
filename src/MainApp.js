@@ -34,7 +34,7 @@ export default function MainApp() {
             <Route
               path="/admin"
               element={
-                user.email === "seninadminmailin@ornek.com" ? (
+                user.email === "muhammedalibekir@gmail.com" ? (
                   <AdminPanel />
                 ) : (
                   <Navigate to="/" />
