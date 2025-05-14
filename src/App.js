@@ -180,10 +180,19 @@ export default function SiraTakip() {
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen p-6 space-y-4`}>
       <div className="flex justify-between items-start">
         <h1 className="text-2xl font-bold">Koçsistem Çağrı Takip</h1>
-        <p className="text-sm text-gray-600 text-right mb-2">
-          Hoş geldin, {userName}
-        </p>
-        {auth.currentUser?.email === "muhammedalibekir@gmail.com" && <AdminPanel />}
+        <div className="flex flex-col items-end space-y-1 mb-2">
+          <p className="text-sm text-gray-600">
+            Hoş geldin, {userName}
+          </p>
+          {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+            <a
+              href="/admin"
+              className="text-sm text-blue-500 underline hover:text-blue-700"
+            >
+              Admin Panel
+            </a>
+          )}
+        </div>
         <button
          onClick={() => signOut(auth)}
             className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm"

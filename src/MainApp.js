@@ -1,8 +1,11 @@
+// src/MainApp.js
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
+import App from "./App";
 import Login from "./Login";
-import App from "./App"; // senin esas uygulaman
+import AdminPanel from "./AdminPanel";
 
 export default function MainApp() {
   const [user, setUser] = useState(null);
@@ -14,9 +17,34 @@ export default function MainApp() {
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []); 
+  }, []);
 
   if (loading) return <div className="text-center mt-10">Yükleniyor...</div>;
 
-  return user ? <App /> : <Login />;
+  return (
+    <Router>
+      <Routes>
+        {!user ? (
+          <>
+            <Route path="*" element={<Login />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<App />} />
+            <Route
+              path="/admin"
+              element={
+                user.email === "seninadminmailin@ornek.com" ? (
+                  <AdminPanel />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        )}
+      </Routes>
+    </Router>
+  );
 }
