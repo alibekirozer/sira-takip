@@ -212,25 +212,6 @@ export default function SiraTakip() {
         📞 Yeni Çağrı ({callCount})
       </button>
     </div>
-
-    {showSelector && (
-        <div className={`mb-4 p-4 border rounded ${darkMode ? "bg-slate-800 border-gray-600" : "bg-gray-50"}`}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-2">
-            {allEmployees.map((name) => (
-              <label key={name} className="flex items-center space-x-2">
-                <input type="checkbox" checked={selectedNames.includes(name)} onChange={() => toggleName(name)} />
-                <span>{name}</span>
-                <button onClick={() => removeName(name)} className="text-red-500 text-xs font-bold ml-2" title="Kalıcı olarak sil">-</button>
-              </label>
-            ))}
-          </div>
-          <div className="flex space-x-2 mt-2">
-            <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Yeni isim" className="border p-1 rounded" />
-            <button onClick={addNewName} className="bg-green-500 text-white px-2 rounded">Ekle</button>
-          </div>
-        </div>
-      )}
-
       <div className="flex">
         <div className="w-3/4 pr-4 space-y-4">
           {activeList.map((emp, i) => (
