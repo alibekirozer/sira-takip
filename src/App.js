@@ -117,12 +117,41 @@ export default function SiraTakip() {
     }
   };
 
+  // Bilgi kısmı için yardımcı fonksiyonlar
+  const siradakiKisi = () => {
+    // Sadece 'Müsait' olanlar arasında sıradaki
+    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+    return musaitler.length > 0 ? musaitler[0].name : "-";
+  };
+  const kalanKisiSayisi = () => {
+    if (!benimAdim) return 0;
+    // Sadece 'Müsait' olanları say
+    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+    const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
+    if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
+    return benimIndex;
+  };
+
+  // Sadece 'Müsait' olanlar arasında sıradaki index
+  const siradakiMusaitIndex = () => {
+    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+    if (musaitler.length === 0) return -1;
+    return activeList.findIndex((emp) => emp.name === musaitler[0].name);
+  };
+
+  // Durum güncellemede log ekle
   const durumGuncelle = (index, status) => {
     const updated = [...activeList];
+    const eskiStatus = updated[index].status;
     updated[index].status = status;
     setActiveList(updated);
-    guncelleFirebase({ activeList: updated, logByDate });
-    //if (index === siradakiIndex()) ileriAl();
+    // Log ekle
+    const person = updated[index].name;
+    const timestamp = new Date().toLocaleTimeString();
+    const yeniLog = [{ person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` }, ...(logByDate[todayKey] || [])].slice(0, 200);
+    const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
+    setLogByDate(updatedLogByDate);
+    guncelleFirebase({ activeList: updated, logByDate: updatedLogByDate });
   };
 
   const guncelleFirebase = (yeniVeriler) => {
@@ -163,7 +192,7 @@ export default function SiraTakip() {
   };
 
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`}> 
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
@@ -265,7 +294,7 @@ export default function SiraTakip() {
               className={clsx(
                 "border-2 rounded-lg p-3 sm:p-4 shadow-sm transition-all duration-200 text-xs sm:text-sm w-full overflow-x-auto",
                 durumRengi(emp.status),
-                i === siradakiIndex() &&
+                i === siradakiMusaitIndex() &&
                   (darkMode
                     ? "scale-[1.02] border-4 border-green-600 bg-slate-800"
                     : "scale-[1.02] border-4 border-green-600 bg-gray-50")
@@ -284,8 +313,8 @@ export default function SiraTakip() {
                   <p className="text-xs sm:text-sm italic">Durum: {emp.status}</p>
                 )}
               </div>
-              {/* Sadece Müsait durumunda çağrı alınabilsin */}
-              {i === siradakiIndex() && emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && (
+              {/* Sadece Müsait durumunda ve sıradaki kişi sizseniz çağrı alınabilir */}
+              {emp.status === "Müsait" && i === siradakiMusaitIndex() && emp.uid === auth.currentUser?.uid && (
                 <button
                   onClick={ileriAl}
                   className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition w-full sm:w-auto"
@@ -301,14 +330,14 @@ export default function SiraTakip() {
             <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
             <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
               {(logByDate[todayKey] || []).map((entry, index) => (
-                <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
+                <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
               ))}
             </ul>
           </div>
         </div>
       </div>
       <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
-        <span>Created by Ali Bekir Özer</span>
+        <span>Siteyi Ali Bekir Özer yaptı</span>
       </footer>
     </div>
   );
