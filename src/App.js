@@ -7,7 +7,6 @@ import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
 
-
 export default function SiraTakip() {
   const [allEmployees, setAllEmployees] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
@@ -51,26 +50,26 @@ export default function SiraTakip() {
   }, []);
 
   useEffect(() => {
-  const dataRef = ref(realtimeDB, "siraTakip");
-  onValue(dataRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      setActiveList(data.activeList || []);
-      setCurrentIndex(data.currentIndex || 0);
-      setCallCount(data.callCount || 0);
-      setAllEmployees(data.allEmployees || []);
-      setSelectedNames(data.selectedNames || []);
-      setLogByDate(data.logByDate || {});
+    const dataRef = ref(realtimeDB, "siraTakip");
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setActiveList(data.activeList || []);
+        setCurrentIndex(data.currentIndex || 0);
+        setCallCount(data.callCount || 0);
+        setAllEmployees(data.allEmployees || []);
+        setSelectedNames(data.selectedNames || []);
+        setLogByDate(data.logByDate || {});
 
-      // Eğer bugünkü kayıt yoksa başlat
-      if (!data.logByDate?.[todayKey]) {
-        const updated = { ...data.logByDate, [todayKey]: [] };
-        set(ref(realtimeDB, "siraTakip/logByDate"), updated);
-        setLogByDate(updated);
+        // Eğer bugünkü kayıt yoksa başlat
+        if (!data.logByDate?.[todayKey]) {
+          const updated = { ...data.logByDate, [todayKey]: [] };
+          set(ref(realtimeDB, "siraTakip/logByDate"), updated);
+          setLogByDate(updated);
+        }
       }
-    }
-  });
-}, []);
+    });
+  }, []);
 
   useEffect(() => {
     if (callCount > 0) {
@@ -149,150 +148,142 @@ export default function SiraTakip() {
     }
   };
 
-return (
-<div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen px-6 py-4`}>
-  {/* Üst Bar */}
-  <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-4 mb-6">
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      {/* Başlık ve Saat */}
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight">📞 Çağrı Takip</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-1">
-          <span>🕒</span>
-          <span>
-            {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - 
-            {time.toLocaleDateString("tr-TR")}
-          </span>
-        </div>
-      </div>
-
-      {/* Kullanıcı Bilgisi ve İşlemler */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-sm">
-        <div className="text-right sm:text-left">
-          <p className="text-gray-800 dark:text-gray-200">
-            Hoş geldin,{" "}
-            <span className="font-semibold text-blue-600 dark:text-blue-400">
-              {userName || "Kullanıcı"}
-            </span>
-          </p>
-
-          {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
-            <a
-              href="/admin"
-              className="inline-block mt-1 text-xs text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
-            >
-              🔧 Admin Panel
-            </a>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 mt-2 sm:mt-0">
-          {/* Tema Butonu */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            aria-label="Tema Değiştir"
-            className="text-lg p-2 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
-
-          {/* Çıkış Butonu */}
-          <button
-            onClick={() => signOut(auth)}
-            className="px-3 py-1.5 rounded bg-red-500 text-white text-sm hover:bg-red-600 transition"
-          >
-            🔓 Çıkış Yap
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
-   {/* Çağrı Butonu */}
-    <div className="flex justify-center sm:justify-start mt-4">
-      <button
-        onClick={() => {
-          const yeniSayi = callCount + 1;
-          setCallCount(yeniSayi);
-          guncelleFirebase({ callCount: yeniSayi });
-        }}
-        className={`px-6 py-2 rounded-md font-semibold text-white shadow-md transition ${
-          blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
-        }`}
-      >
-        📞 Yeni Çağrı ({callCount})
-      </button>
-      <button
-       onClick={() => {
-         setCallCount((prev) => {
-           if (prev <= 0) return prev;
-           const yeniSayi = prev - 1;
-           guncelleFirebase({ callCount: yeniSayi });
-           return yeniSayi;
-         });
-       }}
-       disabled={callCount === 0}
-       className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition ${
-         callCount === 0
-           ? "bg-gray-400 opacity-50 cursor-not-allowed"
-           : blink
-           ? "bg-gray-600 animate-pulse"
-           : "bg-gray-600 hover:bg-gray-700"
-       }`}
-        >
-      </button>
-
-    </div>
-
-    <div className="flex">
-      <div className="w-3/4 pr-4 space-y-4">
-        {activeList.map((emp, i) => (
-          <div
-            key={emp.uid}
-            className={clsx(
-              "border-2 rounded-lg p-4 shadow-sm transition-all duration-200 text-sm",
-              durumRengi(emp.status),
-              i === siradakiIndex() &&
-                (darkMode
-                  ? "scale-[1.02] border-4 border-green-600 bg-slate-800"
-                  : "scale-[1.02] border-4 border-green-600 bg-gray-50")
-            )}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-lg font-semibold">{emp.name}</p>
-
-              {emp.uid === auth.currentUser?.uid ? (
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => durumGuncelle(i, "Molada")} className="text-sm px-2 py-1 bg-yellow-200 text-black rounded">Moladayım</button>
-                  <button onClick={() => durumGuncelle(i, "İzinli")} className="text-sm px-2 py-1 bg-gray-300 text-black rounded">İzinliyim</button>
-                  <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="text-sm px-2 py-1 bg-orange-300 text-black rounded">Çalışıyorum</button>
-                  <button onClick={() => durumGuncelle(i, "Müsait")} className="text-sm px-2 py-1 bg-green-300 text-black rounded">Müsaitim</button>
-                </div>
-              ) : (
-                <p className="text-sm italic">Durum: {emp.status}</p>
+  return (
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden px-2 sm:px-6 py-2 sm:py-4 box-border`}> 
+      {/* Üst Bar */}
+      <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
+          {/* Başlık ve Saat */}
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">Çağrı Takip</h1>
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <span>🕒</span>
+              <span>
+                {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - 
+                {time.toLocaleDateString("tr-TR")}
+              </span>
+            </div>
+          </div>
+          {/* Kullanıcı Bilgisi ve İşlemler */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-xs sm:text-sm w-full sm:w-auto">
+            <div className="text-right sm:text-left w-full sm:w-auto">
+              <p className="text-gray-800 dark:text-gray-200 truncate">
+                Hoş geldin,{" "}
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  {userName || "Kullanıcı"}
+                </span>
+              </p>
+              {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+                <a
+                  href="/admin"
+                  className="inline-block mt-1 text-xs text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
+                >
+                  🔧 Admin Panel
+                </a>
               )}
             </div>
-
-            {i === siradakiIndex() && emp.uid === auth.currentUser?.uid && (
+            <div className="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
+              {/* Tema Butonu */}
               <button
-                onClick={ileriAl}
-                className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
+                onClick={() => setDarkMode(!darkMode)}
+                aria-label="Tema Değiştir"
+                className="text-lg p-2 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
               >
-                ✅ Çağrı Aldım
+                {darkMode ? "☀️" : "🌙"}
               </button>
-            )}
+              {/* Çıkış Butonu */}
+              <button
+                onClick={() => signOut(auth)}
+                className="px-3 py-1.5 rounded bg-red-500 text-white text-xs sm:text-sm hover:bg-red-600 transition"
+              >
+                🔓 Çıkış Yap
+              </button>
+            </div>
           </div>
-        ))}
+        </div>
+      </header>
+      {/* Çağrı Butonu */}
+      <div className="flex flex-wrap justify-center sm:justify-start mt-2 sm:mt-4 gap-2 w-full">
+        <button
+          onClick={() => {
+            const yeniSayi = callCount + 1;
+            setCallCount(yeniSayi);
+            guncelleFirebase({ callCount: yeniSayi });
+          }}
+          className={`px-4 sm:px-6 py-2 rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto ${
+            blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
+          }`}
+        >
+          📞 Yeni Çağrı ({callCount})
+        </button>
+        <button
+          onClick={() => {
+            setCallCount((prev) => {
+              if (prev <= 0) return prev;
+              const yeniSayi = prev - 1;
+              guncelleFirebase({ callCount: yeniSayi });
+              return yeniSayi;
+            });
+          }}
+          disabled={callCount === 0}
+          className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto ${
+            callCount === 0
+              ? "bg-gray-400 opacity-50 cursor-not-allowed"
+              : blink
+              ? "bg-gray-600 animate-pulse"
+              : "bg-gray-600 hover:bg-gray-700"
+          }`}
+        >
+          -
+        </button>
       </div>
-
-      <div className="lg:w-1/4 max-h-[900px] overflow-y-auto border-l pl-4">
-        <h2 className="text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-        <ul className="list-disc pl-6 text-sm space-y-1">
-          {(logByDate[todayKey] || []).map((entry, index) => (
-            <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
+      <div className="flex flex-col lg:flex-row w-full gap-4 mt-4">
+        <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4">
+          {activeList.map((emp, i) => (
+            <div
+              key={emp.uid}
+              className={clsx(
+                "border-2 rounded-lg p-3 sm:p-4 shadow-sm transition-all duration-200 text-xs sm:text-sm w-full overflow-x-auto",
+                durumRengi(emp.status),
+                i === siradakiIndex() &&
+                  (darkMode
+                    ? "scale-[1.02] border-4 border-green-600 bg-slate-800"
+                    : "scale-[1.02] border-4 border-green-600 bg-gray-50")
+              )}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-base sm:text-lg font-semibold truncate max-w-[60vw]">{emp.name}</p>
+                {emp.uid === auth.currentUser?.uid ? (
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => durumGuncelle(i, "Molada")} className="text-xs sm:text-sm px-2 py-1 bg-yellow-200 text-black rounded">Moladayım</button>
+                    <button onClick={() => durumGuncelle(i, "İzinli")} className="text-xs sm:text-sm px-2 py-1 bg-gray-300 text-black rounded">İzinliyim</button>
+                    <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="text-xs sm:text-sm px-2 py-1 bg-orange-300 text-black rounded">Çalışıyorum</button>
+                    <button onClick={() => durumGuncelle(i, "Müsait")} className="text-xs sm:text-sm px-2 py-1 bg-green-300 text-black rounded">Müsaitim</button>
+                  </div>
+                ) : (
+                  <p className="text-xs sm:text-sm italic">Durum: {emp.status}</p>
+                )}
+              </div>
+              {i === siradakiIndex() && emp.uid === auth.currentUser?.uid && (
+                <button
+                  onClick={ileriAl}
+                  className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition w-full sm:w-auto"
+                >
+                  ✅ Çağrı Aldım
+                </button>
+              )}
+            </div>
           ))}
-        </ul>
+        </div>
+        <div className="w-full lg:w-1/4 max-h-[60vh] lg:max-h-[900px] overflow-y-auto border-l pl-0 lg:pl-4">
+          <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
+          <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
+            {(logByDate[todayKey] || []).map((entry, index) => (
+              <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
