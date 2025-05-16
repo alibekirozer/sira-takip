@@ -150,48 +150,64 @@ export default function SiraTakip() {
   };
 
 return (
-  <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen px-6 py-4 space-y-6`}>
-    {/* Üst Bar */}
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+<div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen px-6 py-4`}>
+  {/* Üst Bar */}
+  <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-4 mb-6">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       {/* Başlık ve Saat */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Çağrı Takip</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+        <h1 className="text-3xl font-semibold tracking-tight">📞 Çağrı Takip</h1>
+        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-1">
           <span>🕒</span>
-          <span>{time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}</span>
+          <span>
+            {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - 
+            {time.toLocaleDateString("tr-TR")}
+          </span>
         </div>
       </div>
 
       {/* Kullanıcı Bilgisi ve İşlemler */}
-      <div className="flex flex-col items-end space-y-1">
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Hoş geldin, <span className="font-semibold text-blue-600">{userName}</span>
-        </p>
-        {/* Tema Butonu */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-3 py-1 rounded border text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition"
-        >
-          {darkMode ? "☀️" : "🌙"}
-        </button>
-        {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
-          <a
-            href="/admin"
-            className="text-xs text-blue-500 underline hover:text-blue-600"
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-sm">
+        <div className="text-right sm:text-left">
+          <p className="text-gray-800 dark:text-gray-200">
+            Hoş geldin,{" "}
+            <span className="font-semibold text-blue-600 dark:text-blue-400">
+              {userName || "Kullanıcı"}
+            </span>
+          </p>
+
+          {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+            <a
+              href="/admin"
+              className="inline-block mt-1 text-xs text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
+            >
+              🔧 Admin Panel
+            </a>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 mt-2 sm:mt-0">
+          {/* Tema Butonu */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            aria-label="Tema Değiştir"
+            className="text-lg p-2 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
           >
-            🔧 Admin Panel
-          </a>
-        )}
-        <button
-          onClick={() => signOut(auth)}
-          className="mt-1 px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 text-sm transition"
-        >
-          🔓 Çıkış Yap
-        </button>
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+
+          {/* Çıkış Butonu */}
+          <button
+            onClick={() => signOut(auth)}
+            className="px-3 py-1.5 rounded bg-red-500 text-white text-sm hover:bg-red-600 transition"
+          >
+            🔓 Çıkış Yap
+          </button>
+        </div>
       </div>
     </div>
-
-    {/* Çağrı Butonu */}
+  </header>
+   {/* Çağrı Butonu */}
     <div className="flex justify-center sm:justify-start mt-4">
       <button
         onClick={() => {
