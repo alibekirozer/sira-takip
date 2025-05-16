@@ -178,18 +178,18 @@ export default function SiraTakip() {
   };
 
   // Bilgi kısmı için yardımcı fonksiyonlar
-  const siradakiKisi = () => {
-    const idx = siradakiIndex();
-    return idx !== -1 ? activeList[idx]?.name : "-";
-  };
-  const kalanKisiSayisi = () => {
-    if (!benimAdim) return 0;
-    // Sadece 'Müsait' olanları say
-    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
-    const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
-    if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
-    return benimIndex;
-  };
+  // const siradakiKisi = () => {
+  //   const idx = siradakiIndex();
+  //   return idx !== -1 ? activeList[idx]?.name : "-";
+  // };
+  // const kalanKisiSayisi = () => {
+  //   if (!benimAdim) return 0;
+  //   // Sadece 'Müsait' olanları say
+  //   const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+  //   const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
+  //   if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
+  //   return benimIndex;
+  // };
 
   return (
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
