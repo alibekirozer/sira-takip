@@ -206,17 +206,25 @@ return (
         📞 Yeni Çağrı ({callCount})
       </button>
       <button
-        onClick={() => {
-          const yeniSayi = callCount - 1;
-          setCallCount(yeniSayi);
-          guncelleFirebase({ callCount: yeniSayi });
-        }}
-        className={`px-2 py-2 rounded-md font-semibold text-black shadow-md transition ${
-          blink ? "bg-yellow-600 animate-pulse" : "bg-yellow-600 hover:bg-grey-600"
-        }`}
-      >
-         - ({callCount})
+       onClick={() => {
+         setCallCount((prev) => {
+           if (prev <= 0) return prev;
+           const yeniSayi = prev - 1;
+           guncelleFirebase({ callCount: yeniSayi });
+           return yeniSayi;
+         });
+       }}
+       disabled={callCount === 0}
+       className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition ${
+         callCount === 0
+           ? "bg-gray-400 opacity-50 cursor-not-allowed"
+           : blink
+           ? "bg-gray-600 animate-pulse"
+           : "bg-gray-600 hover:bg-gray-700"
+       }`}
+        >
       </button>
+
     </div>
 
     <div className="flex">
