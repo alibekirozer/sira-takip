@@ -3,7 +3,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebase";
 import Signup from "./Signup";
 import { sendPasswordResetEmail } from "firebase/auth";
-import logo from "./assets/kocsistem-logo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -43,9 +42,6 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
   <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto mt-10 p-4 border rounded shadow">
-    <div className="text-center">
-      <img src={logo} alt="KoçSistem Logo" className="h-20 mx-auto mb-4" />
-    </div>
     <h2 className="text-xl font-semibold text-center">Giriş Yap</h2>
     
     <input
