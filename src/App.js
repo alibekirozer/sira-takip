@@ -149,7 +149,7 @@ export default function SiraTakip() {
   };
 
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden px-2 sm:px-6 py-2 sm:py-4 box-border`}> 
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border`}> 
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
@@ -237,8 +237,8 @@ export default function SiraTakip() {
           -
         </button>
       </div>
-      <div className="flex flex-col lg:flex-row w-full gap-4 mt-4">
-        <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4">
+      <div className="flex-1 flex flex-col lg:flex-row w-full gap-4 mt-4 overflow-hidden">
+        <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4 overflow-visible">
           {activeList.map((emp, i) => (
             <div
               key={emp.uid}
@@ -275,15 +275,20 @@ export default function SiraTakip() {
             </div>
           ))}
         </div>
-        <div className="w-full lg:w-1/4 max-h-[60vh] lg:max-h-[900px] overflow-y-auto border-l pl-0 lg:pl-4">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-          <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
-            {(logByDate[todayKey] || []).map((entry, index) => (
-              <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
-            ))}
-          </ul>
+        <div className="w-full lg:w-1/4 flex flex-col">
+          <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-4" style={{maxHeight: 'calc(100dvh - 220px)'}}>
+            <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
+            <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
+              {(logByDate[todayKey] || []).map((entry, index) => (
+                <li key={index}>{entry.time} - {entry.person} çağrıyı aldı</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
+      <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
+        <span>Siteyi Ali Bekir Özer yaptı</span>
+      </footer>
     </div>
   );
 }
