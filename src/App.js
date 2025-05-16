@@ -313,8 +313,8 @@ export default function SiraTakip() {
                   <p className="text-xs sm:text-sm italic">Durum: {emp.status}</p>
                 )}
               </div>
-              {/* Sadece Müsait durumunda ve sıradaki kişi sizseniz çağrı alınabilir */}
-              {emp.status === "Müsait" && i === siradakiMusaitIndex() && emp.uid === auth.currentUser?.uid && (
+              {/* Sadece MÜSAİT ve sıradaki kişi sizseniz çağrı alınabilir */}
+              {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
                 <button
                   onClick={ileriAl}
                   className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition w-full sm:w-auto"
