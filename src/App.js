@@ -211,8 +211,8 @@ return (
           setCallCount(yeniSayi);
           guncelleFirebase({ callCount: yeniSayi });
         }}
-        className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition ${
-          blink ? "bg-grey-600 animate-pulse" : "bg-grey-600 hover:bg-grey-600"
+        className={`px-2 py-2 rounded-md font-semibold text-black shadow-md transition ${
+          blink ? "bg-yellow-600 animate-pulse" : "bg-yellow-600 hover:bg-grey-600"
         }`}
       >
          - ({callCount})
