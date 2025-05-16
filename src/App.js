@@ -148,8 +148,22 @@ export default function SiraTakip() {
     }
   };
 
+  // Bilgi kısmı için yardımcı fonksiyonlar
+  const siradakiKisi = () => {
+    const idx = siradakiIndex();
+    return idx !== -1 ? activeList[idx]?.name : "-";
+  };
+  const kalanKisiSayisi = () => {
+    if (!benimAdim) return 0;
+    // Sadece 'Müsait' olanları say
+    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+    const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
+    if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
+    return benimIndex;
+  };
+
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border`}> 
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`}> 
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
@@ -202,6 +216,12 @@ export default function SiraTakip() {
           </div>
         </div>
       </header>
+      {/* Bilgi Kısmı */}
+      <div className="w-full max-w-full mb-2 flex justify-center">
+        <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-2 py-1 text-xs sm:text-sm font-medium shadow-sm">
+          Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
+        </div>
+      </div>
       {/* Çağrı Butonu */}
       <div className="flex flex-wrap justify-center sm:justify-start mt-2 sm:mt-4 gap-2 w-full">
         <button
@@ -264,7 +284,8 @@ export default function SiraTakip() {
                   <p className="text-xs sm:text-sm italic">Durum: {emp.status}</p>
                 )}
               </div>
-              {i === siradakiIndex() && emp.uid === auth.currentUser?.uid && (
+              {/* Sadece Müsait durumunda çağrı alınabilsin */}
+              {i === siradakiIndex() && emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && (
                 <button
                   onClick={ileriAl}
                   className="mt-3 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition w-full sm:w-auto"
@@ -287,7 +308,7 @@ export default function SiraTakip() {
         </div>
       </div>
       <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
-        <span>Siteyi Ali Bekir Özer yaptı</span>
+        <span>Created by Ali Bekir Özer</span>
       </footer>
     </div>
   );
