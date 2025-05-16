@@ -142,7 +142,7 @@ export default function SiraTakip() {
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
     } else {
       const updated = [...selectedNames, name];
-      const updatedList = [...activeList, { name, status: "Çalışıyor" }];
+      const updatedList = [...activeList, { name, status: "Müsait" }];
       setSelectedNames(updated);
       setActiveList(updatedList);
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
@@ -155,7 +155,7 @@ return (
     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
       {/* Başlık ve Saat */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">KoçSistem Çağrı Takip</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Çağrı Takip</h1>
         <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
           <span>🕒</span>
           <span>{time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString()}</span>
@@ -204,6 +204,18 @@ return (
         }`}
       >
         📞 Yeni Çağrı ({callCount})
+      </button>
+      <button
+        onClick={() => {
+          const yeniSayi = callCount - 1;
+          setCallCount(yeniSayi);
+          guncelleFirebase({ callCount: yeniSayi });
+        }}
+        className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition ${
+          blink ? "bg-grey-600 animate-pulse" : "bg-grey-600 hover:bg-grey-600"
+        }`}
+      >
+         - ({callCount})
       </button>
     </div>
 
