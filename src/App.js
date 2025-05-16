@@ -102,29 +102,50 @@ export default function SiraTakip() {
   };
 
   const ileriAl = () => {
-    // Sadece 'Müsait' olanlar arasında sıradaki index
     const musaitler = activeList.filter((emp) => emp.status === "Müsait");
     if (musaitler.length === 0) return;
-    const siradakiUid = musaitler[0].uid;
-    const index = activeList.findIndex((emp) => emp.uid === siradakiUid);
-    if (index !== -1) {
-      const person = activeList[index].name;
+
+    // Şu anki kullanıcının indexi
+    const currentUserIndex = activeList.findIndex(
+      (emp) => emp.uid === auth.currentUser?.uid
+    );
+
+    if (currentUserIndex !== -1) {
+      // Çağrıyı alan kişiyi Çalışıyor durumuna getir
+      const updated = [...activeList];
+      const oldStatus = updated[currentUserIndex].status;
+      updated[currentUserIndex].status = "Çalışıyor";
+
+      // Log ekle
+      const person = activeList[currentUserIndex].name;
       const timestamp = new Date().toLocaleTimeString();
-      const yeniLog = [{ person, time: timestamp }, ...(logByDate[todayKey] || [])].slice(0, 200);
+      const yeniLog = [
+        { 
+          person, 
+          time: timestamp,
+          action: "çağrıyı aldı ve durumu değişti: " + oldStatus + " → Çalışıyor"
+        },
+        ...(logByDate[todayKey] || [])
+      ].slice(0, 200);
       const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
-      // Sıradaki müsaitten sonrasındaki ilk müsait kişiye geç
-      let yeniIndex = index;
-      for (let i = 1; i <= activeList.length; i++) {
-        const nextIdx = (index + i) % activeList.length;
-        if (activeList[nextIdx].status === "Müsait") {
-          yeniIndex = nextIdx;
-          break;
-        }
-      }
-      setCurrentIndex(yeniIndex);
+
+      // Sonraki müsait kişiyi bul
+      const nextMusait = musaitler.find(m => m.uid !== auth.currentUser?.uid);
+      const nextIndex = nextMusait 
+        ? activeList.findIndex(emp => emp.uid === nextMusait.uid)
+        : 0;
+
+      setActiveList(updated);
+      setCurrentIndex(nextIndex);
       setCallCount(callCount > 0 ? callCount - 1 : 0);
       setLogByDate(updatedLogByDate);
-      guncelleFirebase({ currentIndex: yeniIndex, callCount: callCount > 0 ? callCount - 1 : 0, logByDate: updatedLogByDate });
+
+      guncelleFirebase({ 
+        activeList: updated, 
+        currentIndex: nextIndex, 
+        callCount: callCount > 0 ? callCount - 1 : 0,
+        logByDate: updatedLogByDate 
+      });
     }
   };
 
@@ -324,7 +345,7 @@ export default function SiraTakip() {
                   <p className="text-xs sm:text-sm italic">Durum: {emp.status}</p>
                 )}
               </div>
-              {/* Sadece MÜSAİT ve sıradaki kişi sizseniz çağrı alınabilir */}
+              {/* Sadece giriş yapan kişi, sıradaki müsait kişi ve kendi durumu müsaitse çağrı alabilir */}
               {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
                 <button
                   onClick={ileriAl}
