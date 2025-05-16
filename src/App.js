@@ -102,18 +102,29 @@ export default function SiraTakip() {
   };
 
   const ileriAl = () => {
-    const index = siradakiIndex();
+    // Sadece 'Müsait' olanlar arasında sıradaki index
+    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
+    if (musaitler.length === 0) return;
+    const siradakiUid = musaitler[0].uid;
+    const index = activeList.findIndex((emp) => emp.uid === siradakiUid);
     if (index !== -1) {
       const person = activeList[index].name;
       const timestamp = new Date().toLocaleTimeString();
       const yeniLog = [{ person, time: timestamp }, ...(logByDate[todayKey] || [])].slice(0, 200);
       const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
-      const yeniIndex = (index + 1) % activeList.length;
-      const yeniCall = callCount > 0 ? callCount - 1 : 0;
+      // Sıradaki müsaitten sonrasındaki ilk müsait kişiye geç
+      let yeniIndex = index;
+      for (let i = 1; i <= activeList.length; i++) {
+        const nextIdx = (index + i) % activeList.length;
+        if (activeList[nextIdx].status === "Müsait") {
+          yeniIndex = nextIdx;
+          break;
+        }
+      }
       setCurrentIndex(yeniIndex);
-      setCallCount(yeniCall);
+      setCallCount(callCount > 0 ? callCount - 1 : 0);
       setLogByDate(updatedLogByDate);
-      guncelleFirebase({ currentIndex: yeniIndex, callCount: yeniCall, logByDate: updatedLogByDate });
+      guncelleFirebase({ currentIndex: yeniIndex, callCount: callCount > 0 ? callCount - 1 : 0, logByDate: updatedLogByDate });
     }
   };
 
