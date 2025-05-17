@@ -53,6 +53,26 @@ export default function SiraTakip() {
   const ad = auth.currentUser?.displayName || "";
   setBenimAdim(ad);
 }, []);
+  
+  useEffect(() => {
+  const container = document.getElementById("scaleContainer");
+  if (!container) return;
+
+  const designWidth = 1440; // referans tasarım genişliği
+  const designHeight = 900; // referans yükseklik
+
+  const applyScale = () => {
+    const scaleX = window.innerWidth / designWidth;
+    const scaleY = window.innerHeight / designHeight;
+    const scale = Math.min(scaleX, scaleY);
+    container.style.transform = `scale(${scale})`;
+  };
+
+  applyScale();
+  window.addEventListener("resize", applyScale);
+  return () => window.removeEventListener("resize", applyScale);
+}, []);
+
 
   useEffect(() => {
     const dataRef = ref(realtimeDB, "siraTakip");
@@ -242,6 +262,14 @@ export default function SiraTakip() {
     }
   };
   return (
+  <div
+    id="scaleContainer"
+    style={{
+      transformOrigin: "top left",
+      width: "fit-content",
+      height: "fit-content",
+    }}
+  >
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
@@ -390,5 +418,6 @@ export default function SiraTakip() {
         <span>Created by Ali Bekir Özer</span>
       </footer>
     </div>
-  );
-}
+    </div>
+    );
+  }
