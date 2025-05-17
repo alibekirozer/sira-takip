@@ -129,20 +129,12 @@ export default function SiraTakip() {
       ].slice(0, 200);
       const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
 
-      // Sonraki müsait kişiyi bul
-      const nextMusait = musaitler.find(m => m.uid !== auth.currentUser?.uid);
-      const nextIndex = nextMusait 
-        ? activeList.findIndex(emp => emp.uid === nextMusait.uid)
-        : 0;
-
       setActiveList(updated);
-      setCurrentIndex(nextIndex);
       setCallCount(callCount > 0 ? callCount - 1 : 0);
       setLogByDate(updatedLogByDate);
 
       guncelleFirebase({ 
         activeList: updated, 
-        currentIndex: nextIndex, 
         callCount: callCount > 0 ? callCount - 1 : 0,
         logByDate: updatedLogByDate 
       });
@@ -163,25 +155,39 @@ export default function SiraTakip() {
     if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
     return benimIndex;
   };
-
   // Sadece 'Müsait' olanlar arasında sıradaki index
   const siradakiMusaitIndex = () => {
-    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
-    if (musaitler.length === 0) return -1;
-    return activeList.findIndex((emp) => emp.name === musaitler[0].name);
+    // Mevcut indexten başlayarak sonraki müsait kişiyi bul
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx].status === "Müsait") {
+        return idx;
+      }
+    }
+    // Hiç müsait kişi yoksa -1 döndür
+    return -1;
   };
-
-  // Durum güncellemede log ekle
+  // Durum güncellemede log ekle ve müsait kişileri korumak için sırayı yönet
   const durumGuncelle = (index, status) => {
     const updated = [...activeList];
     const eskiStatus = updated[index].status;
     updated[index].status = status;
-    setActiveList(updated);
+
+    // Her kullanıcının kendi indexini ve önceki durumunu tut
+    const userPositions = activeList.map((user, idx) => ({
+      index: idx,
+      previousStatus: user.status,
+      name: user.name,
+      uid: user.uid
+    }));
+
     // Log ekle
     const person = updated[index].name;
     const timestamp = new Date().toLocaleTimeString();
     const yeniLog = [{ person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` }, ...(logByDate[todayKey] || [])].slice(0, 200);
     const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
+
+    setActiveList(updated);
     setLogByDate(updatedLogByDate);
     guncelleFirebase({ activeList: updated, logByDate: updatedLogByDate });
   };
