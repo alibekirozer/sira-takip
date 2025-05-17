@@ -94,7 +94,7 @@ export default function SiraTakip() {
   const siradakiIndex = () => {
     for (let i = 0; i < activeList.length; i++) {
       const idx = (currentIndex + i) % activeList.length;
-      if (activeList[idx].status === "Çalışıyor") return idx;
+      if (activeList[idx].status === "Müsait") return idx;
     }
     return -1;
   };
