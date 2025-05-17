@@ -190,10 +190,7 @@ export default function SiraTakip() {
     updated[index].status = status;
 
     // Eğer Müsait durumuna geçiliyorsa ve currentIndex güncellemesi gerekiyorsa
-    let yeniIndex = currentIndex;
-    if (status === "Müsait" && index < currentIndex) {
-      yeniIndex = index;
-    }
+    setCurrentIndex(currentIndex); // veya hiç set etme
 
     const person = updated[index].name;
     const timestamp = new Date().toLocaleTimeString();
