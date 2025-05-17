@@ -123,21 +123,25 @@ export default function SiraTakip() {
   };
 
   const kalanKisiSayisi = () => {
-    if (!benimAdim) return 0;
-    
-    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişileri bul
-    const musaitler = [];
-    for (let i = 0; i < activeList.length; i++) {
-      const idx = (currentIndex + i) % activeList.length;
-      if (activeList[idx]?.status === "Müsait") {
-        musaitler.push(activeList[idx]);
+  if (!benimAdim) return 0;
+
+  // currentIndex'ten başlayarak sıralı şekilde tüm "Müsait"leri gez
+  let sayac = 0;
+  for (let i = 0; i < activeList.length; i++) {
+    const idx = (currentIndex + i) % activeList.length;
+    const kisi = activeList[idx];
+
+    if (kisi?.status === "Müsait") {
+      if (kisi.name === benimAdim) {
+        return sayac; // Kendi sıranı bulunca dur
       }
+      sayac++;
     }
-    
-    // Kendi sıramı bul
-    const benimSiram = musaitler.findIndex(emp => emp.name === benimAdim);
-    return benimSiram === -1 ? musaitler.length : benimSiram;
-  };
+  }
+
+  return 0; // Bulunamazsa
+};
+
 
   const ileriAl = () => {
     const musaitler = activeList.filter((emp) => emp.status === "Müsait");
