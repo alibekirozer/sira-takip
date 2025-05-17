@@ -1,4 +1,3 @@
-// App.js
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { ref, set, onValue } from "firebase/database";
@@ -61,7 +60,6 @@ export default function SiraTakip() {
         setSelectedNames(data.selectedNames || []);
         setLogByDate(data.logByDate || {});
 
-        // Eğer bugünkü kayıt yoksa başlat
         if (!data.logByDate?.[todayKey]) {
           const updated = { ...data.logByDate, [todayKey]: [] };
           set(ref(realtimeDB, "siraTakip/logByDate"), updated);
@@ -100,23 +98,26 @@ export default function SiraTakip() {
     }
     return -1;
   };
-
   const ileriAl = () => {
     const musaitler = activeList.filter((emp) => emp.status === "Müsait");
     if (musaitler.length === 0) return;
 
-    // Şu anki kullanıcının indexi
     const currentUserIndex = activeList.findIndex(
       (emp) => emp.uid === auth.currentUser?.uid
     );
 
     if (currentUserIndex !== -1) {
-      // Çağrıyı alan kişiyi Çalışıyor durumuna getir
       const updated = [...activeList];
       const oldStatus = updated[currentUserIndex].status;
       updated[currentUserIndex].status = "Çalışıyor";
 
-      // Log ekle
+      // Sıradaki müsait kişiye geç
+      const nextMusait = activeList.findIndex((emp, idx) => 
+        idx > currentUserIndex && emp.status === "Müsait"
+      );
+      const yeniIndex = nextMusait !== -1 ? nextMusait : 
+        activeList.findIndex(emp => emp.status === "Müsait");
+
       const person = activeList[currentUserIndex].name;
       const timestamp = new Date().toLocaleTimeString();
       const yeniLog = [
@@ -132,71 +133,40 @@ export default function SiraTakip() {
       setActiveList(updated);
       setCallCount(callCount > 0 ? callCount - 1 : 0);
       setLogByDate(updatedLogByDate);
+      setCurrentIndex(yeniIndex);
 
       guncelleFirebase({ 
         activeList: updated, 
         callCount: callCount > 0 ? callCount - 1 : 0,
-        logByDate: updatedLogByDate 
+        logByDate: updatedLogByDate,
+        currentIndex: yeniIndex
       });
     }
   };
-
-  // Bilgi kısmı için yardımcı fonksiyonlar
-  const siradakiKisi = () => {
-    // Sadece 'Müsait' olanlar arasında sıradaki
-    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
-    return musaitler.length > 0 ? musaitler[0].name : "-";
-  };
-  const kalanKisiSayisi = () => {
-    if (!benimAdim) return 0;
-    // Sadece 'Müsait' olanları say
-    const musaitler = activeList.filter((emp) => emp.status === "Müsait");
-    const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
-    if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
-    return benimIndex;
-  };  // Sadece 'Müsait' olanlar arasında sıradaki index
-  const siradakiMusaitIndex = () => {
-    const musaitler = activeList
-      .map((emp, idx) => ({ ...emp, originalIndex: idx }))
-      .filter(emp => emp.status === "Müsait");
-
-    if (musaitler.length === 0) return -1;
-    
-    // İlk müsait kişinin indexini döndür
-    return musaitler[0].originalIndex;
-  };// Durum güncellemede log ekle ve sırayı koru
   const durumGuncelle = (index, status) => {
     const updated = [...activeList];
     const eskiStatus = updated[index].status;
     updated[index].status = status;
 
-    // Log ekle
+    // Eğer Müsait durumuna geçiliyorsa ve currentIndex güncellemesi gerekiyorsa
+    let yeniIndex = currentIndex;
+    if (status === "Müsait" && index < currentIndex) {
+      yeniIndex = index;
+    }
+
     const person = updated[index].name;
     const timestamp = new Date().toLocaleTimeString();
     const yeniLog = [{ person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` }, ...(logByDate[todayKey] || [])].slice(0, 200);
     const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
 
-    // Eğer kullanıcı "Müsait" durumuna geçiyorsa ve sıranın başındaysa, currentIndex'i güncelle
-    let yeniCurrentIndex = currentIndex;
-    if (status === "Müsait") {
-      const musaitlerSirasi = updated
-        .map((emp, idx) => ({ ...emp, idx }))
-        .filter(emp => emp.status === "Müsait")
-        .sort((a, b) => a.idx - b.idx);
-      
-      // Eğer bu kullanıcı sıradaki müsait kişi olacaksa
-      if (musaitlerSirasi.length > 0 && musaitlerSirasi[0].idx === index) {
-        yeniCurrentIndex = index;
-      }
-    }
-
     setActiveList(updated);
     setLogByDate(updatedLogByDate);
-    setCurrentIndex(yeniCurrentIndex);
+    setCurrentIndex(yeniIndex);
+    
     guncelleFirebase({ 
       activeList: updated, 
       logByDate: updatedLogByDate,
-      currentIndex: yeniCurrentIndex 
+      currentIndex: yeniIndex
     });
   };
 
@@ -222,21 +192,6 @@ export default function SiraTakip() {
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
     }
   };
-
-  // Bilgi kısmı için yardımcı fonksiyonlar
-  // const siradakiKisi = () => {
-  //   const idx = siradakiIndex();
-  //   return idx !== -1 ? activeList[idx]?.name : "-";
-  // };
-  // const kalanKisiSayisi = () => {
-  //   if (!benimAdim) return 0;
-  //   // Sadece 'Müsait' olanları say
-  //   const musaitler = activeList.filter((emp) => emp.status === "Müsait");
-  //   const benimIndex = musaitler.findIndex((emp) => emp.name === benimAdim);
-  //   if (benimIndex === -1) return musaitler.length; // Listede yoksa hepsi
-  //   return benimIndex;
-  // };
-
   return (
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
       {/* Üst Bar */}
@@ -388,3 +343,32 @@ export default function SiraTakip() {
     </div>
   );
 }
+
+// Bilgi kısmı için yardımcı fonksiyonlar
+const siradakiKisi = () => {
+  // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
+  for (let i = 0; i < activeList.length; i++) {
+    const idx = (currentIndex + i) % activeList.length;
+    if (activeList[idx]?.status === "Müsait") {
+      return activeList[idx].name;
+    }
+  }
+  return "-";
+};
+
+const kalanKisiSayisi = () => {
+  if (!benimAdim) return 0;
+  
+  // Önce currentIndex'ten başlayarak ileriye doğru müsait kişileri bul
+  const musaitler = [];
+  for (let i = 0; i < activeList.length; i++) {
+    const idx = (currentIndex + i) % activeList.length;
+    if (activeList[idx]?.status === "Müsait") {
+      musaitler.push(activeList[idx]);
+    }
+  }
+  
+  // Kendi sıramı bul
+  const benimSiram = musaitler.findIndex(emp => emp.name === benimAdim);
+  return benimSiram === -1 ? musaitler.length : benimSiram;
+};
