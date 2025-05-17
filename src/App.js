@@ -5,6 +5,7 @@ import { realtimeDB } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
+import { update } from "firebase/database";
 
 export default function SiraTakip() {
   const [allEmployees, setAllEmployees] = useState([]);
@@ -77,25 +78,26 @@ export default function SiraTakip() {
   }, [callCount]);
 
   const bildirimGonder = async (isim) => {
-    if (Notification.permission === "granted") {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        await navigator.serviceWorker.ready;
-        await registration.showNotification("Sıra Sende!", {
-          body: `${isim}, çağrıyı sen alacaksın.`,
-          icon: "/favicon.ico"
-        });
-      } catch (error) {
-        console.error('Service Worker registration failed:', error);
-      }
+  if (Notification.permission === "granted") {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      registration.showNotification("Sıra Sende!", {
+        body: `${isim}, çağrıyı sen alacaksın.`,
+        icon: "/favicon.ico"
+      });
+    } catch (error) {
+      console.error('Bildirim gönderme hatası:', error);
     }
-  };
+  }
+};
+
 
   const siradakiIndex = () => {
     for (let i = 0; i < activeList.length; i++) {
       const idx = (currentIndex + i) % activeList.length;
       if (activeList[idx].status === "Müsait") return idx;
     }
+    return -1; // Hiç müsait yoksa -1 döndür
   };
 
   // Bilgi kısmı için yardımcı fonksiyonlar
@@ -210,11 +212,9 @@ export default function SiraTakip() {
   };
 
   const guncelleFirebase = (yeniVeriler) => {
-    set(ref(realtimeDB, "siraTakip"), {
-      activeList, currentIndex, callCount, log,
-      allEmployees, selectedNames, logByDate, ...yeniVeriler
-    });
-  };
+      update(ref(realtimeDB, "siraTakip"), yeniVeriler);
+    };
+
 
   const toggleName = (name) => {
     if (selectedNames.includes(name)) {
@@ -225,7 +225,11 @@ export default function SiraTakip() {
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
     } else {
       const updated = [...selectedNames, name];
-      const updatedList = [...activeList, { name, status: "Müsait" }];
+      const updatedList = [...activeList, {
+       name,
+       status: "Müsait",
+       uid: auth.currentUser?.uid || null
+     }];
       setSelectedNames(updated);
       setActiveList(updatedList);
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
