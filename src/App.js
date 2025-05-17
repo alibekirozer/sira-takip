@@ -98,6 +98,47 @@ export default function SiraTakip() {
     }
     return -1;
   };
+
+  // Bilgi kısmı için yardımcı fonksiyonlar
+  const siradakiMusaitIndex = () => {
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        return idx;
+      }
+    }
+    return -1;
+  };
+
+  const siradakiKisi = () => {
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        return activeList[idx].name;
+      }
+    }
+    return "-";
+  };
+
+  const kalanKisiSayisi = () => {
+    if (!benimAdim) return 0;
+    
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişileri bul
+    const musaitler = [];
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        musaitler.push(activeList[idx]);
+      }
+    }
+    
+    // Kendi sıramı bul
+    const benimSiram = musaitler.findIndex(emp => emp.name === benimAdim);
+    return benimSiram === -1 ? musaitler.length : benimSiram;
+  };
+
   const ileriAl = () => {
     const musaitler = activeList.filter((emp) => emp.status === "Müsait");
     if (musaitler.length === 0) return;
@@ -338,37 +379,8 @@ export default function SiraTakip() {
         </div>
       </div>
       <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
-        <span>Siteyi Ali Bekir Özer yaptı</span>
+        <span>Created by Ali Bekir Özer</span>
       </footer>
     </div>
   );
 }
-
-// Bilgi kısmı için yardımcı fonksiyonlar
-const siradakiKisi = () => {
-  // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
-  for (let i = 0; i < activeList.length; i++) {
-    const idx = (currentIndex + i) % activeList.length;
-    if (activeList[idx]?.status === "Müsait") {
-      return activeList[idx].name;
-    }
-  }
-  return "-";
-};
-
-const kalanKisiSayisi = () => {
-  if (!benimAdim) return 0;
-  
-  // Önce currentIndex'ten başlayarak ileriye doğru müsait kişileri bul
-  const musaitler = [];
-  for (let i = 0; i < activeList.length; i++) {
-    const idx = (currentIndex + i) % activeList.length;
-    if (activeList[idx]?.status === "Müsait") {
-      musaitler.push(activeList[idx]);
-    }
-  }
-  
-  // Kendi sıramı bul
-  const benimSiram = musaitler.findIndex(emp => emp.name === benimAdim);
-  return benimSiram === -1 ? musaitler.length : benimSiram;
-};
