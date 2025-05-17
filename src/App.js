@@ -1,4 +1,3 @@
-// App.js
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { ref, set, onValue } from "firebase/database";
@@ -100,6 +99,46 @@ export default function SiraTakip() {
     return -1;
   };
 
+  // Bilgi kısmı için yardımcı fonksiyonlar
+  const siradakiMusaitIndex = () => {
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        return idx;
+      }
+    }
+    return -1;
+  };
+
+  const siradakiKisi = () => {
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişi ara
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        return activeList[idx].name;
+      }
+    }
+    return "-";
+  };
+
+  const kalanKisiSayisi = () => {
+    if (!benimAdim) return 0;
+    
+    // Önce currentIndex'ten başlayarak ileriye doğru müsait kişileri bul
+    const musaitler = [];
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") {
+        musaitler.push(activeList[idx]);
+      }
+    }
+    
+    // Kendi sıramı bul
+    const benimSiram = musaitler.findIndex(emp => emp.name === benimAdim);
+    return benimSiram === -1 ? musaitler.length : benimSiram;
+  };
+
   const ileriAl = () => {
     const musaitler = activeList.filter((emp) => emp.status === "Müsait");
     if (musaitler.length === 0) return;
@@ -112,6 +151,13 @@ export default function SiraTakip() {
       const updated = [...activeList];
       const oldStatus = updated[currentUserIndex].status;
       updated[currentUserIndex].status = "Çalışıyor";
+
+      // Sıradaki müsait kişiye geç
+      const nextMusait = activeList.findIndex((emp, idx) => 
+        idx > currentUserIndex && emp.status === "Müsait"
+      );
+      const yeniIndex = nextMusait !== -1 ? nextMusait : 
+        activeList.findIndex(emp => emp.status === "Müsait");
 
       const person = activeList[currentUserIndex].name;
       const timestamp = new Date().toLocaleTimeString();
@@ -128,19 +174,26 @@ export default function SiraTakip() {
       setActiveList(updated);
       setCallCount(callCount > 0 ? callCount - 1 : 0);
       setLogByDate(updatedLogByDate);
+      setCurrentIndex(yeniIndex);
 
       guncelleFirebase({ 
         activeList: updated, 
         callCount: callCount > 0 ? callCount - 1 : 0,
-        logByDate: updatedLogByDate 
+        logByDate: updatedLogByDate,
+        currentIndex: yeniIndex
       });
     }
   };
-
   const durumGuncelle = (index, status) => {
     const updated = [...activeList];
     const eskiStatus = updated[index].status;
     updated[index].status = status;
+
+    // Eğer Müsait durumuna geçiliyorsa ve currentIndex güncellemesi gerekiyorsa
+    let yeniIndex = currentIndex;
+    if (status === "Müsait" && index < currentIndex) {
+      yeniIndex = index;
+    }
 
     const person = updated[index].name;
     const timestamp = new Date().toLocaleTimeString();
@@ -149,9 +202,12 @@ export default function SiraTakip() {
 
     setActiveList(updated);
     setLogByDate(updatedLogByDate);
+    setCurrentIndex(yeniIndex);
+    
     guncelleFirebase({ 
       activeList: updated, 
-      logByDate: updatedLogByDate
+      logByDate: updatedLogByDate,
+      currentIndex: yeniIndex
     });
   };
 
