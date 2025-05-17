@@ -96,7 +96,6 @@ export default function SiraTakip() {
       const idx = (currentIndex + i) % activeList.length;
       if (activeList[idx].status === "Müsait") return idx;
     }
-    return -1;
   };
 
   // Bilgi kısmı için yardımcı fonksiyonlar
@@ -108,7 +107,6 @@ export default function SiraTakip() {
         return idx;
       }
     }
-    return -1;
   };
 
   const siradakiKisi = () => {
