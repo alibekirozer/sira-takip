@@ -50,6 +50,11 @@ export default function SiraTakip() {
   }, []);
 
   useEffect(() => {
+  const ad = auth.currentUser?.displayName || "";
+  setBenimAdim(ad);
+}, []);
+
+  useEffect(() => {
     const dataRef = ref(realtimeDB, "siraTakip");
     onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
