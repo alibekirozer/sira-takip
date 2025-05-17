@@ -56,14 +56,15 @@ export default function SiraTakip() {
   
   useEffect(() => {
   const container = document.getElementById("scaleContainer");
-  if (!container) return;
+  const wrapper = document.getElementById("scaleWrapper");
+  if (!container || !wrapper) return;
 
-  const designWidth = 1440; // referans tasarım genişliği
-  const designHeight = 900; // referans yükseklik
+  const designWidth = 1440;
+  const designHeight = 900;
 
   const applyScale = () => {
-    const scaleX = window.innerWidth / designWidth;
-    const scaleY = window.innerHeight / designHeight;
+    const scaleX = wrapper.clientWidth / designWidth;
+    const scaleY = wrapper.clientHeight / designHeight;
     const scale = Math.min(scaleX, scaleY);
     container.style.transform = `scale(${scale})`;
   };
@@ -72,6 +73,7 @@ export default function SiraTakip() {
   window.addEventListener("resize", applyScale);
   return () => window.removeEventListener("resize", applyScale);
 }, []);
+
 
 
   useEffect(() => {
@@ -261,15 +263,26 @@ export default function SiraTakip() {
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
     }
   };
-  return (
-  <div
-    id="scaleContainer"
-    style={{
-      transformOrigin: "top left",
-      width: "fit-content",
-      height: "fit-content",
-    }}
-  >
+     return (
+      <div
+        id="scaleWrapper"
+        style={{
+          width: "100vw",
+          height: "100vh",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "start",
+        }}
+      >
+        <div
+          id="scaleContainer"
+          style={{
+            transformOrigin: "top left",
+            width: "1440px",
+            height: "900px",
+          }}
+        >
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
@@ -417,6 +430,7 @@ export default function SiraTakip() {
       <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
         <span>Created by Ali Bekir Özer</span>
       </footer>
+    </div>
     </div>
     </div>
     );
