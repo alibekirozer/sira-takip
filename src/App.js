@@ -292,26 +292,28 @@ export default function SiraTakip() {
       </div>
     </div>
   </header>
-      {/* Bilgi Kısmı */}
-      <div className="w-full max-w-full mb-2 flex justify-center">
-        <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-2 py-1 text-xs sm:text-sm font-medium shadow-sm">
+            {/* Bilgi Kısmı */}
+      <div className="w-full max-w-full mb-[1vh] flex justify-center items-center">
+        <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center">
           Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
         </div>
       </div>
-      {/* Çağrı Butonu */}
-      <div className="flex flex-wrap justify-center sm:justify-start mt-2 sm:mt-4 gap-2 w-full">
+
+      {/* Çağrı Butonları */}
+      <div className="flex flex-wrap justify-center items-center mt-[1vh] gap-[1vw] w-full">
         <button
           onClick={() => {
             const yeniSayi = callCount + 1;
             setCallCount(yeniSayi);
             guncelleFirebase({ callCount: yeniSayi });
           }}
-          className={`px-4 sm:px-6 py-2 rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto ${
+          className={`px-[2vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
             blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
           }`}
         >
           📞 Yeni Çağrı ({callCount})
         </button>
+
         <button
           onClick={() => {
             setCallCount((prev) => {
@@ -322,7 +324,7 @@ export default function SiraTakip() {
             });
           }}
           disabled={callCount === 0}
-          className={`px-2 py-2 rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto ${
+          className={`px-[1.5vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
             callCount === 0
               ? "bg-gray-400 opacity-50 cursor-not-allowed"
               : blink
