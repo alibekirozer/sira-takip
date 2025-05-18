@@ -18,7 +18,7 @@
 }
 
 .logs {
-  height: 80vh; /* Loglar alanının yüksekliği */
+  height: 50vh; /* Loglar alanının yüksekliği */
   overflow-y: scroll; /* Kaydırma çubuğu için */
   background-color: #f9f9f9; /* Loglar alanı arka plan rengi */
 }
