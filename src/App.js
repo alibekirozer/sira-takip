@@ -341,37 +341,37 @@ export default function SiraTakip() {
 </div>
   {/* Çağrı Listesi ve Kayıtlar */}
  <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
-  <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.3vh] overflow-visible">
+  <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
     {activeList.map((emp, i) => (
       <div
         key={emp.uid}
         className={clsx(
-          "border-2 rounded-[0.6vw] p-[1.2vw] shadow-sm transition-all duration-200 text-[clamp(0.6rem,0.8vw,0.9rem)] w-full overflow-x-auto",
+          "border-2 rounded-[0.4vw] p-[0.6vw] shadow-sm transition-all duration-200 text-[clamp(0.6rem,0.7vw,0.9rem)] w-full min-h-[5vh] flex flex-col justify-center",
           durumRengi(emp.status),
           i === siradakiMusaitIndex() &&
             (darkMode
               ? "border-4 border-green-600 bg-slate-800"
               : "border-4 border-green-600 bg-gray-50")
         )}
+        style={{maxHeight: '8vh'}}
       >
-        <div className="flex flex-wrap items-center justify-between gap-[0.8vw]">
-          <p className="text-[clamp(1rem,1vw,1.3rem)] font-semibold truncate max-w-[60vw]">{emp.name}</p>
+        <div className="flex flex-wrap items-center justify-between gap-[0.5vw] min-h-[3vh]">
+          <p className="text-[clamp(0.9rem,0.7vw,1.1rem)] font-semibold truncate max-w-[50vw]">{emp.name}</p>
           {emp.uid === auth.currentUser?.uid ? (
-            <div className="flex flex-wrap gap-[0.5vw]">
-              <button onClick={() => durumGuncelle(i, "Molada")} className="px-[1vw] py-[0.6vh] bg-yellow-200 text-black rounded text-[clamp(0.6rem,0.7vw,0.9rem)]">Moladayım</button>
-              <button onClick={() => durumGuncelle(i, "İzinli")} className="px-[1vw] py-[0.6vh] bg-gray-300 text-black rounded text-[clamp(0.6rem,0.7vw,0.9rem)]">İzinliyim</button>
-              <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="px-[1vw] py-[0.6vh] bg-orange-300 text-black rounded text-[clamp(0.6rem,0.7vw,0.9rem)]">Çalışıyorum</button>
-              <button onClick={() => durumGuncelle(i, "Müsait")} className="px-[1vw] py-[0.6vh] bg-green-300 text-black rounded text-[clamp(0.6rem,0.7vw,0.9rem)]">Müsaitim</button>
+            <div className="flex flex-wrap gap-[0.3vw]">
+              <button onClick={() => durumGuncelle(i, "Molada")} className="px-[0.7vw] py-[0.3vh] bg-yellow-200 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Moladayım</button>
+              <button onClick={() => durumGuncelle(i, "İzinli")} className="px-[0.7vw] py-[0.3vh] bg-gray-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">İzinliyim</button>
+              <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="px-[0.7vw] py-[0.3vh] bg-orange-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Çalışıyorum</button>
+              <button onClick={() => durumGuncelle(i, "Müsait")} className="px-[0.7vw] py-[0.3vh] bg-green-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Müsaitim</button>
             </div>
           ) : (
-            <p className="italic text-[clamp(0.6rem,0.7vw,0.9rem)]">Durum: {emp.status}</p>
+            <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)]">Durum: {emp.status}</p>
           )}
         </div>
-
         {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
           <button
             onClick={ileriAl}
-            className="mt-[1.2vh] block bg-green-500 text-white px-[1.5vw] py-[0.8vh] rounded hover:bg-green-600 transition w-full sm:w-auto text-[clamp(0.8rem,0.9vw,1.1rem)]"
+            className="mt-[0.6vh] block bg-green-500 text-white px-[1vw] py-[0.4vh] rounded hover:bg-green-600 transition w-full sm:w-auto text-[clamp(0.7rem,0.8vw,1rem)]"
           >
             ✅ Çağrı Aldım
           </button>
