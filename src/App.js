@@ -284,9 +284,12 @@ export default function SiraTakip() {
           {/* Çıkış Butonu */}
           <button
             onClick={() => signOut(auth)}
-            className="px-[1vw] py-[0.6vh] rounded bg-red-500 text-white text-[clamp(1rem,0.8vw,1.8rem)] hover:bg-red-600 transition"
+            aria-label="Çıkış Yap"
+            className="p-[0.8vw] rounded hover:bg-red-100 dark:hover:bg-red-900 transition text-red-600 dark:text-red-400"
           >
-            Çıkış
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[1.6vw] h-[1.6vw] min-w-[24px] min-h-[24px]">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+            </svg>
           </button>
         </div>
       </div>
