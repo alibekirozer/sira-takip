@@ -54,25 +54,29 @@ export default function SiraTakip() {
   setBenimAdim(ad);
 }, []);
   
+  // Ölçekleme için referans boyutlar
+  const DESIGN_WIDTH = 1440;
+  const DESIGN_HEIGHT = 900;
+
   useEffect(() => {
-  const container = document.getElementById("scaleContainer");
-  const wrapper = document.getElementById("scaleWrapper");
-  if (!container || !wrapper) return;
+    const scaleContainer = document.getElementById("scaleContainer");
+    const scaleWrapper = document.getElementById("scaleWrapper");
+    if (!scaleContainer || !scaleWrapper) return;
 
-  const designWidth = 1440;
-  const designHeight = 900;
+    const applyScale = () => {
+      const scaleX = window.innerWidth / DESIGN_WIDTH;
+      const scaleY = window.innerHeight / DESIGN_HEIGHT;
+      const scale = Math.min(scaleX, scaleY);
+      scaleContainer.style.transform = `scale(${scale})`;
+      scaleContainer.style.width = DESIGN_WIDTH + "px";
+      scaleContainer.style.height = DESIGN_HEIGHT + "px";
+      scaleWrapper.style.overflow = "hidden";
+    };
 
-  const applyScale = () => {
-    const scaleX = wrapper.clientWidth / designWidth;
-    const scaleY = wrapper.clientHeight / designHeight;
-    const scale = Math.min(scaleX, scaleY);
-    container.style.transform = `scale(${scale})`;
-  };
-
-  applyScale();
-  window.addEventListener("resize", applyScale);
-  return () => window.removeEventListener("resize", applyScale);
-}, []);
+    applyScale();
+    window.addEventListener("resize", applyScale);
+    return () => window.removeEventListener("resize", applyScale);
+  }, []);
 
 
 
@@ -273,14 +277,16 @@ export default function SiraTakip() {
       display: "flex",
       justifyContent: "center",
       alignItems: "start",
+      background: darkMode ? "#0f172a" : "#fff"
     }}
   >
     <div
       id="scaleContainer"
       style={{
         transformOrigin: "top left",
-        width: "100vw",
-        height: "100vh",
+        width: DESIGN_WIDTH,
+        height: DESIGN_HEIGHT,
+        background: "inherit"
       }}
     >
       <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} w-full h-full flex flex-col box-border px-1 sm:px-4`}>
