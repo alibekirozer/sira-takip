@@ -24,13 +24,29 @@ export default function SiraTakip() {
   const todayKey = new Date().toISOString().split("T")[0];
   const userName = auth.currentUser?.displayName || "Kullanıcı";
 
+  // Durum rengi fonksiyonu: durum adları ve renkler güncellendi
   const durumRengi = (status) => {
     switch (status) {
-      case "Mola": return darkMode ? "bg-yellow-300 border-yellow-400 text-black" : "bg-yellow-100 border-yellow-500";
-      case "İzin": return darkMode ? "bg-gray-500 border-gray-400 text-white" : "bg-gray-100 border-gray-400 text-gray-500";
-      case "Çalışıyor": return darkMode ? "bg-orange-400 border-orange-500 text-black" : "bg-orange-100 border-orange-500";
-      case "Müsait": return darkMode ? "bg-slate-700 border-green-400 text-white" : "bg-white border-green-500";
-      default: return darkMode ? "bg-slate-800 border-gray-500 text-white" : "bg-white border-gray-300";
+      case "Molada":
+        return darkMode
+          ? "bg-yellow-400 border-yellow-500 text-black"
+          : "bg-yellow-200 border-yellow-400 text-black";
+      case "İzinli":
+        return darkMode
+          ? "bg-gray-500 border-gray-400 text-white"
+          : "bg-gray-200 border-gray-400 text-gray-600";
+      case "Çalışıyor":
+        return darkMode
+          ? "bg-orange-500 border-red-500 text-white"
+          : "bg-orange-300 border-red-400 text-black";
+      case "Müsait":
+        return darkMode
+          ? "bg-green-700 border-green-400 text-white"
+          : "bg-green-200 border-green-500 text-black";
+      default:
+        return darkMode
+          ? "bg-slate-800 border-gray-500 text-white"
+          : "bg-white border-gray-300 text-black";
     }
   };
 
@@ -359,22 +375,25 @@ export default function SiraTakip() {
           <p className="text-[clamp(0.9rem,0.7vw,1.1rem)] font-semibold truncate max-w-[50vw]">{emp.name}</p>
           {emp.uid === auth.currentUser?.uid ? (
             <div className="flex flex-wrap gap-[0.3vw]">
-              <button onClick={() => durumGuncelle(i, "Molada")} className="px-[0.7vw] py-[0.3vh] bg-yellow-200 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Moladayım</button>
-              <button onClick={() => durumGuncelle(i, "İzinli")} className="px-[0.7vw] py-[0.3vh] bg-gray-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">İzinliyim</button>
-              <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="px-[0.7vw] py-[0.3vh] bg-orange-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Çalışıyorum</button>
-              <button onClick={() => durumGuncelle(i, "Müsait")} className="px-[0.7vw] py-[0.3vh] bg-green-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Müsaitim</button>
+              <button onClick={() => durumGuncelle(i, "Molada")} className="px-[0.7vw] py-[0.3vh] bg-yellow-200 dark:bg-yellow-400 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Moladayım</button>
+              <button onClick={() => durumGuncelle(i, "İzinli")} className="px-[0.7vw] py-[0.3vh] bg-gray-300 dark:bg-gray-500 text-black dark:text-white rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">İzinliyim</button>
+              <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="px-[0.7vw] py-[0.3vh] bg-orange-400 dark:bg-orange-600 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Çalışıyorum</button>
+              <button onClick={() => durumGuncelle(i, "Müsait")} className="px-[0.7vw] py-[0.3vh] bg-green-400 dark:bg-green-600 text-black dark:text-white rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Müsaitim</button>
             </div>
           ) : (
             <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)]">Durum: {emp.status}</p>
           )}
         </div>
         {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
-          <button
-            onClick={ileriAl}
-            className="mt-[0.6vh] block bg-green-500 text-white px-[1vw] py-[0.4vh] rounded hover:bg-green-600 transition w-full sm:w-auto text-[clamp(0.7rem,0.8vw,1rem)]"
-          >
-            ✅ Çağrı Aldım
-          </button>
+          <div className="flex justify-start mt-[0.4vh]">
+            <button
+              onClick={ileriAl}
+              className="bg-green-500 text-white px-[0.7vw] py-[0.3vh] rounded hover:bg-green-600 transition text-[clamp(0.7rem,0.7vw,0.9rem)] min-w-[90px]"
+              style={{minHeight: '2.5vh'}}
+            >
+              ✅ Çağrı Aldım
+            </button>
+          </div>
         )}
       </div>
     ))}
