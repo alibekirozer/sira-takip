@@ -376,7 +376,7 @@ export default function SiraTakip() {
           ))}
         </div>
         <div className="w-full lg:w-1/4 flex flex-col">
-          <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-4" style={{maxHeight: 'calc(60dvh - 220px)'}}>
+          <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-4" style={{maxHeight: 'calc(80dvh - 220px)'}}>
             <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
             <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
               {(logByDate[todayKey] || []).map((entry, index) => (
