@@ -1,17 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind screens;
-@tailwind typography;
-@tailwind forms;
-@tailwind aspect-ratio;
-@tailwind line-clamp;
-@tailwind scrollbar;
-@tailwind dark;
-@tailwind dark-scrollbar;
-@tailwind dark-scrollbar-thin;
-@tailwind dark-scrollbar-thumb;
-@tailwind dark-scrollbar-track;
-@tailwind dark-scrollbar-thumb-rounded;
-@tailwind dark-scrollbar-track-rounded;
-@tailwind dark-scrollbar-thumb-rounded-full;        
