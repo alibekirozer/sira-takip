@@ -279,8 +279,8 @@ export default function SiraTakip() {
       id="scaleContainer"
       style={{
         transformOrigin: "top left",
-        width: "1280px",
-        height: "720px",
+        width: "100vw",
+        height: "100vh",
       }}
     >
       <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} w-full h-full flex flex-col box-border px-1 sm:px-4`}>
@@ -289,7 +289,7 @@ export default function SiraTakip() {
         <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
             <div className="min-w-0">
-              <h1 className="text-[2vw] font-semibold tracking-tight truncate">📞 Çağrı Takip</h1>
+              <h1 className="text-[2vw] font-semibold tracking-tight truncate">Çağrı Takip</h1>
               <div className="flex items-center gap-2 text-[0.9vw] text-gray-600 dark:text-gray-400 mt-1">
                 <span>🕒</span>
                 <span>{time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString("tr-TR")}</span>
