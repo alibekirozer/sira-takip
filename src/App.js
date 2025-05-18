@@ -284,15 +284,15 @@ export default function SiraTakip() {
           {/* Çıkış Butonu */}
           <button
             onClick={() => signOut(auth)}
-            className="px-[1.5vw] py-[0.8vh] rounded bg-red-500 text-white text-[clamp(1rem,0.8vw,1.8rem)] hover:bg-red-600 transition"
+            className="px-[1vw] py-[0.6vh] rounded bg-red-500 text-white text-[clamp(1rem,0.8vw,1.8rem)] hover:bg-red-600 transition"
           >
-            🔓 Çıkış Yap
+            Çıkış
           </button>
         </div>
       </div>
     </div>
   </header>
-     /* Çağrı Butonları ve Bilgi Kısmı */
+  {/* Çağrı Listesi */}
 <div className="flex flex-nowrap justify-between items-center mt-[1vh] gap-[1vw] w-full overflow-x-auto">
   {/* Sol tarafta çağrı butonları */}
   <div className="flex gap-[1vw] items-center">
@@ -302,11 +302,11 @@ export default function SiraTakip() {
         setCallCount(yeniSayi);
         guncelleFirebase({ callCount: yeniSayi });
       }}
-      className={`px-[2vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
+      className={`px-[1vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
         blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
       }`}
     >
-      📞 Yeni Çağrı ({callCount})
+      Çağrı ({callCount})
     </button>
 
     <button
@@ -319,7 +319,7 @@ export default function SiraTakip() {
         });
       }}
       disabled={callCount === 0}
-      className={`px-[1.5vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
+      className={`px-[0.4vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
         callCount === 0
           ? "bg-gray-400 opacity-50 cursor-not-allowed"
           : blink
