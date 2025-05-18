@@ -293,8 +293,7 @@ export default function SiraTakip() {
     </div>
   </header>
       {/* Çağrı Butonları */}
-      <div className="w-full max-w-full mb-[1vh] flex justify-left items-left">
-      <div className="flex flex-wrap justify-center items-left mt-[1vh] gap-[1vw] w-full">
+      <div className="flex flex-wrap justify-left items-left mt-[1vh] gap-[1vw] w-full">
         <button
           onClick={() => {
             const yeniSayi = callCount + 1;
@@ -307,7 +306,6 @@ export default function SiraTakip() {
         >
           📞 Yeni Çağrı ({callCount})
         </button>
-
         <button
           onClick={() => {
             setCallCount((prev) => {
@@ -329,13 +327,10 @@ export default function SiraTakip() {
           -
         </button>
       </div>
-      </div>
             {/* Bilgi Kısmı */}
-      <div className="w-full max-w-full mb-[1vh] flex justify-center items-center">
         <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center">
           Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
         </div>
-      </div>
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-4 mt-4 overflow-hidden">
         <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4 overflow-visible">
           {activeList.map((emp, i) => (
