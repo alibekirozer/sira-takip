@@ -242,21 +242,21 @@ export default function SiraTakip() {
     }
   };
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-1 sm:px-4`} style={{overflowY: 'hidden'}}>
-      {/* Üst Bar */}
-      <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full max-w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
-          {/* Başlık ve Saat */}
-          <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">Çağrı Takip</h1>
-            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
-              <span>🕒</span>
-              <span>
-                {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - 
-                {time.toLocaleDateString("tr-TR")}
-              </span>
-            </div>
-          </div>
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[1vw]`} style={{ overflowY: 'hidden' }}>
+  {/* Üst Bar */}
+  <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-[1.5vh] mb-[2vh] w-full max-w-full">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[1vw] w-full">
+      {/* Başlık ve Saat */}
+      <div className="min-w-0">
+        <h1 className="text-[2.2vw] font-semibold tracking-tight truncate">Çağrı Takip</h1>
+        <div className="flex items-center gap-[0.5vw] text-[1vw] text-gray-600 dark:text-gray-400 mt-[0.5vh]">
+          <span>🕒</span>
+          <span>
+            {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} -
+            {time.toLocaleDateString("tr-TR")}
+          </span>
+        </div>
+      </div>
           {/* Kullanıcı Bilgisi ve İşlemler */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-xs sm:text-sm w-full sm:w-auto">
             <div className="text-right sm:text-left w-full sm:w-auto">
