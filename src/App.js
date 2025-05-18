@@ -292,45 +292,51 @@ export default function SiraTakip() {
       </div>
     </div>
   </header>
-      {/* Çağrı Butonları */}
-      <div className="flex flex-wrap justify-left items-left mt-[1vh] gap-[1vw] w-full">
-        <button
-          onClick={() => {
-            const yeniSayi = callCount + 1;
-            setCallCount(yeniSayi);
-            guncelleFirebase({ callCount: yeniSayi });
-          }}
-          className={`px-[2vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
-            blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
-          }`}
-        >
-          📞 Yeni Çağrı ({callCount})
-        </button>
-        <button
-          onClick={() => {
-            setCallCount((prev) => {
-              if (prev <= 0) return prev;
-              const yeniSayi = prev - 1;
-              guncelleFirebase({ callCount: yeniSayi });
-              return yeniSayi;
-            });
-          }}
-          disabled={callCount === 0}
-          className={`px-[1.5vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
-            callCount === 0
-              ? "bg-gray-400 opacity-50 cursor-not-allowed"
-              : blink
-              ? "bg-gray-600 animate-pulse"
-              : "bg-gray-600 hover:bg-gray-700"
-          }`}
-        >
-          -
-        </button>
-      </div>
-            {/* Bilgi Kısmı */}
-        <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center">
-          Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
-        </div>
+     /* Çağrı Butonları ve Bilgi Kısmı */
+<div className="flex flex-nowrap justify-between items-center mt-[1vh] gap-[1vw] w-full overflow-x-auto">
+  {/* Sol tarafta çağrı butonları */}
+  <div className="flex gap-[1vw] items-center">
+    <button
+      onClick={() => {
+        const yeniSayi = callCount + 1;
+        setCallCount(yeniSayi);
+        guncelleFirebase({ callCount: yeniSayi });
+      }}
+      className={`px-[2vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
+        blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
+      }`}
+    >
+      📞 Yeni Çağrı ({callCount})
+    </button>
+
+    <button
+      onClick={() => {
+        setCallCount((prev) => {
+          if (prev <= 0) return prev;
+          const yeniSayi = prev - 1;
+          guncelleFirebase({ callCount: yeniSayi });
+          return yeniSayi;
+        });
+      }}
+      disabled={callCount === 0}
+      className={`px-[1.5vw] py-[1vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(0.9rem,1vw,1.2rem)] w-auto ${
+        callCount === 0
+          ? "bg-gray-400 opacity-50 cursor-not-allowed"
+          : blink
+          ? "bg-gray-600 animate-pulse"
+          : "bg-gray-600 hover:bg-gray-700"
+      }`}
+    >
+      -
+    </button>
+  </div>
+
+  {/* Sağ tarafta bilgi kısmı */}
+  <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center whitespace-nowrap">
+    Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
+  </div>
+</div>
+  {/* Çağrı Listesi ve Kayıtlar */}
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-4 mt-4 overflow-hidden">
         <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4 overflow-visible">
           {activeList.map((emp, i) => (
