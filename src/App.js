@@ -268,134 +268,101 @@ export default function SiraTakip() {
     }
   };
      return (
-  <div
-    id="scaleWrapper"
-    style={{
-      width: "100vw",
-      height: "100vh",
-      overflow: "hidden",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "start",
-      background: darkMode ? "#0f172a" : "#fff"
-    }}
-  >
-    <div
-      id="scaleContainer"
-      style={{
-        transformOrigin: "top left",
-        width: DESIGN_WIDTH,
-        height: DESIGN_HEIGHT,
-        background: "inherit"
-      }}
-    >
-      <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} w-full h-full flex flex-col box-border px-1 sm:px-4`}>
-
-        {/* Üst Bar */}
-        <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-3 sm:py-4 mb-4 sm:mb-6 w-full">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
-            <div className="min-w-0">
-              <h1 className="text-[2vw] font-semibold tracking-tight truncate">Çağrı Takip</h1>
-              <div className="flex items-center gap-2 text-[0.9vw] text-gray-600 dark:text-gray-400 mt-1">
-                <span>🕒</span>
-                <span>{time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString("tr-TR")}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-[0.9vw] w-full sm:w-auto">
-              <div className="text-right sm:text-left w-full sm:w-auto">
-                <p className="text-gray-800 dark:text-gray-200 truncate">
-                  Hoş geldin, <span className="font-semibold text-blue-600 dark:text-blue-400">{userName || "Kullanıcı"}</span>
-                </p>
-                {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
-                  <a href="/admin" className="inline-block mt-1 text-[0.8vw] text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    🔧 Admin Panel
-                  </a>
-                )}
-              </div>
-              <div className="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
-                <button onClick={() => setDarkMode(!darkMode)} className="text-[1.2vw] p-[0.5vw] rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition">
-                  {darkMode ? "☀️" : "🌙"}
-                </button>
-                <button onClick={() => signOut(auth)} className="px-[1vw] py-[0.6vw] rounded bg-red-500 text-white text-[0.9vw] hover:bg-red-600 transition">
-                  🔓 Çıkış Yap
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Bilgi Kısmı */}
-        <div className="w-full max-w-full mb-2 flex justify-center">
-          <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[0.6vw] py-[0.4vw] text-[0.9vw] font-medium shadow-sm">
-            Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
-          </div>
-        </div>
-
-        {/* Çağrı Butonları */}
-        <div className="flex flex-wrap justify-center sm:justify-start mt-2 sm:mt-4 gap-2 w-full">
-          <button onClick={() => { const yeniSayi = callCount + 1; setCallCount(yeniSayi); guncelleFirebase({ callCount: yeniSayi }); }}
-            className={`px-[1.5vw] py-[0.8vw] rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto text-[1vw] ${blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"}`}>
-            📞 Yeni Çağrı ({callCount})
-          </button>
-
-          <button onClick={() => { setCallCount((prev) => { if (prev <= 0) return prev; const yeniSayi = prev - 1; guncelleFirebase({ callCount: yeniSayi }); return yeniSayi; }); }}
-            disabled={callCount === 0}
-            className={`px-[1vw] py-[0.8vw] rounded-md font-semibold text-white shadow-md transition w-full sm:w-auto text-[1vw] ${callCount === 0 ? "bg-gray-400 opacity-50 cursor-not-allowed" : blink ? "bg-gray-600 animate-pulse" : "bg-gray-600 hover:bg-gray-700"}`}>
-            -
-          </button>
-        </div>
-
-        {/* Aktif Liste ve Log */}
-        <div className="flex-1 flex flex-col lg:flex-row w-full gap-4 mt-4 overflow-hidden">
-          <div className="w-full lg:w-3/4 pr-0 lg:pr-4 space-y-4 overflow-visible">
-            {activeList.map((emp, i) => (
-              <div key={emp.uid} className={clsx(
-                "border-2 rounded-lg p-[1vw] shadow-sm transition-all duration-200 text-[0.9vw] w-full overflow-x-auto",
-                durumRengi(emp.status),
-                i === siradakiMusaitIndex() &&
-                (darkMode ? "scale-[1.02] border-4 border-green-600 bg-slate-800" : "scale-[1.02] border-4 border-green-600 bg-gray-50")
-              )}>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-[1.2vw] font-semibold truncate max-w-[60vw]">{emp.name}</p>
-                  {emp.uid === auth.currentUser?.uid ? (
-                    <div className="flex flex-wrap gap-2">
-                      <button onClick={() => durumGuncelle(i, "Molada")} className="text-[0.9vw] px-[0.6vw] py-[0.4vw] bg-yellow-200 text-black rounded">Moladayım</button>
-                      <button onClick={() => durumGuncelle(i, "İzinli")} className="text-[0.9vw] px-[0.6vw] py-[0.4vw] bg-gray-300 text-black rounded">İzinliyim</button>
-                      <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="text-[0.9vw] px-[0.6vw] py-[0.4vw] bg-orange-300 text-black rounded">Çalışıyorum</button>
-                      <button onClick={() => durumGuncelle(i, "Müsait")} className="text-[0.9vw] px-[0.6vw] py-[0.4vw] bg-green-300 text-black rounded">Müsaitim</button>
-                    </div>
-                  ) : (
-                    <p className="text-[0.9vw] italic">Durum: {emp.status}</p>
-                  )}
-                </div>
-                {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
-                  <button onClick={ileriAl} className="mt-3 block bg-green-500 text-white px-[1.5vw] py-[0.8vw] rounded hover:bg-green-600 transition w-full sm:w-auto text-[1vw]">
-                    ✅ Çağrı Aldım
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="w-full lg:w-1/4 flex flex-col">
-            <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-4" style={{ maxHeight: 'calc(100dvh - 220px)' }}>
-              <h2 className="text-[1.5vw] font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-              <ul className="list-disc pl-[1.5vw] text-[0.8vw] space-y-[0.3vh]">
-                {(logByDate[todayKey] || []).map((entry, index) => (
-                  <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
-                ))}
-              </ul>
+    <div className={clsx(
+      "min-h-screen min-w-screen flex flex-col items-center justify-center",
+      darkMode ? "bg-gradient-to-br from-slate-900 to-blue-900 text-white" : "bg-gradient-to-br from-blue-100 to-white text-gray-900"
+    )}>
+      {/* Üst Bar */}
+      <header className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between py-6 px-4 gap-4">
+        <div className="flex items-center gap-4">
+          <img src="/favicon.png" alt="logo" className="w-12 h-12 rounded-full shadow-lg" />
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Çağrı Takip</h1>
+            <div className="text-sm text-blue-700 dark:text-blue-200 font-medium mt-1">
+              {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} - {time.toLocaleDateString("tr-TR")}
             </div>
           </div>
         </div>
+        <div className="flex items-center gap-4">
+          <span className="font-semibold text-blue-600 dark:text-blue-300 text-lg">{userName}</span>
+          <button onClick={() => setDarkMode(!darkMode)} className="text-2xl p-2 rounded-full hover:bg-blue-200 dark:hover:bg-slate-700 transition">{darkMode ? "☀️" : "🌙"}</button>
+          <button onClick={() => signOut(auth)} className="px-4 py-2 rounded bg-red-500 text-white font-semibold shadow hover:bg-red-600 transition">Çıkış Yap</button>
+        </div>
+      </header>
 
-        <footer className="w-full text-center py-2 mt-auto text-[0.7vw] text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
-          <span>Created by Ali Bekir Özer</span>
-        </footer>
-
+      {/* Bilgi Barı */}
+      <div className="w-full max-w-3xl mx-auto mb-4">
+        <div className="bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 rounded-xl px-6 py-3 flex flex-col sm:flex-row items-center justify-between shadow">
+          <span className="text-lg font-semibold">Sıra şimdi <span className="text-blue-700 dark:text-blue-300">{siradakiKisi()}</span>'da</span>
+          <span className="text-md mt-2 sm:mt-0">Size sıra gelmesi <span className="font-bold text-blue-700 dark:text-blue-300">{kalanKisiSayisi()}</span> kişi var</span>
+        </div>
       </div>
+
+      {/* Çağrı Butonları */}
+      <div className="w-full max-w-3xl mx-auto flex gap-4 mb-6">
+        <button onClick={() => { const yeniSayi = callCount + 1; setCallCount(yeniSayi); guncelleFirebase({ callCount: yeniSayi }); }}
+          className={clsx(
+            "flex-1 py-3 rounded-xl font-bold text-lg shadow transition",
+            blink ? "bg-red-600 animate-pulse text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
+          )}>
+          📞 Yeni Çağrı ({callCount})
+        </button>
+        <button onClick={() => { setCallCount((prev) => { if (prev <= 0) return prev; const yeniSayi = prev - 1; guncelleFirebase({ callCount: yeniSayi }); return yeniSayi; }); }}
+          disabled={callCount === 0}
+          className={clsx(
+            "flex-0 px-6 py-3 rounded-xl font-bold text-lg shadow transition",
+            callCount === 0 ? "bg-gray-300 text-gray-400 cursor-not-allowed" : "bg-gray-600 hover:bg-gray-700 text-white"
+          )}>
+          -
+        </button>
+      </div>
+
+      {/* Ana İçerik Grid */}
+      <main className="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-8 flex-1">
+        {/* Aktif Liste */}
+        <section className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {activeList.map((emp, i) => (
+            <div key={emp.uid} className={clsx(
+              "rounded-2xl shadow-lg p-6 flex flex-col gap-2 border-2 transition-all duration-200",
+              durumRengi(emp.status),
+              i === siradakiMusaitIndex() && "border-blue-600 scale-[1.03] bg-blue-50 dark:bg-slate-800"
+            )}>
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-bold truncate">{emp.name}</span>
+                <span className="text-md italic text-gray-500 dark:text-gray-300">{emp.status}</span>
+              </div>
+              {emp.uid === auth.currentUser?.uid && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <button onClick={() => durumGuncelle(i, "Molada")} className="px-3 py-1 rounded bg-yellow-200 text-yellow-900 font-semibold">Moladayım</button>
+                  <button onClick={() => durumGuncelle(i, "İzinli")} className="px-3 py-1 rounded bg-gray-300 text-gray-800 font-semibold">İzinliyim</button>
+                  <button onClick={() => durumGuncelle(i, "Çalışıyor")} className="px-3 py-1 rounded bg-orange-200 text-orange-900 font-semibold">Çalışıyorum</button>
+                  <button onClick={() => durumGuncelle(i, "Müsait")} className="px-3 py-1 rounded bg-green-200 text-green-900 font-semibold">Müsaitim</button>
+                </div>
+              )}
+              {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
+                <button onClick={ileriAl} className="mt-4 w-full py-2 rounded-xl bg-green-600 text-white font-bold text-lg shadow hover:bg-green-700 transition">
+                  ✅ Çağrı Aldım
+                </button>
+              )}
+            </div>
+          ))}
+        </section>
+        {/* Loglar */}
+        <aside className="w-full lg:w-1/3 bg-white/80 dark:bg-slate-900/80 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-slate-700 flex flex-col max-h-[70vh] overflow-y-auto">
+          <h2 className="text-xl font-bold mb-4 text-blue-700 dark:text-blue-300">📋 Bugünkü Çağrı Kayıtları</h2>
+          <ul className="space-y-2 text-base">
+            {(logByDate[todayKey] || []).map((entry, index) => (
+              <li key={index} className="border-b border-gray-100 dark:border-slate-800 pb-2 last:border-0">
+                <span className="font-semibold text-blue-700 dark:text-blue-300">{entry.time}</span> - <span className="font-bold">{entry.person}</span> <span className="text-gray-600 dark:text-gray-300">{entry.action ? entry.action : "çağrıyı aldı"}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </main>
+
+      <footer className="w-full text-center py-4 mt-8 text-sm text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
+        <span>Created by Ali Bekir Özer</span>
+      </footer>
     </div>
-  </div>
   );
 }
