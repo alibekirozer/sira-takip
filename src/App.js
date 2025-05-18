@@ -400,14 +400,16 @@ export default function SiraTakip() {
   </div>
 
         <div className="w-full lg:w-1/4 flex flex-col">
-          <div className="flex-1 overflow-y-auto border-l-0 lg:pl-[1.5vw] pr-0" style={{maxHeight: 'calc(103vh - 18vw)'}}>
-            <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw]">
+          <div className="border-l-0 lg:pl-[1.5vw] pr-0" style={{height: 'calc(104vh - 18vw)'}}>
+            <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
       <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
-      <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
-        {(logByDate[todayKey] || []).map((entry, index) => (
-          <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
-        ))}
-      </ul>
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
+          {(logByDate[todayKey] || []).map((entry, index) => (
+            <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
+          ))}
+        </ul>
+      </div>
     </div>
           </div>
         </div>
