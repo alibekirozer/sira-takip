@@ -242,14 +242,14 @@ export default function SiraTakip() {
     }
   };
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[1vw]`} style={{ overflowY: 'hidden' }}>
+    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]`} style={{ overflowY: 'hidden' }}>
   {/* Üst Bar */}
-  <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-[1.5vh] mb-[2vh] w-full max-w-full">
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[1vw] w-full">
+  <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-[0.75vh] mb-[1vh] w-full max-w-full">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[0.5vw] w-full">
       {/* Başlık ve Saat */}
       <div className="min-w-0">
-        <h1 className="text-[clamp(1rem,2.2vw,2.5rem)] font-semibold tracking-tight truncate">Çağrı Takip</h1>
-        <div className="flex items-center gap-[0.5vw] text-[clamp(0.7rem,1vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.5vh]">
+        <h1 className="text-[clamp(1rem,1.1vw,2.5rem)] font-semibold tracking-tight truncate">Çağrı Takip</h1>
+        <div className="flex items-center gap-[0.25vw] text-[clamp(0.5rem,0.5vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.25vh]">
           <span>🕒</span>
           <span>
             {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} -
