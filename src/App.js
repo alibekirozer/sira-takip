@@ -341,7 +341,7 @@ export default function SiraTakip() {
 </div>
   {/* Çağrı Listesi ve Kayıtlar */}
  <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
-  <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[1.2vh] overflow-visible">
+  <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.3vh] overflow-visible">
     {activeList.map((emp, i) => (
       <div
         key={emp.uid}
