@@ -248,8 +248,8 @@ export default function SiraTakip() {
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[0.5vw] w-full">
       {/* Başlık ve Saat */}
       <div className="min-w-0">
-        <h1 className="text-[clamp(1rem,1.1vw,2.5rem)] font-semibold tracking-tight truncate">Çağrı Takip</h1>
-        <div className="flex items-center gap-[0.25vw] text-[clamp(0.5rem,0.5vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.25vh]">
+        <h1 className="text-[clamp(1.2rem,1.1vw,2.5rem)] font-semibold tracking-tight truncate">Çağrı Takip</h1>
+        <div className="flex items-center gap-[0.25vw] text-[clamp(0.7rem,0.5vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.25vh]">
           <span>🕒</span>
           <span>
             {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} -
