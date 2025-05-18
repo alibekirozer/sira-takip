@@ -15,10 +15,11 @@
 
 .people-list {
   border-right: 1px solid #ccc; /* Kişiler listesi için sağ kenar çizgisi */
+  border-left: 1px solid #ffffff;
 }
 
 .logs {
-  height: 100vh; /* Loglar alanının yüksekliği */
+  height: 80vh; /* Loglar alanının yüksekliği */
   overflow-y: scroll; /* Kaydırma çubuğu için */
   background-color: #f9f9f9; /* Loglar alanı arka plan rengi */
 }
