@@ -258,43 +258,40 @@ export default function SiraTakip() {
         </div>
       </div>
           {/* Kullanıcı Bilgisi ve İşlemler */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-xs sm:text-sm w-full sm:w-auto">
-            <div className="text-right sm:text-left w-full sm:w-auto">
-              <p className="text-gray-800 dark:text-gray-200 truncate">
-                Hoş geldin,{" "}
-                <span className="font-semibold text-blue-600 dark:text-blue-400">
-                  {userName || "Kullanıcı"}
-                </span>
-              </p>
-              {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
-                <a
-                  href="/admin"
-                  className="inline-block mt-1 text-xs text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
-                >
-                  🔧 Admin Panel
-                </a>
-              )}
-            </div>
-            <div className="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
-              {/* Tema Butonu */}
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                aria-label="Tema Değiştir"
-                className="text-lg p-2 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
-              >
-                {darkMode ? "☀️" : "🌙"}
-              </button>
-              {/* Çıkış Butonu */}
-              <button
-                onClick={() => signOut(auth)}
-                className="px-3 py-1.5 rounded bg-red-500 text-white text-xs sm:text-sm hover:bg-red-600 transition"
-              >
-                🔓 Çıkış Yap
-              </button>
-            </div>
-          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-[1vw] text-[clamp(1rem,0.8vw,1.8rem)] w-full sm:w-auto">
+        <div className="text-right sm:text-left w-full sm:w-auto">
+          <p className="text-gray-800 dark:text-gray-200 truncate">
+            Hoş geldin, <span className="font-semibold text-blue-600 dark:text-blue-400">{userName || "Kullanıcı"}</span>
+          </p>
+          {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+            <a
+              href="/admin"
+              className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
+            >
+              🔧 Admin Panel
+            </a>
+          )}
         </div>
-      </header>
+        <div className="flex items-center gap-[0.6vw] mt-[1vh] sm:mt-0 w-full sm:w-auto">
+          {/* Tema Butonu */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            aria-label="Tema Değiştir"
+            className="text-[clamp(1rem,0.8vw,1.8rem)] p-[0.8vw] rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+          {/* Çıkış Butonu */}
+          <button
+            onClick={() => signOut(auth)}
+            className="px-[1.5vw] py-[0.8vh] rounded bg-red-500 text-white text-[clamp(1rem,0.8vw,1.8rem)] hover:bg-red-600 transition"
+          >
+            🔓 Çıkış Yap
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
       {/* Bilgi Kısmı */}
       <div className="w-full max-w-full mb-2 flex justify-center">
         <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-2 py-1 text-xs sm:text-sm font-medium shadow-sm">
