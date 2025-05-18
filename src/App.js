@@ -400,9 +400,9 @@ export default function SiraTakip() {
   </div>
 
         <div className="w-full lg:w-1/4 flex flex-col">
-          <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-4" style={{maxHeight: 'calc(80dvh - 220px)'}}>
-            <h2 className="text-lg sm:text-xl font-semibold mb-2">📋 Bugünkü Çağrı Kayıtları</h2>
-            <ul className="list-disc pl-4 sm:pl-6 text-xs sm:text-sm space-y-1">
+          <div className="flex-1 overflow-y-auto border-l pl-0 lg:pl-[1vw]" style={{maxHeight: 'calc(80vh - 18vw)'}}>
+            <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
+            <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
               {(logByDate[todayKey] || []).map((entry, index) => (
                 <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
               ))}
