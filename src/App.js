@@ -346,8 +346,8 @@ export default function SiraTakip() {
                 durumRengi(emp.status),
                 i === siradakiMusaitIndex() &&
                   (darkMode
-                    ? "scale-[1.01] border-4 border-green-600 bg-slate-800"
-                    : "scale-[1.01] border-4 border-green-600 bg-gray-50")
+                    ? "border-4 border-green-600 bg-slate-800"
+                    : "border-4 border-green-600 bg-gray-50")
               )}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
