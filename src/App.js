@@ -279,8 +279,8 @@ export default function SiraTakip() {
       id="scaleContainer"
       style={{
         transformOrigin: "top left",
-        width: "2560px",
-        height: "1440px",
+        width: "1280px",
+        height: "720px",
       }}
     >
       <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} w-full h-full flex flex-col box-border px-1 sm:px-4`}>
