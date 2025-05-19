@@ -351,13 +351,13 @@ export default function SiraTakip() {
   </div>
 
   {/* Sağ tarafta bilgi kısmı */}
-  <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center whitespace-nowrap">
+  <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center whitespace-nowrap px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-[calc(104vh-18vw)] flex flex-col">
     Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
   </div>
 </div>
   {/* Çağrı Listesi ve Kayıtlar */}
  <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
-  <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
+  <div className="w-full lg:w-3/4 pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible flex flex-col">
     {activeList.map((emp, i) => (
       <div
         key={emp.uid}
@@ -398,22 +398,28 @@ export default function SiraTakip() {
       </div>
     ))}
   </div>
-
-        <div className="w-full lg:w-1/4 flex flex-col">
-          <div className="border-l-0 lg:pl-[1.5vw] pr-0" style={{height: 'calc(104vh - 18vw)'}}>
-            <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
-      <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
-          {(logByDate[todayKey] || []).map((entry, index) => (
-            <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-          </div>
+  <div className="w-full lg:w-1/4 flex flex-col items-center">
+    <div className="w-full max-w-[420px]">
+      <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-[calc(104vh-18vw)] flex flex-col">
+        <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
+            {(logByDate[todayKey] || []).map((entry, index) => (
+              <li key={index}>{entry.time} - {entry.person} {entry.action ? entry.action : "çağrıyı aldı"}</li>
+            ))}
+          </ul>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<div className="w-full flex justify-end mt-[1.2vh]">
+  <div className="w-full max-w-[420px]">
+    <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center whitespace-nowrap" style={{width:'100%'}}>
+      Sıra şimdi <span className="font-bold">{siradakiKisi()}</span>'da, size sıra gelmesi <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
+    </div>
+  </div>
+</div>
       <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
         <span>Created by Ali Bekir Özer</span>
       </footer>
