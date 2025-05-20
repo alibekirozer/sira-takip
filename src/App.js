@@ -358,6 +358,7 @@ export default function SiraTakip() {
             </div>
           </div>
         </div>
+      <div className="w-full lg:w-3/4 flex flex-col">
         <div className="space-y-[0.6vh]">
           {activeList.map((emp, i) => (
             <div
@@ -430,6 +431,7 @@ export default function SiraTakip() {
             </div>
           ))}
         </div>
+      </div>
         <div className="w-full lg:w-1/4 flex flex-col">
           <div className="border-l-0 lg:pl-[1.5vw] pr-0" style={{height: 'calc(104vh - 18vw)'}}>
             <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
