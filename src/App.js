@@ -366,7 +366,7 @@ export default function SiraTakip() {
               <div
                 key={emp.uid}
                 className={clsx(
-                  "flex flex-col gap-[0.4vh] bg-white dark:bg-slate-800 rounded-[0.4vw] shadow-sm p-[0.6vw] transition-all duration-200",
+                  "flex flex-col gap-[0.4vh] bg-white rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
                   i === siradakiMusaitIndex() && "border-2 border-green-500"
                 )}
               >
