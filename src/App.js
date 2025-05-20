@@ -450,4 +450,4 @@ export default function SiraTakip() {
       </footer>
     </div>
   );
-}
+} 
