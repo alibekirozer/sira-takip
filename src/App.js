@@ -57,7 +57,10 @@ export default function SiraTakip() {
   useEffect(() => {
     const index = siradakiIndex();
     const siradaki = activeList[index]?.name;
-    if (siradaki && siradaki === benimAdim) bildirimGonder(benimAdim);
+    if (siradaki && siradaki === benimAdim) {
+      bildirimGonder(benimAdim);
+      sendTeamsNotification('Sıra Sende!', `${benimAdim}, çağrıyı sen alacaksın.`);
+    }
   }, [currentIndex, activeList, benimAdim]);
 
   useEffect(() => {
@@ -454,4 +457,18 @@ export default function SiraTakip() {
       </footer>
     </div>
   );
+}
+
+// Teams bildirim fonksiyonu
+export async function sendTeamsNotification(title, text) {
+  try {
+    await fetch('http://localhost:3001/notify-teams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, text })
+    });
+  } catch (err) {
+    // Hata yönetimi
+    console.error('Teams bildirimi gönderilemedi:', err);
+  }
 }
