@@ -462,11 +462,11 @@ export default function SiraTakip() {
 // Teams bildirim fonksiyonu
 export async function sendTeamsNotification(title, text) {
   try {
-    await fetch('http://localhost:3001/notify-teams', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, text })
-    });
+    await fetch('/api/notify-teams', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ title, text })
+});
   } catch (err) {
     // Hata yönetimi
     console.error('Teams bildirimi gönderilemedi:', err);
