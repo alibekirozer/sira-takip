@@ -59,7 +59,7 @@ export default function SiraTakip() {
     const index = siradakiIndex();
     const siradaki = activeList[index]?.name;
     if (siradaki && siradaki === benimAdim) bildirimGonder(benimAdim);
-    if (siradaki && siradaki !== benimAdim) {
+    if (siradaki) {
       sendTeamsNotification(`Şu an çağrı sırası ${siradaki}'de!`);
     }
   }, [currentIndex, activeList, benimAdim]);
