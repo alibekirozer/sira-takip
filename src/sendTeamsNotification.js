@@ -13,14 +13,19 @@ export const sendTeamsNotification = async (message) => {
   try {
     const response = await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(payload),
     });
 
+    const text = await response.text(); // hata varsa detayını logla
     if (!response.ok) {
-      console.error("Teams'e gönderim başarısız:", response.statusText);
+      console.error("Teams'e gönderim başarısız:", text);
+    } else {
+      console.log("Teams'e gönderildi:", text);
     }
-  } catch (error) {
-    console.error("Teams webhook hatası:", error);
+  } catch (err) {
+    console.error("Teams webhook hatası:", err);
   }
 };
