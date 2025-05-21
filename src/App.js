@@ -6,6 +6,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
 import { update } from "firebase/database";
+import { sendTeamsNotification } from './utils/sendTeamsNotification';
 
 export default function SiraTakip() {
   const [allEmployees, setAllEmployees] = useState([]);
@@ -58,6 +59,9 @@ export default function SiraTakip() {
     const index = siradakiIndex();
     const siradaki = activeList[index]?.name;
     if (siradaki && siradaki === benimAdim) bildirimGonder(benimAdim);
+    if (siradaki && siradaki !== benimAdim) {
+      sendTeamsNotification(`Şu an çağrı sırası ${siradaki}'de!`);
+    }
   }, [currentIndex, activeList, benimAdim]);
 
   useEffect(() => {
