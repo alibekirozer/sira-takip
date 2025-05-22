@@ -51,7 +51,7 @@ exports.currentIndexTakip = onValueUpdated(
     ref: "siraTakip/currentIndex"
   },
   async (event) => {
-    const afterIndex = event.data.after;
+    const afterIndex = event.data.after.val();
     if (afterIndex === undefined || afterIndex === null) return;
 
     const snapshot = await admin.database().ref(`siraTakip/activeList/${afterIndex}`).once("value");
