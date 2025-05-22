@@ -209,7 +209,8 @@ export default function SiraTakip() {
         logByDate: updatedLogByDate,
         currentIndex: yeniIndex
       });
-      set(ref(realtimeDB, "/siradakiKisi"), siradakiKisi());
+      const yeniSiradaki = updated[yeniIndex]?.name || "-";
+      set(ref(realtimeDB, "/siradakiKisi"), yeniSiradaki);
     }
   };
   const durumGuncelle = (index, status) => {
