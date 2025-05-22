@@ -10,13 +10,13 @@ const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f
 exports.bildirimGonder = onValueWritten(
   {
     region: "europe-west1",
-    ref: "/siradakiKisi", // ✅ ref tanımı burada yapılmalı!
+    ref: "/siradakiKisi",
   },
   async (event) => {
     const before = event.data.before;
     const after = event.data.after;
 
-    if (!after || before === after) return;
+    if (!after.exists() || before.val() === after.val()) return;
 
     const payload = {
       "@type": "MessageCard",
@@ -24,7 +24,7 @@ exports.bildirimGonder = onValueWritten(
       "summary": "Sıra Takip Bildirimi",
       "themeColor": "0076D7",
       "title": "📢 Yeni Çağrı",
-      "text": `Şu an çağrı sırası **${after}** kişisine geçti.`,
+      "text": `Şu an çağrı sırası **${after.val()}** kişisine geçti.`,
     };
 
     try {
