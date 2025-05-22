@@ -1,7 +1,7 @@
-// Bu dosya artık test amaçlıdır, canlıda kullanılmaz.
-// Teams bildirimi Firebase Cloud Function ile gönderiliyor.
+// sendTeamsNotification.js (devre dışı bırakılmış versiyon)
 
 export const sendTeamsNotification = async (message) => {
-  console.warn("Teams bildirimi frontend'den gönderilmemelidir. Firebase Function tetiklenmelidir.");
-  return;
+  // Bu fonksiyon artık kullanılmıyor.
+  // Teams bildirimi Firebase Cloud Function tarafından gönderiliyor.
+  console.warn("sendTeamsNotification frontend'den çağrılmamalı. Firebase Function tetikler.");
 };
