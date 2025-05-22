@@ -1,19 +1,45 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const { onValueWritten } = require("firebase-functions/v2/database");
+const admin = require("firebase-admin");
+const fetch = require("node-fetch");
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+admin.initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/d1328f8dc75542e5b31707c9a9324303/cf410a20-3801-452e-8fea-eb078c94b436/V2w6nLuCsA3K6zGc3tTXYihO6WiBHVscjm3HV0mioXUyI1";
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.bildirimGonder = onValueWritten(
+  {
+    region: "europe-west1",
+    ref: "/siradakiKisi", // ✅ ref tanımı burada yapılmalı!
+  },
+  async (event) => {
+    const before = event.data.before;
+    const after = event.data.after;
+
+    if (!after || before === after) return;
+
+    const payload = {
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "Sıra Takip Bildirimi",
+      "themeColor": "0076D7",
+      "title": "📢 Yeni Çağrı",
+      "text": `Şu an çağrı sırası **${after}** kişisine geçti.`,
+    };
+
+    try {
+      const response = await fetch(TEAMS_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        console.error("Teams webhook başarısız:", await response.text());
+      } else {
+        console.log("Teams bildirimi gönderildi.");
+      }
+    } catch (err) {
+      console.error("Webhook gönderim hatası:", err);
+    }
+  }
+);
