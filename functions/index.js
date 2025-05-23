@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 admin.initializeApp();
 
 const { onValueUpdated } = require("firebase-functions/v2/database"); 
-const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/d1328f8dc75542e5b31707c9a9324303/cf410a20-3801-452e-8fea-eb078c94b436/V2w6nLuCsA3K6zGc3tTXYihO6WiBHVscjm3HV0mioXUyI1";
+const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/751c026b6a984d87b4221745de8de389cf410a20-3801-452e-8fea-eb078c94b436/V2jPcZ02zrZYeWTz3d4d5fIF0EkZwalETy5vqJooBsgSs1";
 
 exports.bildirimGonder = onValueWritten(
   {
