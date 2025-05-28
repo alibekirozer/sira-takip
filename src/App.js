@@ -293,13 +293,13 @@ export default function SiraTakip() {
             </div>
             <div className="flex items-center gap-[0.6vw] mt-[1vh] sm:mt-0 w-full sm:w-auto">
               {/* Tema Butonu */}
-              <button
+             /* <button
                 onClick={() => setDarkMode(!darkMode)}
                 aria-label="Tema Değiştir"
                 className="text-[clamp(1rem,0.8vw,1.8rem)] p-[0.8vw] rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
               >
                 {darkMode ? "☀️" : "🌙"}
-              </button>
+              </button> */
               {/* Çıkış Butonu */}
               <button
                 onClick={() => signOut(auth)}
