@@ -115,9 +115,11 @@ export default function SiraTakip() {
 
 
   const siradakiIndex = () => {
+    if (activeList.length === 0) return -1;
+    const startIndex = currentIndex >= 0 ? currentIndex : 0;
     for (let i = 0; i < activeList.length; i++) {
-      const idx = (currentIndex + i) % activeList.length;
-      if (activeList[idx].status === "Müsait") return idx;
+      const idx = (startIndex + i) % activeList.length;
+      if (activeList[idx]?.status === "Müsait") return idx;
     }
     return -1; // Hiç müsait yoksa -1 döndür
   };
