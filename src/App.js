@@ -131,6 +131,7 @@ export default function SiraTakip() {
         return idx;
       }
     }
+    return -1; // Hiç müsait yoksa -1 döndür
   };
 
   const siradakiKisi = () => {
