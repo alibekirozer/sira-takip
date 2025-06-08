@@ -17,6 +17,8 @@ export default function AdminPanel() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editedName, setEditedName] = useState("");
 
   const fetchUsers = async () => {
     const querySnapshot = await getDocs(collection(firestoreDB, "users"));
@@ -47,6 +49,37 @@ export default function AdminPanel() {
     await set(ref(realtimeDB, "siraTakip/activeList"), updatedList);
 
     setUsers((prev) => prev.filter((u) => u.uid !== user.uid));
+  };
+
+  const startEdit = (user) => {
+    setEditingId(user.uid);
+    setEditedName(user.name);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditedName("");
+  };
+
+  const saveName = async (user) => {
+    try {
+      await updateDoc(doc(firestoreDB, "users", user.uid), { name: editedName });
+
+      const activeRef = ref(realtimeDB, "siraTakip/activeList");
+      const snap = await get(activeRef);
+      const list = snap.val() || [];
+      const updatedList = list.map((emp) =>
+        emp.uid === user.uid ? { ...emp, name: editedName } : emp
+      );
+      await set(activeRef, updatedList);
+
+      setUsers((prev) =>
+        prev.map((u) => (u.uid === user.uid ? { ...u, name: editedName } : u))
+      );
+      cancelEdit();
+    } catch (err) {
+      console.error("Name update error", err);
+    }
   };
 
   const handleCreateUser = async (e) => {
@@ -130,22 +163,57 @@ export default function AdminPanel() {
         <tbody>
           {users.map((user) => (
             <tr key={user.uid} className="hover:bg-gray-50">
-              <td className="p-2 border">{user.name}</td>
+              <td className="p-2 border">
+                {editingId === user.uid ? (
+                  <input
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    className="border p-1"
+                  />
+                ) : (
+                  user.name
+                )}
+              </td>
               <td className="p-2 border">{user.email}</td>
               <td className="p-2 border capitalize">{user.role}</td>
               <td className="p-2 border space-x-2">
-                <button
-                  onClick={() => toggleRole(user)}
-                  className="text-blue-600 hover:underline"
-                >
-                  🔁 Rolü {user.role === "admin" ? "user" : "admin"} yap
-                </button>
-                <button
-                  onClick={() => deleteUser(user)}
-                  className="text-red-600 hover:underline"
-                >
-                  🗑 Sil
-                </button>
+                {editingId === user.uid ? (
+                  <>
+                    <button
+                      onClick={() => saveName(user)}
+                      className="text-green-600 hover:underline"
+                    >
+                      💾 Kaydet
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="text-gray-600 hover:underline"
+                    >
+                      Vazgeç
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => startEdit(user)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      ✏️ Düzenle
+                    </button>
+                    <button
+                      onClick={() => toggleRole(user)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      🔁 Rolü {user.role === "admin" ? "user" : "admin"} yap
+                    </button>
+                    <button
+                      onClick={() => deleteUser(user)}
+                      className="text-red-600 hover:underline"
+                    >
+                      🗑 Sil
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
