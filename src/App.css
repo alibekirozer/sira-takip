@@ -46,3 +46,19 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes ring {
+  0%, 100% {
+    transform: rotate(0);
+  }
+  10%, 30%, 50%, 70% {
+    transform: rotate(-15deg);
+  }
+  20%, 40%, 60%, 80% {
+    transform: rotate(15deg);
+  }
+}
+
+.ring {
+  animation: ring 0.6s ease-in-out;
+}
