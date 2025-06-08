@@ -397,18 +397,6 @@ export default function SiraTakip() {
           {/* Sağ tarafta bilgi kısmı */}
           <div className="flex-1 flex justify-center">
             <div className="flex items-center gap-[0.4vw] bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[0.8vw] py-[0.5vh] text-[clamp(0.7rem,0.8vw,1.1rem)] font-medium shadow-sm whitespace-nowrap">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 13.5a.75.75 0 00-1.5 0v-3a.75.75 0 011.5 0v3zm-.75-7.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z"
-                  clipRule="evenodd"
-                />
-              </svg>
               <span>
                 Sıradaki kişi: <span className="font-bold">{siradakiKisi()}</span>. Size sıra gelmesine <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
               </span>
