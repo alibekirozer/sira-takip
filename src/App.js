@@ -314,11 +314,23 @@ export default function SiraTakip() {
           {/* Sol tarafta çağrı butonları */}
           <div className="flex gap-[0.3vw] items-center">
             <button
-              className={`px-[1vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
+              className={`flex items-center gap-[0.4vw] px-[0.8vw] py-[0.4vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
                 blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
               }`}
             >
-              Çağrı ({callCount})
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>({callCount})</span>
             </button>
 
             <button
@@ -327,11 +339,23 @@ export default function SiraTakip() {
                 setCallCount(yeniSayi);
                 guncelleFirebase({ callCount: yeniSayi });
               }}
-              className={`px-[0.4vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
+              className={`p-[0.5vw] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
                 blink ? "bg-gray-600 animate-pulse" : "bg-gray-600 hover:bg-gray-700"
               }`}
+              aria-label="Çağrı Artır"
             >
-              +
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
 
             <button
@@ -344,26 +368,52 @@ export default function SiraTakip() {
                 });
               }}
               disabled={callCount === 0}
-              className={`px-[0.4vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
+              className={`p-[0.5vw] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
                 callCount === 0
                   ? "bg-gray-400 opacity-50 cursor-not-allowed"
                   : blink
                   ? "bg-gray-600 animate-pulse"
                   : "bg-gray-600 hover:bg-gray-700"
               }`}
+              aria-label="Çağrı Azalt"
             >
-              -
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3.75 12a.75.75 0 01.75-.75h15a.75.75 0 010 1.5h-15a.75.75 0 01-.75-.75z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
           </div>
 
           {/* Sağ tarafta bilgi kısmı */}
           <div className="flex-1 flex justify-center">
-            <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[1vw] py-[0.6vh] text-[clamp(0.7rem,1vw,1.1rem)] font-medium shadow-sm text-center whitespace-nowrap">
-              Sıradaki kişi: <span className="font-bold">{siradakiKisi()}</span>. Size sıra gelmesine <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
+            <div className="flex items-center gap-[0.4vw] bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[0.8vw] py-[0.5vh] text-[clamp(0.7rem,0.8vw,1.1rem)] font-medium shadow-sm whitespace-nowrap">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 13.5a.75.75 0 00-1.5 0v-3a.75.75 0 011.5 0v3zm-.75-7.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>
+                Sıradaki: <span className="font-bold">{siradakiKisi()}</span> · Kalan: <span className="font-bold">{kalanKisiSayisi()}</span>
+              </span>
             </div>
           </div>
         </div>
-      </div>  
+      </div>
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
         <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
           <div className="space-y-[0.6vh]">
