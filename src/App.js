@@ -263,6 +263,15 @@ export default function SiraTakip() {
       guncelleFirebase({ selectedNames: updated, activeList: updatedList });
     }
   };
+
+  // Logged in kullanıcıyı en başta göstermek için liste sıralaması
+  const userIndex = activeList.findIndex(emp => emp.uid === auth.currentUser?.uid);
+  const indices = activeList.map((_, idx) => idx);
+  const displayIndices =
+    userIndex === -1
+      ? indices
+      : [...indices.slice(userIndex), ...indices.slice(0, userIndex)];
+
   return (
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]`} style={{ overflowY: 'hidden' }}>
       {/* Üst Bar */}
@@ -407,7 +416,9 @@ export default function SiraTakip() {
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
         <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
           <div className="space-y-[0.6vh]">
-            {activeList.map((emp, i) => (
+            {displayIndices.map((i) => {
+              const emp = activeList[i];
+              return (
               <div
                 key={emp.uid}
                 className={clsx(
@@ -476,7 +487,8 @@ export default function SiraTakip() {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
         <div className="w-full lg:w-1/4 flex flex-col">
