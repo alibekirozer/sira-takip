@@ -19,6 +19,9 @@ export default function AdminPanel() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editedName, setEditedName] = useState("");
+  const [activeList, setActiveList] = useState([]);
+  const [logByDate, setLogByDate] = useState({});
+  const todayKey = new Date().toISOString().split("T")[0];
 
   const fetchUsers = async () => {
     const querySnapshot = await getDocs(collection(firestoreDB, "users"));
@@ -27,8 +30,16 @@ export default function AdminPanel() {
     setLoading(false);
   };
 
+  const fetchActiveList = async () => {
+    const snap = await get(ref(realtimeDB, "siraTakip"));
+    const data = snap.val() || {};
+    setActiveList(data.activeList || []);
+    setLogByDate(data.logByDate || {});
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchActiveList();
   }, []);
 
   const toggleRole = async (user) => {
@@ -49,6 +60,37 @@ export default function AdminPanel() {
     await set(ref(realtimeDB, "siraTakip/activeList"), updatedList);
 
     setUsers((prev) => prev.filter((u) => u.uid !== user.uid));
+  };
+
+  const updateStatus = async (user, status) => {
+    const activeRef = ref(realtimeDB, "siraTakip/activeList");
+    const snap = await get(activeRef);
+    const list = snap.val() || [];
+    const idx = list.findIndex((emp) => emp.uid === user.uid);
+    const oldStatus = idx !== -1 ? list[idx].status : "";
+    const updatedList = idx !== -1
+      ? list.map((emp) =>
+          emp.uid === user.uid ? { ...emp, status } : emp
+        )
+      : [...list, { uid: user.uid, name: user.name, status }];
+    await set(activeRef, updatedList);
+    setActiveList(updatedList);
+
+    const logRef = ref(realtimeDB, "siraTakip/logByDate");
+    const logSnap = await get(logRef);
+    const logData = logSnap.val() || {};
+    const entry = {
+      person: user.name,
+      time: new Date().toLocaleTimeString(),
+      action: `Durum: ${oldStatus || "-"} → ${status}`,
+    };
+    const updatedForToday = [
+      entry,
+      ...(logData[todayKey] || []),
+    ].slice(0, 200);
+    const updatedLogs = { ...logData, [todayKey]: updatedForToday };
+    await set(logRef, updatedLogs);
+    setLogByDate(updatedLogs);
   };
 
   const startEdit = (user) => {
@@ -157,6 +199,7 @@ export default function AdminPanel() {
             <th className="p-2 border">Ad Soyad</th>
             <th className="p-2 border">Email</th>
             <th className="p-2 border">Rol</th>
+            <th className="p-2 border">Durum</th>
             <th className="p-2 border">İşlem</th>
           </tr>
         </thead>
@@ -176,6 +219,21 @@ export default function AdminPanel() {
               </td>
               <td className="p-2 border">{user.email}</td>
               <td className="p-2 border capitalize">{user.role}</td>
+              <td className="p-2 border">
+                <select
+                  value={
+                    activeList.find((emp) => emp.uid === user.uid)?.status || ""
+                  }
+                  onChange={(e) => updateStatus(user, e.target.value)}
+                  className="border p-1"
+                >
+                  <option value="">Seç...</option>
+                  <option value="Molada">Molada</option>
+                  <option value="İzinli">İzinli</option>
+                  <option value="Çalışıyor">Çalışıyor</option>
+                  <option value="Müsait">Müsait</option>
+                </select>
+              </td>
               <td className="p-2 border space-x-2">
                 {editingId === user.uid ? (
                   <>
