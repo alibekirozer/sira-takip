@@ -314,16 +314,24 @@ export default function SiraTakip() {
           {/* Sol tarafta çağrı butonları */}
           <div className="flex gap-[0.3vw] items-center">
             <button
-              onClick={() => {
-                const yeniSayi = callCount + 1;
-                setCallCount(yeniSayi);
-                guncelleFirebase({ callCount: yeniSayi });
-              }}
               className={`px-[1vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
                 blink ? "bg-red-600 animate-pulse" : "bg-red-500 hover:bg-red-600"
               }`}
             >
               Çağrı ({callCount})
+            </button>
+
+            <button
+              onClick={() => {
+                const yeniSayi = callCount + 1;
+                setCallCount(yeniSayi);
+                guncelleFirebase({ callCount: yeniSayi });
+              }}
+              className={`px-[0.4vw] py-[0.6vh] rounded-md font-semibold text-white shadow-md transition text-[clamp(1rem,0.8vw,1.8rem)] w-auto ${
+                blink ? "bg-gray-600 animate-pulse" : "bg-gray-600 hover:bg-gray-700"
+              }`}
+            >
+              +
             </button>
 
             <button
