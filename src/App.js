@@ -410,7 +410,7 @@ export default function SiraTakip() {
                 />
               </svg>
               <span>
-                Sıradaki: <span className="font-bold">{siradakiKisi()}</span> · Kalan: <span className="font-bold">{kalanKisiSayisi()}</span>
+                Sıradaki kişi: <span className="font-bold">{siradakiKisi()}</span>. Size sıra gelmesine <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
               </span>
             </div>
           </div>
