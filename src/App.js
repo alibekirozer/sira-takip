@@ -487,7 +487,8 @@ export default function SiraTakip() {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
         <div className="w-full lg:w-1/4 flex flex-col">
