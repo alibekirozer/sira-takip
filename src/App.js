@@ -506,10 +506,10 @@ export default function SiraTakip() {
           </div>
         </div>
       </div>
-      <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">
         <div className="w-full text-left mb-1">
           🟢 Müsait 🔴 Çalışıyor 🟡 Molada ⚪ İzinli
         </div>
+          <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">        
         <span>Created by Ali Bekir Özer</span>
       </footer>
     </div>
