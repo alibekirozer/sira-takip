@@ -507,7 +507,22 @@ export default function SiraTakip() {
         </div>
       </div>
         <div className="w-full text-left py-2 mt-auto text-[10px] sm:text-xs text-gray-400 mb-1 bg-inherit">
-          🟢 Müsait 🔴 Çalışıyor 🟡 Molada ⚪ İzinli
+          <span className="inline-flex items-center mr-[0.5vw]">
+            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-green-500 inline-block mr-[0.3vw]"></span>
+            Müsait
+          </span>
+          <span className="inline-flex items-center mr-[0.5vw]">
+            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-orange-500 inline-block mr-[0.3vw]"></span>
+            Çalışıyor
+          </span>
+          <span className="inline-flex items-center mr-[0.5vw]">
+            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-yellow-400 inline-block mr-[0.3vw]"></span>
+            Molada
+          </span>
+          <span className="inline-flex items-center">
+            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-gray-400 inline-block mr-[0.3vw]"></span>
+            İzinli
+          </span>
         </div>
           <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">        
         <span>Created by Ali Bekir Özer</span>
