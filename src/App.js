@@ -413,8 +413,8 @@ export default function SiraTakip() {
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1vw] mt-[2vh] overflow-hidden">
-        <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
+      <div className="flex-1 flex flex-col lg:flex-row w-full gap-[0.5vw] mt-[2vh] overflow-hidden">
+        <div className="w-full lg:w-[75%] pr-0 lg:pr-[0.5vw] space-y-[0.5vh] overflow-visible">
           <div className="space-y-[0.6vh]">
             {displayIndices.map((i) => {
               const emp = activeList[i];
