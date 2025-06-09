@@ -471,7 +471,7 @@ export default function SiraTakip() {
                       </button>
                     </div>
                   ) : (
-                    <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)]">Durum: {emp.status}</p>
+                    <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)] w-[10ch] whitespace-nowrap">Durum: {emp.status}</p>
                   )}
                 </div>
 
