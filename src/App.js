@@ -413,7 +413,7 @@ export default function SiraTakip() {
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1.5vw] mt-[2vh] overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row w-full gap-[1vw] mt-[2vh] overflow-hidden">
         <div className="w-full lg:w-[75%] pr-0 lg:pr-[1.5vw] space-y-[0.5vh] overflow-visible">
           <div className="space-y-[0.6vh]">
             {displayIndices.map((i) => {
@@ -491,7 +491,7 @@ export default function SiraTakip() {
             })}
           </div>
         </div>
-        <div className="w-full lg:w-1/4 flex flex-col">
+        <div className="w-full lg:w-2/8 flex flex-col">
           <div className="border-l-0 lg:pl-[1.5vw] pr-0" style={{height: 'calc(104vh - 18vw)'}}>
             <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
               <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
