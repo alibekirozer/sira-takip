@@ -510,9 +510,19 @@ export default function SiraTakip() {
         <div className="w-full text-left py-2 mt-auto text-[10px] sm:text-xs text-gray-400 mb-1 bg-inherit">
           <button
             onClick={() => setShowLegend(!showLegend)}
-            className="mr-[0.5vw] text-blue-600 hover:text-blue-800 underline"
+            aria-label="Durum açıklamasını göster/gizle"
+            className="mr-[0.5vw] p-[0.2vw] text-blue-600 hover:text-blue-800 transition-transform"
           >
-            {showLegend ? "Gizle" : "Göster"}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className={`w-[1vw] h-[1vw] min-w-[16px] min-h-[16px] transform transition-transform ${showLegend ? "rotate-90" : "rotate-0"}`}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
           {showLegend && (
             <>
