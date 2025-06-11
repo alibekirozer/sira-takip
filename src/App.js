@@ -511,8 +511,9 @@ export default function SiraTakip() {
           <button
             onClick={() => setShowLegend(!showLegend)}
             className="mr-[0.5vw] text-blue-600 hover:text-blue-800 underline"
+            aria-label={showLegend ? "Gizle" : "Göster"}
           >
-            {showLegend ? "Gizle" : "Göster"}
+            {showLegend ? "<" : ">"}
           </button>
           {showLegend && (
             <>
