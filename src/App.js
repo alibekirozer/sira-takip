@@ -319,7 +319,7 @@ export default function SiraTakip() {
       </header>
       {/* Çağrı Listesi ve Kayıtlar */}
       <div>
-        <div className="flex flex-nowrap justify-between items-center mt-[1vh] gap-[1vw] w-full overflow-x-auto">
+        <div className="relative flex flex-nowrap items-center mt-[1vh] gap-[1vw] w-full overflow-x-auto">
           {/* Sol tarafta çağrı butonları */}
           <div className="flex gap-[0.3vw] items-center">
             <button
@@ -404,7 +404,7 @@ export default function SiraTakip() {
           </div>
 
           {/* Sağ tarafta bilgi kısmı */}
-          <div className="flex-1 flex justify-center">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center">
             <div className="flex items-center gap-[0.4vw] bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[0.8vw] py-[0.5vh] text-[clamp(0.7rem,0.8vw,1.1rem)] font-medium shadow-sm whitespace-nowrap">
               <span>
                 Sıradaki kişi: <span className="font-bold">{siradakiKisi()}</span>. Size sıra gelmesine <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
