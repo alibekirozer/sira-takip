@@ -22,6 +22,7 @@ export default function SiraTakip() {
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [benimAdim, setBenimAdim] = useState("");
   const [logByDate, setLogByDate] = useState({});
+  const [showLegend, setShowLegend] = useState(true);
   const todayKey = new Date().toISOString().split("T")[0];
   const userName = auth.currentUser?.displayName || "Kullanıcı";
 
@@ -507,22 +508,42 @@ export default function SiraTakip() {
         </div>
       </div>
         <div className="w-full text-left py-2 mt-auto text-[10px] sm:text-xs text-gray-400 mb-1 bg-inherit">
-          <span className="inline-flex items-center mr-[0.5vw]">
-            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-green-500 inline-block mr-[0.3vw]"></span>
-            Müsait
-          </span>
-          <span className="inline-flex items-center mr-[0.5vw]">
-            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-orange-500 inline-block mr-[0.3vw]"></span>
-            Çalışıyor
-          </span>
-          <span className="inline-flex items-center mr-[0.5vw]">
-            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-yellow-400 inline-block mr-[0.3vw]"></span>
-            Molada
-          </span>
-          <span className="inline-flex items-center">
-            <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-gray-400 inline-block mr-[0.3vw]"></span>
-            İzinli
-          </span>
+          <button
+            onClick={() => setShowLegend(!showLegend)}
+            aria-label="Durum açıklamasını göster/gizle"
+            className="mr-[0.5vw] p-[0.2vw] text-blue-600 hover:text-blue-800 transition-transform"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className={`w-[1vw] h-[1vw] min-w-[16px] min-h-[16px] transform transition-transform ${showLegend ? "rotate-90" : "rotate-0"}`}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          {showLegend && (
+            <>
+              <span className="inline-flex items-center mr-[0.5vw]">
+                <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-green-500 inline-block mr-[0.3vw]"></span>
+                Müsait
+              </span>
+              <span className="inline-flex items-center mr-[0.5vw]">
+                <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-orange-500 inline-block mr-[0.3vw]"></span>
+                Çalışıyor
+              </span>
+              <span className="inline-flex items-center mr-[0.5vw]">
+                <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-yellow-400 inline-block mr-[0.3vw]"></span>
+                Molada
+              </span>
+              <span className="inline-flex items-center">
+                <span className="w-[1vw] h-[1vw] min-w-[0.8vw] min-h-[0.8vw] rounded-full bg-gray-400 inline-block mr-[0.3vw]"></span>
+                İzinli
+              </span>
+            </>
+          )}
         </div>
           <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">        
         <span>Created by Ali Bekir Özer</span>
