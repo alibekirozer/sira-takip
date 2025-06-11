@@ -531,7 +531,7 @@ export default function SiraTakip() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-[1.2vw] h-[1.2vw] min-w-[20px] min-h-[20px]"
+                className="w-[0.8vw] h-[0.8vw] min-w-[10px] min-h-[10px]"
               >
                 <path
                   fillRule="evenodd"
