@@ -292,7 +292,7 @@ export default function SiraTakip() {
           {/* Kullanıcı Bilgisi ve İşlemler */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-[1vw] text-[clamp(1rem,0.8vw,1.8rem)] w-full sm:w-auto">
             <div className="text-right sm:text-left w-full sm:w-auto">
-              <p className="text-gray-800 dark:text-gray-200 truncate">
+              <p className="text-gray-500 dark:text-gray-200 truncate">
                 Hoş geldin, <span className="font-semibold text-blue-600 dark:text-blue-400">{userName || "Kullanıcı"}</span>
               </p>
               {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
