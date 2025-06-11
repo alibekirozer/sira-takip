@@ -510,7 +510,7 @@ export default function SiraTakip() {
         <div className="w-full text-left py-2 mt-auto text-[10px] sm:text-xs text-gray-400 mb-1 bg-inherit">
           <button
             onClick={() => setShowLegend(!showLegend)}
-            className="mr-[0.5vw] p-[0.4vw] rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+            className="mr-[0.5vw] p-[0.4vw] rounded bg-gray-400 hover:bg-gray-500 text-white transition"
             aria-label={showLegend ? "Gizle" : "Göster"}
           >
             {showLegend ? (
