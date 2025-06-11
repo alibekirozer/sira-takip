@@ -383,7 +383,7 @@ export default function SiraTakip() {
               <button onClick={() => durumGuncelle(i, "Müsait")} className="px-[0.7vw] py-[0.3vh] bg-green-400 dark:bg-green-600 text-black dark:text-white rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">Müsaitim</button>
             </div>
           ) : (
-            <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)]">Durum: {emp.status}</p>
+            <p className="italic text-[clamp(0.6rem,0.6vw,0.8rem)] mr-[0.2vw]">Durum: {emp.status}</p>
           )}
         </div>
         {emp.uid === auth.currentUser?.uid && emp.status === "Müsait" && i === siradakiMusaitIndex() && (
