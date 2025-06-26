@@ -11,7 +11,8 @@ import {
 import { initializeApp, deleteApp } from "firebase/app";
 import { httpsCallable } from "firebase/functions";
 
-const maskPassword = (len = 6) => "*".repeat(len);
+const MASK_LENGTH = 5;
+const maskPassword = () => "*".repeat(MASK_LENGTH);
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -270,13 +271,13 @@ export default function AdminPanel() {
                   <input
                     type="password"
                     value={editedPassword}
-                    placeholder={maskPassword(user.passwordLength)}
+                    placeholder={maskPassword()}
                     onChange={(e) => setEditedPassword(e.target.value)}
                     onFocus={(e) => (e.target.placeholder = "")}
                     className="border p-1"
                   />
                 ) : (
-                  maskPassword(user.passwordLength)
+                  maskPassword()
                 )}
               </td>
               <td className="p-2 border capitalize">{user.role}</td>
