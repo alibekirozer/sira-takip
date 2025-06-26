@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
-import { firestoreDB, auth, realtimeDB } from "./firebase";
+import { firestoreDB, auth, realtimeDB, functions } from "./firebase";
 import { ref, get, set } from "firebase/database";
 import {
   getAuth,
@@ -9,6 +9,9 @@ import {
   signOut,
 } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
+import { httpsCallable } from "firebase/functions";
+
+const maskPassword = (len = 6) => "*".repeat(len);
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -19,6 +22,8 @@ export default function AdminPanel() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editedName, setEditedName] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
+  const [editedPassword, setEditedPassword] = useState("");
   const [activeList, setActiveList] = useState([]);
   const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
@@ -96,16 +101,24 @@ export default function AdminPanel() {
   const startEdit = (user) => {
     setEditingId(user.uid);
     setEditedName(user.name);
+    setEditedEmail(user.email);
+    setEditedPassword("");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditedName("");
+    setEditedEmail("");
+    setEditedPassword("");
   };
 
-  const saveName = async (user) => {
+  const saveChanges = async (user) => {
     try {
-      await updateDoc(doc(firestoreDB, "users", user.uid), { name: editedName });
+      await updateDoc(doc(firestoreDB, "users", user.uid), {
+        name: editedName,
+        email: editedEmail,
+        ...(editedPassword && { passwordLength: editedPassword.length }),
+      });
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
       const snap = await get(activeRef);
@@ -115,12 +128,31 @@ export default function AdminPanel() {
       );
       await set(activeRef, updatedList);
 
+      if (editedEmail !== user.email || editedPassword) {
+        const updateCred = httpsCallable(functions, "updateUserCredentials");
+        await updateCred({
+          uid: user.uid,
+          email: editedEmail !== user.email ? editedEmail : undefined,
+          password: editedPassword || undefined,
+          passwordLength: editedPassword ? editedPassword.length : undefined,
+        });
+      }
+
       setUsers((prev) =>
-        prev.map((u) => (u.uid === user.uid ? { ...u, name: editedName } : u))
+        prev.map((u) =>
+          u.uid === user.uid
+            ? {
+                ...u,
+                name: editedName,
+                email: editedEmail,
+                ...(editedPassword && { passwordLength: editedPassword.length }),
+              }
+            : u
+        )
       );
       cancelEdit();
     } catch (err) {
-      console.error("Name update error", err);
+      console.error("User update error", err);
     }
   };
 
@@ -139,6 +171,7 @@ export default function AdminPanel() {
         email,
         createdAt: new Date(),
         role: "user",
+        passwordLength: password.length,
       });
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
@@ -198,9 +231,12 @@ export default function AdminPanel() {
           <tr className="bg-gray-100">
             <th className="p-2 border">Ad Soyad</th>
             <th className="p-2 border">Email</th>
+            <th className="p-2 border">Şifre</th>
             <th className="p-2 border">Rol</th>
             <th className="p-2 border">Durum</th>
-            <th className="p-2 border">İşlem</th>
+            <th className="p-2 border">Düzenle</th>
+            <th className="p-2 border">Admin Yap</th>
+            <th className="p-2 border">Sil</th>
           </tr>
         </thead>
         <tbody>
@@ -217,7 +253,32 @@ export default function AdminPanel() {
                   user.name
                 )}
               </td>
-              <td className="p-2 border">{user.email}</td>
+              <td className="p-2 border">
+                {editingId === user.uid ? (
+                  <input
+                    type="email"
+                    value={editedEmail}
+                    onChange={(e) => setEditedEmail(e.target.value)}
+                    className="border p-1"
+                  />
+                ) : (
+                  user.email
+                )}
+              </td>
+              <td className="p-2 border">
+                {editingId === user.uid ? (
+                  <input
+                    type="password"
+                    value={editedPassword}
+                    placeholder={maskPassword(user.passwordLength)}
+                    onChange={(e) => setEditedPassword(e.target.value)}
+                    onFocus={(e) => (e.target.placeholder = "")}
+                    className="border p-1"
+                  />
+                ) : (
+                  maskPassword(user.passwordLength)
+                )}
+              </td>
               <td className="p-2 border capitalize">{user.role}</td>
               <td className="p-2 border">
                 <select
@@ -234,44 +295,46 @@ export default function AdminPanel() {
                   <option value="Müsait">Müsait</option>
                 </select>
               </td>
-              <td className="p-2 border space-x-2">
+              <td className="p-2 border text-center">
                 {editingId === user.uid ? (
                   <>
                     <button
-                      onClick={() => saveName(user)}
+                      onClick={() => saveChanges(user)}
                       className="text-green-600 hover:underline"
                     >
                       💾 Kaydet
                     </button>
                     <button
                       onClick={cancelEdit}
-                      className="text-gray-600 hover:underline"
+                      className="text-gray-600 hover:underline ml-2"
                     >
                       Vazgeç
                     </button>
                   </>
                 ) : (
-                  <>
-                    <button
-                      onClick={() => startEdit(user)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      ✏️ Düzenle
-                    </button>
-                    <button
-                      onClick={() => toggleRole(user)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      🔁 Rolü {user.role === "admin" ? "user" : "admin"} yap
-                    </button>
-                    <button
-                      onClick={() => deleteUser(user)}
-                      className="text-red-600 hover:underline"
-                    >
-                      🗑 Sil
-                    </button>
-                  </>
+                  <button
+                    onClick={() => startEdit(user)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    ✏️ Düzenle
+                  </button>
                 )}
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={() => toggleRole(user)}
+                  className="text-blue-600 hover:underline"
+                >
+                  🔁 {user.role === "admin" ? "User" : "Admin"} yap
+                </button>
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={() => deleteUser(user)}
+                  className="text-red-600 hover:underline"
+                >
+                  🗑 Sil
+                </button>
               </td>
             </tr>
           ))}

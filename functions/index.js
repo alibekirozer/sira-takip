@@ -1,4 +1,5 @@
 const { onValueWritten } = require("firebase-functions/v2/database");
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
 
@@ -63,3 +64,28 @@ exports.currentIndexTakip = onValueUpdated(
     console.log(`siradakiKisi güncellendi: ${kisi.name}`);
   }
 );
+
+exports.updateUserCredentials = onCall({ region: "europe-west1" }, async (request) => {
+  const { uid, email, password, passwordLength } = request.data || {};
+  if (!uid) {
+    throw new HttpsError("invalid-argument", "Missing uid");
+  }
+  const updateData = {};
+  if (email) updateData.email = email;
+  if (password) updateData.password = password;
+  try {
+    if (Object.keys(updateData).length) {
+      await admin.auth().updateUser(uid, updateData);
+    }
+    if (email || passwordLength !== undefined) {
+      const updateFirestore = {};
+      if (email) updateFirestore.email = email;
+      if (passwordLength !== undefined) updateFirestore.passwordLength = passwordLength;
+      await admin.firestore().collection("users").doc(uid).update(updateFirestore);
+    }
+    return { success: true };
+  } catch (err) {
+    console.error("updateUserCredentials error:", err);
+    throw new HttpsError("internal", err.message);
+  }
+});
