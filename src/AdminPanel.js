@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
-import { firestoreDB, auth, realtimeDB } from "./firebase";
+import { firestoreDB, auth, realtimeDB, functions } from "./firebase";
 import { ref, get, set } from "firebase/database";
 import {
   getAuth,
@@ -9,6 +9,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
+import { httpsCallable } from "firebase/functions";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,8 @@ export default function AdminPanel() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editedName, setEditedName] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
+  const [editedPassword, setEditedPassword] = useState("");
   const [activeList, setActiveList] = useState([]);
   const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
@@ -96,16 +99,23 @@ export default function AdminPanel() {
   const startEdit = (user) => {
     setEditingId(user.uid);
     setEditedName(user.name);
+    setEditedEmail(user.email);
+    setEditedPassword("");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditedName("");
+    setEditedEmail("");
+    setEditedPassword("");
   };
 
-  const saveName = async (user) => {
+  const saveChanges = async (user) => {
     try {
-      await updateDoc(doc(firestoreDB, "users", user.uid), { name: editedName });
+      await updateDoc(doc(firestoreDB, "users", user.uid), {
+        name: editedName,
+        email: editedEmail,
+      });
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
       const snap = await get(activeRef);
@@ -115,12 +125,23 @@ export default function AdminPanel() {
       );
       await set(activeRef, updatedList);
 
+      if (editedEmail !== user.email || editedPassword) {
+        const updateCred = httpsCallable(functions, "updateUserCredentials");
+        await updateCred({
+          uid: user.uid,
+          email: editedEmail !== user.email ? editedEmail : undefined,
+          password: editedPassword || undefined,
+        });
+      }
+
       setUsers((prev) =>
-        prev.map((u) => (u.uid === user.uid ? { ...u, name: editedName } : u))
+        prev.map((u) =>
+          u.uid === user.uid ? { ...u, name: editedName, email: editedEmail } : u
+        )
       );
       cancelEdit();
     } catch (err) {
-      console.error("Name update error", err);
+      console.error("User update error", err);
     }
   };
 
@@ -217,7 +238,18 @@ export default function AdminPanel() {
                   user.name
                 )}
               </td>
-              <td className="p-2 border">{user.email}</td>
+              <td className="p-2 border">
+                {editingId === user.uid ? (
+                  <input
+                    type="email"
+                    value={editedEmail}
+                    onChange={(e) => setEditedEmail(e.target.value)}
+                    className="border p-1"
+                  />
+                ) : (
+                  user.email
+                )}
+              </td>
               <td className="p-2 border capitalize">{user.role}</td>
               <td className="p-2 border">
                 <select
@@ -237,8 +269,15 @@ export default function AdminPanel() {
               <td className="p-2 border space-x-2">
                 {editingId === user.uid ? (
                   <>
+                    <input
+                      type="password"
+                      placeholder="Yeni Şifre"
+                      value={editedPassword}
+                      onChange={(e) => setEditedPassword(e.target.value)}
+                      className="border p-1"
+                    />
                     <button
-                      onClick={() => saveName(user)}
+                      onClick={() => saveChanges(user)}
                       className="text-green-600 hover:underline"
                     >
                       💾 Kaydet
