@@ -11,6 +11,8 @@ import {
 import { initializeApp, deleteApp } from "firebase/app";
 import { httpsCallable } from "firebase/functions";
 
+const maskPassword = (len = 6) => "*".repeat(len);
+
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,6 +117,7 @@ export default function AdminPanel() {
       await updateDoc(doc(firestoreDB, "users", user.uid), {
         name: editedName,
         email: editedEmail,
+        ...(editedPassword && { passwordLength: editedPassword.length }),
       });
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
@@ -131,12 +134,20 @@ export default function AdminPanel() {
           uid: user.uid,
           email: editedEmail !== user.email ? editedEmail : undefined,
           password: editedPassword || undefined,
+          passwordLength: editedPassword ? editedPassword.length : undefined,
         });
       }
 
       setUsers((prev) =>
         prev.map((u) =>
-          u.uid === user.uid ? { ...u, name: editedName, email: editedEmail } : u
+          u.uid === user.uid
+            ? {
+                ...u,
+                name: editedName,
+                email: editedEmail,
+                ...(editedPassword && { passwordLength: editedPassword.length }),
+              }
+            : u
         )
       );
       cancelEdit();
@@ -160,6 +171,7 @@ export default function AdminPanel() {
         email,
         createdAt: new Date(),
         role: "user",
+        passwordLength: password.length,
       });
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
@@ -219,9 +231,12 @@ export default function AdminPanel() {
           <tr className="bg-gray-100">
             <th className="p-2 border">Ad Soyad</th>
             <th className="p-2 border">Email</th>
+            <th className="p-2 border">Şifre</th>
             <th className="p-2 border">Rol</th>
             <th className="p-2 border">Durum</th>
-            <th className="p-2 border">İşlem</th>
+            <th className="p-2 border">Düzenle</th>
+            <th className="p-2 border">Admin Yap</th>
+            <th className="p-2 border">Sil</th>
           </tr>
         </thead>
         <tbody>
@@ -250,6 +265,20 @@ export default function AdminPanel() {
                   user.email
                 )}
               </td>
+              <td className="p-2 border">
+                {editingId === user.uid ? (
+                  <input
+                    type="password"
+                    value={editedPassword}
+                    placeholder={maskPassword(user.passwordLength)}
+                    onChange={(e) => setEditedPassword(e.target.value)}
+                    onFocus={(e) => (e.target.placeholder = "")}
+                    className="border p-1"
+                  />
+                ) : (
+                  maskPassword(user.passwordLength)
+                )}
+              </td>
               <td className="p-2 border capitalize">{user.role}</td>
               <td className="p-2 border">
                 <select
@@ -266,16 +295,9 @@ export default function AdminPanel() {
                   <option value="Müsait">Müsait</option>
                 </select>
               </td>
-              <td className="p-2 border space-x-2">
+              <td className="p-2 border text-center">
                 {editingId === user.uid ? (
                   <>
-                    <input
-                      type="password"
-                      placeholder="Yeni Şifre"
-                      value={editedPassword}
-                      onChange={(e) => setEditedPassword(e.target.value)}
-                      className="border p-1"
-                    />
                     <button
                       onClick={() => saveChanges(user)}
                       className="text-green-600 hover:underline"
@@ -284,33 +306,35 @@ export default function AdminPanel() {
                     </button>
                     <button
                       onClick={cancelEdit}
-                      className="text-gray-600 hover:underline"
+                      className="text-gray-600 hover:underline ml-2"
                     >
                       Vazgeç
                     </button>
                   </>
                 ) : (
-                  <>
-                    <button
-                      onClick={() => startEdit(user)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      ✏️ Düzenle
-                    </button>
-                    <button
-                      onClick={() => toggleRole(user)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      🔁 Rolü {user.role === "admin" ? "user" : "admin"} yap
-                    </button>
-                    <button
-                      onClick={() => deleteUser(user)}
-                      className="text-red-600 hover:underline"
-                    >
-                      🗑 Sil
-                    </button>
-                  </>
+                  <button
+                    onClick={() => startEdit(user)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    ✏️ Düzenle
+                  </button>
                 )}
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={() => toggleRole(user)}
+                  className="text-blue-600 hover:underline"
+                >
+                  🔁 {user.role === "admin" ? "User" : "Admin"} yap
+                </button>
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={() => deleteUser(user)}
+                  className="text-red-600 hover:underline"
+                >
+                  🗑 Sil
+                </button>
               </td>
             </tr>
           ))}
