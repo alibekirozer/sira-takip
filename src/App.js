@@ -24,7 +24,10 @@ export default function SiraTakip() {
   const [logByDate, setLogByDate] = useState({});
   const [showLegend, setShowLegend] = useState(true);
   const todayKey = new Date().toISOString().split("T")[0];
-  const userName = auth.currentUser?.displayName || "Kullanıcı";
+
+  const currentUserId = auth.currentUser?.uid;
+  const userEntry = activeList.find((emp) => emp.uid === currentUserId);
+  const userName = userEntry?.name || auth.currentUser?.displayName || "Kullanıcı";
 
   // Durum rengi fonksiyonu: durum adları ve renkler güncellendi
   const durumRengi = (status) => {
@@ -68,9 +71,12 @@ export default function SiraTakip() {
   }, []);
 
   useEffect(() => {
-  const ad = auth.currentUser?.displayName || "";
-  setBenimAdim(ad);
-}, []);
+    const ad =
+      activeList.find((emp) => emp.uid === auth.currentUser?.uid)?.name ||
+      auth.currentUser?.displayName ||
+      "";
+    setBenimAdim(ad);
+  }, [activeList]);
 
   useEffect(() => {
     const dataRef = ref(realtimeDB, "siraTakip");
