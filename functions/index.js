@@ -66,7 +66,7 @@ exports.currentIndexTakip = onValueUpdated(
 );
 
 exports.updateUserCredentials = onCall({ region: "europe-west1" }, async (request) => {
-  const { uid, email, password } = request.data || {};
+  const { uid, email, password, passwordLength } = request.data || {};
   if (!uid) {
     throw new HttpsError("invalid-argument", "Missing uid");
   }
@@ -77,8 +77,11 @@ exports.updateUserCredentials = onCall({ region: "europe-west1" }, async (reques
     if (Object.keys(updateData).length) {
       await admin.auth().updateUser(uid, updateData);
     }
-    if (email) {
-      await admin.firestore().collection("users").doc(uid).update({ email });
+    if (email || passwordLength !== undefined) {
+      const updateFirestore = {};
+      if (email) updateFirestore.email = email;
+      if (passwordLength !== undefined) updateFirestore.passwordLength = passwordLength;
+      await admin.firestore().collection("users").doc(uid).update(updateFirestore);
     }
     return { success: true };
   } catch (err) {
