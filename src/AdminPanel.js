@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
 import { httpsCallable } from "firebase/functions";
+import logo from "./assets/kocsistem-logo.png";
 
 const MASK_LENGTH = 5;
 const maskPassword = () => "*".repeat(MASK_LENGTH);
@@ -195,52 +196,63 @@ export default function AdminPanel() {
   if (loading) return <div className="p-4 text-center">Yükleniyor...</div>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Kullanıcı Yönetimi</h2>
-      <form onSubmit={handleCreateUser} className="mb-6 space-x-2">
-        <input
-          type="text"
-          placeholder="Ad Soyad"
-          className="border p-2"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Şifre"
-          className="border p-2"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-          Ekle
-        </button>
-      </form>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <table className="w-full border text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Ad Soyad</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Şifre</th>
-            <th className="p-2 border">Rol</th>
-            <th className="p-2 border">Durum</th>
-            <th className="p-2 border">Düzenle</th>
-            <th className="p-2 border">Admin Yap</th>
-            <th className="p-2 border">Sil</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <div className="flex items-center mb-6">
+          <img src={logo} alt="Logo" className="h-10 mr-4" />
+          <h2 className="text-2xl font-semibold text-gray-700">Kullanıcı Yönetimi</h2>
+        </div>
+        <form
+          onSubmit={handleCreateUser}
+          className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 items-end"
+        >
+          <input
+            type="text"
+            placeholder="Ad Soyad"
+            className="border rounded p-2"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="border rounded p-2"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Şifre"
+            className="border rounded p-2"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Ekle
+          </button>
+        </form>
+        {error && <p className="text-red-600 mb-4">{error}</p>}
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm border border-gray-200 rounded-lg">
+            <thead className="bg-gray-50 text-gray-700">
+              <tr>
+                <th className="px-3 py-2 text-left border-b">Ad Soyad</th>
+                <th className="px-3 py-2 text-left border-b">Email</th>
+                <th className="px-3 py-2 text-left border-b">Şifre</th>
+                <th className="px-3 py-2 text-left border-b">Rol</th>
+                <th className="px-3 py-2 text-left border-b">Durum</th>
+                <th className="px-3 py-2 text-left border-b">Düzenle</th>
+                <th className="px-3 py-2 text-left border-b">Admin Yap</th>
+                <th className="px-3 py-2 text-left border-b">Sil</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
           {users.map((user) => (
             <tr key={user.uid} className="hover:bg-gray-50">
               <td className="p-2 border">
@@ -339,8 +351,10 @@ export default function AdminPanel() {
               </td>
             </tr>
           ))}
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
