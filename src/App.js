@@ -149,24 +149,25 @@ export default function SiraTakip() {
   };
 
   const kalanKisiSayisi = () => {
-  if (!benimAdim) return 0;
+    const uid = auth.currentUser?.uid;
+    if (!uid) return 0;
 
-  // currentIndex'ten başlayarak sıralı şekilde tüm "Müsait"leri gez
-  let sayac = 0;
-  for (let i = 0; i < activeList.length; i++) {
-    const idx = (currentIndex + i) % activeList.length;
-    const kisi = activeList[idx];
+    // currentIndex'ten başlayarak sıralı şekilde tüm "Müsait"leri gez
+    let sayac = 0;
+    for (let i = 0; i < activeList.length; i++) {
+      const idx = (currentIndex + i) % activeList.length;
+      const kisi = activeList[idx];
 
-    if (kisi?.status === "Müsait") {
-      if (kisi.name === benimAdim) {
-        return sayac; // Kendi sıranı bulunca dur
+      if (kisi?.status === "Müsait") {
+        if (kisi.uid === uid) {
+          return sayac; // Kendi sıranı bulunca dur
+        }
+        sayac++;
       }
-      sayac++;
     }
-  }
 
-  return 0; // Bulunamazsa
-};
+    return 0; // Bulunamazsa
+  };
 
 
   const ileriAl = () => {
