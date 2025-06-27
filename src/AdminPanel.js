@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
 import { httpsCallable } from "firebase/functions";
-import logo from "./assets/kocsistem-logo.png";
 
 const MASK_LENGTH = 5;
 const maskPassword = () => "*".repeat(MASK_LENGTH);
@@ -199,7 +198,6 @@ export default function AdminPanel() {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center mb-6">
-          <img src={logo} alt="Logo" className="h-10 mr-4" />
           <h2 className="text-2xl font-semibold text-gray-700">Kullanıcı Yönetimi</h2>
         </div>
         <form
