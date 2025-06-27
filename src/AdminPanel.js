@@ -25,6 +25,7 @@ export default function AdminPanel() {
   const [editedName, setEditedName] = useState("");
   const [editedEmail, setEditedEmail] = useState("");
   const [editedPassword, setEditedPassword] = useState("");
+  const [editedStatus, setEditedStatus] = useState("");
   const [activeList, setActiveList] = useState([]);
   const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
@@ -104,6 +105,7 @@ export default function AdminPanel() {
     setEditedName(user.name);
     setEditedEmail(user.email);
     setEditedPassword("");
+    setEditedStatus(activeList.find((emp) => emp.uid === user.uid)?.status || "");
   };
 
   const cancelEdit = () => {
@@ -111,6 +113,7 @@ export default function AdminPanel() {
     setEditedName("");
     setEditedEmail("");
     setEditedPassword("");
+    setEditedStatus("");
   };
 
   const saveChanges = async (user) => {
@@ -128,6 +131,12 @@ export default function AdminPanel() {
         emp.uid === user.uid ? { ...emp, name: editedName } : emp
       );
       await set(activeRef, updatedList);
+
+      const currentStatus =
+        list.find((emp) => emp.uid === user.uid)?.status || "";
+      if (editedStatus !== "" && editedStatus !== currentStatus) {
+        await updateStatus({ ...user, name: editedName }, editedStatus);
+      }
 
       if (editedEmail !== user.email || editedPassword) {
         const updateCred = httpsCallable(functions, "updateUserCredentials");
@@ -292,19 +301,33 @@ export default function AdminPanel() {
               </td>
               <td className="p-2 border capitalize">{user.role}</td>
               <td className="p-2 border">
-                <select
-                  value={
-                    activeList.find((emp) => emp.uid === user.uid)?.status || ""
-                  }
-                  onChange={(e) => updateStatus(user, e.target.value)}
-                  className="border p-1"
-                >
-                  <option value="">Seç...</option>
-                  <option value="Molada">Molada</option>
-                  <option value="İzinli">İzinli</option>
-                  <option value="Çalışıyor">Çalışıyor</option>
-                  <option value="Müsait">Müsait</option>
-                </select>
+                {editingId === user.uid ? (
+                  <select
+                    value={editedStatus}
+                    onChange={(e) => setEditedStatus(e.target.value)}
+                    className="border p-1"
+                  >
+                    <option value="">Seç...</option>
+                    <option value="Molada">Molada</option>
+                    <option value="İzinli">İzinli</option>
+                    <option value="Çalışıyor">Çalışıyor</option>
+                    <option value="Müsait">Müsait</option>
+                  </select>
+                ) : (
+                  <select
+                    value={
+                      activeList.find((emp) => emp.uid === user.uid)?.status || ""
+                    }
+                    onChange={(e) => updateStatus(user, e.target.value)}
+                    className="border p-1"
+                  >
+                    <option value="">Seç...</option>
+                    <option value="Molada">Molada</option>
+                    <option value="İzinli">İzinli</option>
+                    <option value="Çalışıyor">Çalışıyor</option>
+                    <option value="Müsait">Müsait</option>
+                  </select>
+                )}
               </td>
               <td className="p-2 border text-center">
                 {editingId === user.uid ? (
