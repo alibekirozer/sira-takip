@@ -314,19 +314,7 @@ export default function AdminPanel() {
                     <option value="Müsait">Müsait</option>
                   </select>
                 ) : (
-                  <select
-                    value={
-                      activeList.find((emp) => emp.uid === user.uid)?.status || ""
-                    }
-                    onChange={(e) => updateStatus(user, e.target.value)}
-                    className="border p-1"
-                  >
-                    <option value="">Seç...</option>
-                    <option value="Molada">Molada</option>
-                    <option value="İzinli">İzinli</option>
-                    <option value="Çalışıyor">Çalışıyor</option>
-                    <option value="Müsait">Müsait</option>
-                  </select>
+                  activeList.find((emp) => emp.uid === user.uid)?.status || ""
                 )}
               </td>
               <td className="p-2 border text-center">
