@@ -14,11 +14,11 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function computeStats(logByDate, activeUsers) {
+function computeStats(logByDate, activeUsers, startDate, endDate) {
   const stats = {};
   const activeSet = new Set((activeUsers || []).map((u) => u.name));
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
   activeUsers.forEach((u) => {
     stats[u.name] = {
@@ -30,7 +30,7 @@ function computeStats(logByDate, activeUsers) {
 
   for (const [date, logs] of Object.entries(logByDate || {})) {
     const day = new Date(date);
-    if (isNaN(day) || day < thirtyDaysAgo) continue;
+    if (isNaN(day) || day < start || day > end) continue;
     const sorted = [...logs].sort(
       (a, b) =>
         new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
@@ -83,20 +83,48 @@ function computeStats(logByDate, activeUsers) {
 export default function Stats() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [logs, setLogs] = useState({});
+  const [activeList, setActiveList] = useState([]);
+  const [filter, setFilter] = useState("monthly");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const logSnap = await get(ref(realtimeDB, "siraTakip/logByDate"));
-      const logs = logSnap.val() || {};
+      setLogs(logSnap.val() || {});
       const activeSnap = await get(ref(realtimeDB, "siraTakip/activeList"));
-      const activeList = activeSnap.val() || [];
-      setData(computeStats(logs, activeList));
+      setActiveList(activeSnap.val() || []);
       setLoading(false);
     };
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (loading) return;
+    const today = new Date();
+    let s = new Date(today);
+    let e = new Date(today);
+    if (filter === "weekly") {
+      s.setDate(e.getDate() - 6);
+    } else if (filter === "monthly") {
+      s.setDate(e.getDate() - 29);
+    } else if (filter === "custom") {
+      if (!startDate || !endDate) return;
+      s = new Date(startDate);
+      e = new Date(endDate);
+    }
+    setData(computeStats(logs, activeList, s, e));
+  }, [logs, activeList, filter, startDate, endDate, loading]);
+
   if (loading) return <div className="p-4">Yükleniyor...</div>;
+
+  let titleRange = "";
+  if (filter === "daily") titleRange = "Bugün";
+  else if (filter === "weekly") titleRange = "Son 7 Gün";
+  else if (filter === "monthly") titleRange = "Son 30 Gün";
+  else if (filter === "custom" && startDate && endDate)
+    titleRange = `${startDate} - ${endDate}`;
 
   const chartData = {
     labels: data.map((d) => d.name),
@@ -112,7 +140,35 @@ export default function Stats() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Kullanıcı İstatistikleri (30 Gün)</h2>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Kullanıcı İstatistikleri {titleRange && `(${titleRange})`}</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <select
+            className="border rounded p-2"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="daily">Günlük</option>
+            <option value="weekly">Haftalık</option>
+            <option value="monthly">Aylık</option>
+            <option value="custom">Özel</option>
+          </select>
+          {filter === "custom" && (
+            <>
+              <input
+                type="date"
+                className="border rounded p-2"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                className="border rounded p-2"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </>
+          )}
+        </div>
         <div className="mb-8">
           <Bar data={chartData} />
         </div>
