@@ -31,6 +31,8 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
   for (const [date, logs] of Object.entries(logByDate || {})) {
     const day = new Date(date);
     if (isNaN(day) || day < start || day > end) continue;
+    const workStart = new Date(`${date}T08:30:00`);
+    const workEnd = new Date(`${date}T17:30:00`);
     const sorted = [...logs].sort(
       (a, b) =>
         new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
@@ -45,21 +47,24 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
           callCount: 0,
           durations: { Molada: 0, "Çalışıyor": 0, Müsait: 0, İzinli: 0 },
         };
-      const now = new Date(`${date}T${entry.time}`);
+      let now = new Date(`${date}T${entry.time}`);
       if (!daily[person]) {
         const statusMatch = entry.action?.match(/(Molada|İzinli|Çalışıyor|Müsait)/);
-        daily[person] = { lastStatus: statusMatch ? statusMatch[1] : null, lastTime: now };
-        return;
+        const startTime = now < workStart ? workStart : now;
+        daily[person] = { lastStatus: statusMatch ? statusMatch[1] : null, lastTime: startTime };
+        if (now < workStart) return;
       }
       const prev = daily[person];
-      const diff = (now - prev.lastTime) / 60000;
-      if (prev.lastStatus && stats[person].durations[prev.lastStatus] !== undefined) {
+      const periodStart = Math.max(prev.lastTime.getTime(), workStart.getTime());
+      const periodEnd = Math.min(now.getTime(), workEnd.getTime());
+      const diff = (periodEnd - periodStart) / 60000;
+      if (diff > 0 && prev.lastStatus && stats[person].durations[prev.lastStatus] !== undefined) {
         stats[person].durations[prev.lastStatus] += diff;
       }
       let newStatus = prev.lastStatus;
       const callMatch = entry.action?.match(/çağrıyı aldı.*: (.*) → Çalışıyor/);
       const statusMatch = entry.action?.match(/Durum: (.*) → (.*)/);
-      if (callMatch) {
+      if (callMatch && now >= workStart && now <= workEnd) {
         newStatus = "Çalışıyor";
         stats[person].callCount += 1;
       } else if (statusMatch) {
@@ -69,9 +74,10 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
     });
     Object.entries(daily).forEach(([person, data]) => {
       if (!activeSet.has(person)) return;
-      const end = new Date(`${date}T23:59:59`);
-      const diff = (end - data.lastTime) / 60000;
-      if (data.lastStatus && stats[person].durations[data.lastStatus] !== undefined) {
+      const periodStart = Math.max(data.lastTime.getTime(), workStart.getTime());
+      const periodEnd = workEnd.getTime();
+      const diff = (periodEnd - periodStart) / 60000;
+      if (diff > 0 && data.lastStatus && stats[person].durations[data.lastStatus] !== undefined) {
         stats[person].durations[data.lastStatus] += diff;
       }
     });
