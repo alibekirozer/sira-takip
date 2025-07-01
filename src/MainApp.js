@@ -6,6 +6,7 @@ import { auth } from "./firebase";
 import App from "./App";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
+import Stats from "./Stats";
 
 export default function MainApp() {
   const [user, setUser] = useState(null);
@@ -36,6 +37,16 @@ export default function MainApp() {
               element={
                 user.email === "muhammedalibekir@gmail.com" ? (
                   <AdminPanel />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route
+              path="/admin/stats"
+              element={
+                user.email === "muhammedalibekir@gmail.com" ? (
+                  <Stats />
                 ) : (
                   <Navigate to="/" />
                 )

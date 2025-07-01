@@ -206,8 +206,14 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <div className="flex items-center mb-6">
+        <div className="flex items-center mb-6 justify-between">
           <h2 className="text-2xl font-semibold text-gray-700">Kullanıcı Yönetimi</h2>
+          <a
+            href="/admin/stats"
+            className="text-blue-600 hover:underline text-sm"
+          >
+            📊 İstatistikler
+          </a>
         </div>
         <form
           onSubmit={handleCreateUser}
