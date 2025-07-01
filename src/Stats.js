@@ -86,6 +86,24 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
   return Object.values(stats);
 }
 
+function computeHeatmap(logByDate, startDate, endDate) {
+  const heatmap = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split("T")[0];
+    const counts = Array(24).fill(0);
+    (logByDate[dateStr] || []).forEach((entry) => {
+      if (entry.action?.includes("çağrıyı aldı")) {
+        const hour = parseInt(entry.time.split(":" )[0], 10);
+        if (!isNaN(hour)) counts[hour] += 1;
+      }
+    });
+    heatmap.push({ date: dateStr, counts });
+  }
+  return heatmap;
+}
+
 export default function Stats() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,6 +112,10 @@ export default function Stats() {
   const [filter, setFilter] = useState("monthly");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [selectedDay, setSelectedDay] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [heatmap, setHeatmap] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,9 +141,14 @@ export default function Stats() {
       if (!startDate || !endDate) return;
       s = new Date(startDate);
       e = new Date(endDate);
+    } else if (filter === "daily") {
+      const d = selectedDay ? new Date(selectedDay) : today;
+      s = d;
+      e = new Date(d);
     }
     setData(computeStats(logs, activeList, s, e));
-  }, [logs, activeList, filter, startDate, endDate, loading]);
+    setHeatmap(computeHeatmap(logs, s, e));
+  }, [logs, activeList, filter, startDate, endDate, selectedDay, loading]);
 
   if (loading) return <div className="p-4">Yükleniyor...</div>;
 
@@ -143,6 +170,11 @@ export default function Stats() {
     ],
   };
 
+  const maxCount = Math.max(
+    0,
+    ...heatmap.flatMap((h) => h.counts)
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
@@ -156,12 +188,20 @@ export default function Stats() {
             <option value="daily">Günlük</option>
             <option value="weekly">Haftalık</option>
             <option value="monthly">Aylık</option>
-            <option value="custom">Özel</option>
-          </select>
-          {filter === "custom" && (
-            <>
-              <input
-                type="date"
+          <option value="custom">Özel</option>
+        </select>
+        {filter === "daily" && (
+          <input
+            type="date"
+            className="border rounded p-2"
+            value={selectedDay}
+            onChange={(e) => setSelectedDay(e.target.value)}
+          />
+        )}
+        {filter === "custom" && (
+          <>
+            <input
+              type="date"
                 className="border rounded p-2"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -177,6 +217,40 @@ export default function Stats() {
         </div>
         <div className="mb-8">
           <Bar data={chartData} />
+        </div>
+        <div className="overflow-x-auto mb-8">
+          <table className="text-xs border-collapse">
+            <thead>
+              <tr>
+                <th className="p-1 border">Tarih</th>
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <th key={i} className="p-1 border">
+                    {i}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {heatmap.map((row) => (
+                <tr key={row.date}>
+                  <td className="p-1 border whitespace-nowrap">{row.date}</td>
+                  {row.counts.map((c, i) => (
+                    <td
+                      key={i}
+                      className="border text-center"
+                      style={{
+                        backgroundColor: `rgba(252,165,165,${
+                          maxCount ? c / maxCount : 0
+                        })`,
+                      }}
+                    >
+                      {c > 0 ? c : ""}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border border-gray-200 rounded-lg">
