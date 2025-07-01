@@ -5,7 +5,7 @@ import { realtimeDB } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
-import { formatTime } from "./timeUtils";
+import { formatTime, ensure24Hour } from "./timeUtils";
 import { update } from "firebase/database";
 
 
@@ -510,7 +510,7 @@ export default function SiraTakip() {
                     .filter((entry) => entry.person === userName)
                     .map((entry, index) => (
                       <li key={index}>
-                        {entry.time} - {entry.person}{" "}
+                        {ensure24Hour(entry.time)} - {entry.person}{" "}
                         {entry.action ? entry.action : "çağrıyı aldı"}
                       </li>
                     ))}

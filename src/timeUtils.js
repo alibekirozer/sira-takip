@@ -6,3 +6,10 @@ export function formatTime(date = new Date()) {
     hour12: false,
   });
 }
+
+export function ensure24Hour(timeStr) {
+  if (!timeStr) return '';
+  const parsed = new Date(`1970-01-01 ${timeStr}`);
+  if (isNaN(parsed)) return timeStr;
+  return formatTime(parsed);
+}
