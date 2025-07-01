@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
 import { realtimeDB } from "./firebase";
 import { Bar } from "react-chartjs-2";
+import * as XLSX from "xlsx";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -86,7 +87,7 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
   return Object.values(stats);
 }
 
-function computeHeatmap(logByDate, startDate, endDate) {
+function computeHourlyHeatmap(logByDate, startDate, endDate) {
   const heatmap = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -104,6 +105,21 @@ function computeHeatmap(logByDate, startDate, endDate) {
   return heatmap;
 }
 
+function computeDailyHeatmap(logByDate, startDate, endDate) {
+  const heatmap = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split("T")[0];
+    let count = 0;
+    (logByDate[dateStr] || []).forEach((entry) => {
+      if (entry.action?.includes("çağrıyı aldı")) count += 1;
+    });
+    heatmap.push({ date: dateStr, count });
+  }
+  return heatmap;
+}
+
 export default function Stats() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,7 +131,8 @@ export default function Stats() {
   const [selectedDay, setSelectedDay] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [heatmap, setHeatmap] = useState([]);
+  const [hourlyHeatmap, setHourlyHeatmap] = useState([]);
+  const [dailyHeatmap, setDailyHeatmap] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -147,7 +164,8 @@ export default function Stats() {
       e = new Date(d);
     }
     setData(computeStats(logs, activeList, s, e));
-    setHeatmap(computeHeatmap(logs, s, e));
+    setHourlyHeatmap(computeHourlyHeatmap(logs, s, e));
+    setDailyHeatmap(computeDailyHeatmap(logs, s, e));
   }, [logs, activeList, filter, startDate, endDate, selectedDay, loading]);
 
   if (loading) return <div className="p-4">Yükleniyor...</div>;
@@ -170,10 +188,31 @@ export default function Stats() {
     ],
   };
 
-  const maxCount = Math.max(
-    0,
-    ...heatmap.flatMap((h) => h.counts)
-  );
+  const maxCount = Math.max(0, ...dailyHeatmap.map((h) => h.count));
+  const weeks = [];
+  for (let i = 0; i < dailyHeatmap.length; i += 7) {
+    weeks.push(dailyHeatmap.slice(i, i + 7));
+  }
+
+  const exportExcel = () => {
+    const wsData = [];
+    const header = ["Tarih"];
+    for (let h = 8; h <= 18; h++) {
+      header.push(h.toString().padStart(2, "0"));
+    }
+    wsData.push(header);
+    hourlyHeatmap.forEach((row) => {
+      const rowData = [row.date];
+      for (let h = 8; h <= 18; h++) {
+        rowData.push(row.counts[h] || 0);
+      }
+      wsData.push(rowData);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, "Heatmap");
+    XLSX.writeFile(wb, "heatmap.xlsx");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -219,32 +258,28 @@ export default function Stats() {
           <Bar data={chartData} />
         </div>
         <div className="overflow-x-auto mb-8">
+          <button
+            onClick={exportExcel}
+            className="mb-2 px-2 py-1 border rounded"
+          >
+            Excel İndir
+          </button>
           <table className="text-xs border-collapse">
-            <thead>
-              <tr>
-                <th className="p-1 border">Tarih</th>
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <th key={i} className="p-1 border">
-                    {i}
-                  </th>
-                ))}
-              </tr>
-            </thead>
             <tbody>
-              {heatmap.map((row) => (
-                <tr key={row.date}>
-                  <td className="p-1 border whitespace-nowrap">{row.date}</td>
-                  {row.counts.map((c, i) => (
+              {weeks.map((week, wi) => (
+                <tr key={wi}>
+                  {week.map((day) => (
                     <td
-                      key={i}
-                      className="border text-center"
+                      key={day.date}
+                      className="p-2 border text-center"
                       style={{
                         backgroundColor: `rgba(252,165,165,${
-                          maxCount ? c / maxCount : 0
+                          maxCount ? day.count / maxCount : 0
                         })`,
                       }}
                     >
-                      {c > 0 ? c : ""}
+                      <div className="text-[10px]">{day.date}</div>
+                      <div>{day.count > 0 ? day.count : ""}</div>
                     </td>
                   ))}
                 </tr>
