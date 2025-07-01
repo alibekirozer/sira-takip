@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
 import { realtimeDB } from "./firebase";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import * as XLSX from "xlsx";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function computeStats(logByDate, activeUsers, startDate, endDate) {
   const stats = {};
@@ -188,6 +199,19 @@ export default function Stats() {
     ],
   };
 
+  const dailyLineData = {
+    labels: dailyHeatmap.map((h) => h.date),
+    datasets: [
+      {
+        label: "Günlük Toplam Çağrı",
+        data: dailyHeatmap.map((h) => h.count),
+        borderColor: "rgb(75, 192, 192)",
+        fill: false,
+        tension: 0.1,
+      },
+    ],
+  };
+
   const maxCount = Math.max(0, ...dailyHeatmap.map((h) => h.count));
   const weeks = [];
   for (let i = 0; i < dailyHeatmap.length; i += 7) {
@@ -256,6 +280,9 @@ export default function Stats() {
         </div>
         <div className="mb-8">
           <Bar data={chartData} />
+        </div>
+        <div className="mb-8">
+          <Line data={dailyLineData} />
         </div>
         <div className="overflow-x-auto mb-8">
           <button
