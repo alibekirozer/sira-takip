@@ -247,28 +247,20 @@ export default function Stats() {
             <option value="daily">Günlük</option>
             <option value="weekly">Haftalık</option>
             <option value="monthly">Aylık</option>
-          <option value="custom">Özel</option>
-        </select>
-        <select
-          className="border rounded p-2"
-          value={view}
-          onChange={(e) => setView(e.target.value)}
-        >
-          <option value="user">Çağrı Sayısı</option>
-          <option value="total">Toplam Çağrı</option>
-        </select>
-        {filter === "daily" && (
-          <input
-            type="date"
-            className="border rounded p-2"
-            value={selectedDay}
-            onChange={(e) => setSelectedDay(e.target.value)}
-          />
-        )}
-        {filter === "custom" && (
-          <>
+            <option value="custom">Özel</option>
+          </select>
+          {filter === "daily" && (
             <input
               type="date"
+              className="border rounded p-2"
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+            />
+          )}
+          {filter === "custom" && (
+            <>
+              <input
+                type="date"
                 className="border rounded p-2"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -281,6 +273,14 @@ export default function Stats() {
               />
             </>
           )}
+          <select
+            className="border rounded p-2 ml-auto"
+            value={view}
+            onChange={(e) => setView(e.target.value)}
+          >
+            <option value="user">Çağrı Sayısı</option>
+            <option value="total">Toplam Çağrı</option>
+          </select>
         </div>
         <div className="mb-8">
           {view === "user" ? (
@@ -296,6 +296,42 @@ export default function Stats() {
           >
             Excel İndir
           </button>
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <select
+            className="border rounded p-2"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="daily">Günlük</option>
+            <option value="weekly">Haftalık</option>
+            <option value="monthly">Aylık</option>
+            <option value="custom">Özel</option>
+          </select>
+          {filter === "daily" && (
+            <input
+              type="date"
+              className="border rounded p-2"
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+            />
+          )}
+          {filter === "custom" && (
+            <>
+              <input
+                type="date"
+                className="border rounded p-2"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                className="border rounded p-2"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </>
+          )}
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border border-gray-200 rounded-lg">
