@@ -144,6 +144,7 @@ export default function Stats() {
   );
   const [hourlyHeatmap, setHourlyHeatmap] = useState([]);
   const [dailyHeatmap, setDailyHeatmap] = useState([]);
+  const [view, setView] = useState("user");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -212,11 +213,6 @@ export default function Stats() {
     ],
   };
 
-  const maxCount = Math.max(0, ...dailyHeatmap.map((h) => h.count));
-  const weeks = [];
-  for (let i = 0; i < dailyHeatmap.length; i += 7) {
-    weeks.push(dailyHeatmap.slice(i, i + 7));
-  }
 
   const exportExcel = () => {
     const wsData = [];
@@ -253,6 +249,14 @@ export default function Stats() {
             <option value="monthly">Aylık</option>
           <option value="custom">Özel</option>
         </select>
+        <select
+          className="border rounded p-2"
+          value={view}
+          onChange={(e) => setView(e.target.value)}
+        >
+          <option value="user">Çağrı Sayısı</option>
+          <option value="total">Toplam Çağrı</option>
+        </select>
         {filter === "daily" && (
           <input
             type="date"
@@ -279,40 +283,19 @@ export default function Stats() {
           )}
         </div>
         <div className="mb-8">
-          <Bar data={chartData} />
+          {view === "user" ? (
+            <Bar data={chartData} />
+          ) : (
+            <Line data={dailyLineData} />
+          )}
         </div>
         <div className="mb-8">
-          <Line data={dailyLineData} />
-        </div>
-        <div className="overflow-x-auto mb-8">
           <button
             onClick={exportExcel}
-            className="mb-2 px-2 py-1 border rounded"
+            className="px-2 py-1 border rounded"
           >
             Excel İndir
           </button>
-          <table className="text-xs border-collapse">
-            <tbody>
-              {weeks.map((week, wi) => (
-                <tr key={wi}>
-                  {week.map((day) => (
-                    <td
-                      key={day.date}
-                      className="p-2 border text-center"
-                      style={{
-                        backgroundColor: `rgba(252,165,165,${
-                          maxCount ? day.count / maxCount : 0
-                        })`,
-                      }}
-                    >
-                      <div className="text-[10px]">{day.date}</div>
-                      <div>{day.count > 0 ? day.count : ""}</div>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border border-gray-200 rounded-lg">
@@ -322,7 +305,6 @@ export default function Stats() {
                 <th className="px-3 py-2 text-left border-b">Molada (dk)</th>
                 <th className="px-3 py-2 text-left border-b">Çalışıyor (dk)</th>
                 <th className="px-3 py-2 text-left border-b">Müsait (dk)</th>
-                <th className="px-3 py-2 text-left border-b">İzinli (dk)</th>
                 <th className="px-3 py-2 text-left border-b">Çağrı</th>
               </tr>
             </thead>
@@ -333,7 +315,6 @@ export default function Stats() {
                   <td className="p-2 border">{Math.round(d.durations.Molada)}</td>
                   <td className="p-2 border">{Math.round(d.durations["Çalışıyor"])} </td>
                   <td className="p-2 border">{Math.round(d.durations.Müsait)}</td>
-                  <td className="p-2 border">{Math.round(d.durations.İzinli)}</td>
                   <td className="p-2 border">{d.callCount}</td>
                 </tr>
               ))}
