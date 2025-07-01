@@ -132,16 +132,26 @@ function computeDailyHeatmap(logByDate, startDate, endDate) {
 }
 
 export default function Stats() {
-  const [data, setData] = useState([]);
+  const [chartStats, setChartStats] = useState([]);
+  const [tableStats, setTableStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState({});
   const [activeList, setActiveList] = useState([]);
-  const [filter, setFilter] = useState("monthly");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [selectedDay, setSelectedDay] = useState(
+
+  const [chartFilter, setChartFilter] = useState("monthly");
+  const [chartStartDate, setChartStartDate] = useState("");
+  const [chartEndDate, setChartEndDate] = useState("");
+  const [chartSelectedDay, setChartSelectedDay] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const [tableFilter, setTableFilter] = useState("monthly");
+  const [tableStartDate, setTableStartDate] = useState("");
+  const [tableEndDate, setTableEndDate] = useState("");
+  const [tableSelectedDay, setTableSelectedDay] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+
   const [hourlyHeatmap, setHourlyHeatmap] = useState([]);
   const [dailyHeatmap, setDailyHeatmap] = useState([]);
   const [view, setView] = useState("user");
@@ -162,39 +172,60 @@ export default function Stats() {
     const today = new Date();
     let s = new Date(today);
     let e = new Date(today);
-    if (filter === "weekly") {
+    if (chartFilter === "weekly") {
       s.setDate(e.getDate() - 6);
-    } else if (filter === "monthly") {
+    } else if (chartFilter === "monthly") {
       s.setDate(e.getDate() - 29);
-    } else if (filter === "custom") {
-      if (!startDate || !endDate) return;
-      s = new Date(startDate);
-      e = new Date(endDate);
-    } else if (filter === "daily") {
-      const d = selectedDay ? new Date(selectedDay) : today;
+    } else if (chartFilter === "custom") {
+      if (!chartStartDate || !chartEndDate) return;
+      s = new Date(chartStartDate);
+      e = new Date(chartEndDate);
+    } else if (chartFilter === "daily") {
+      const d = chartSelectedDay ? new Date(chartSelectedDay) : today;
       s = d;
       e = new Date(d);
     }
-    setData(computeStats(logs, activeList, s, e));
+    setChartStats(computeStats(logs, activeList, s, e));
     setHourlyHeatmap(computeHourlyHeatmap(logs, s, e));
     setDailyHeatmap(computeDailyHeatmap(logs, s, e));
-  }, [logs, activeList, filter, startDate, endDate, selectedDay, loading]);
+  }, [logs, activeList, chartFilter, chartStartDate, chartEndDate, chartSelectedDay, loading]);
+
+  useEffect(() => {
+    if (loading) return;
+    const today = new Date();
+    let s = new Date(today);
+    let e = new Date(today);
+    if (tableFilter === "weekly") {
+      s.setDate(e.getDate() - 6);
+    } else if (tableFilter === "monthly") {
+      s.setDate(e.getDate() - 29);
+    } else if (tableFilter === "custom") {
+      if (!tableStartDate || !tableEndDate) return;
+      s = new Date(tableStartDate);
+      e = new Date(tableEndDate);
+    } else if (tableFilter === "daily") {
+      const d = tableSelectedDay ? new Date(tableSelectedDay) : today;
+      s = d;
+      e = new Date(d);
+    }
+    setTableStats(computeStats(logs, activeList, s, e));
+  }, [logs, activeList, tableFilter, tableStartDate, tableEndDate, tableSelectedDay, loading]);
 
   if (loading) return <div className="p-4">Yükleniyor...</div>;
 
   let titleRange = "";
-  if (filter === "daily") titleRange = "Bugün";
-  else if (filter === "weekly") titleRange = "Son 7 Gün";
-  else if (filter === "monthly") titleRange = "Son 30 Gün";
-  else if (filter === "custom" && startDate && endDate)
-    titleRange = `${startDate} - ${endDate}`;
+  if (chartFilter === "daily") titleRange = "Bugün";
+  else if (chartFilter === "weekly") titleRange = "Son 7 Gün";
+  else if (chartFilter === "monthly") titleRange = "Son 30 Gün";
+  else if (chartFilter === "custom" && chartStartDate && chartEndDate)
+    titleRange = `${chartStartDate} - ${chartEndDate}`;
 
   const chartData = {
-    labels: data.map((d) => d.name),
+    labels: chartStats.map((d) => d.name),
     datasets: [
       {
         label: "Çağrı Sayısı",
-        data: data.map((d) => d.callCount),
+        data: chartStats.map((d) => d.callCount),
         backgroundColor: "rgba(75, 192, 192, 0.5)",
       },
     ],
@@ -241,35 +272,35 @@ export default function Stats() {
         <div className="flex items-center gap-2 mb-4">
           <select
             className="border rounded p-2"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            value={chartFilter}
+            onChange={(e) => setChartFilter(e.target.value)}
           >
             <option value="daily">Günlük</option>
             <option value="weekly">Haftalık</option>
             <option value="monthly">Aylık</option>
             <option value="custom">Özel</option>
           </select>
-          {filter === "daily" && (
+          {chartFilter === "daily" && (
             <input
               type="date"
               className="border rounded p-2"
-              value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value)}
+              value={chartSelectedDay}
+              onChange={(e) => setChartSelectedDay(e.target.value)}
             />
           )}
-          {filter === "custom" && (
+          {chartFilter === "custom" && (
             <>
               <input
                 type="date"
                 className="border rounded p-2"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={chartStartDate}
+                onChange={(e) => setChartStartDate(e.target.value)}
               />
               <input
                 type="date"
                 className="border rounded p-2"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={chartEndDate}
+                onChange={(e) => setChartEndDate(e.target.value)}
               />
             </>
           )}
@@ -300,35 +331,35 @@ export default function Stats() {
         <div className="flex items-center gap-2 mb-4">
           <select
             className="border rounded p-2"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            value={tableFilter}
+            onChange={(e) => setTableFilter(e.target.value)}
           >
             <option value="daily">Günlük</option>
             <option value="weekly">Haftalık</option>
             <option value="monthly">Aylık</option>
             <option value="custom">Özel</option>
           </select>
-          {filter === "daily" && (
+          {tableFilter === "daily" && (
             <input
               type="date"
               className="border rounded p-2"
-              value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value)}
+              value={tableSelectedDay}
+              onChange={(e) => setTableSelectedDay(e.target.value)}
             />
           )}
-          {filter === "custom" && (
+          {tableFilter === "custom" && (
             <>
               <input
                 type="date"
                 className="border rounded p-2"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={tableStartDate}
+                onChange={(e) => setTableStartDate(e.target.value)}
               />
               <input
                 type="date"
                 className="border rounded p-2"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={tableEndDate}
+                onChange={(e) => setTableEndDate(e.target.value)}
               />
             </>
           )}
@@ -345,7 +376,7 @@ export default function Stats() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {data.map((d) => (
+              {tableStats.map((d) => (
                 <tr key={d.name} className="hover:bg-gray-50">
                   <td className="p-2 border">{d.name}</td>
                   <td className="p-2 border">{Math.round(d.durations.Molada)}</td>
