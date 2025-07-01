@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebase";
-import Signup from "./Signup";
-import { sendPasswordResetEmail } from "firebase/auth";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showSignup, setShowSignup] = useState(false);
-
-  if (showSignup) {
-    return <Signup onBack={() => setShowSignup(false)} />;
-  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,19 +19,7 @@ export default function Login() {
     }
   };
 
-  const handleResetPassword = async () => {
-   if (!email) {
-      setError("Lütfen önce e-posta adresinizi girin.");
-      return;
-    }
 
-    try {
-      await sendPasswordResetEmail(auth, email);
-     alert("Parola sıfırlama bağlantısı e-posta adresinize gönderildi.");
-   } catch (err) {
-      setError("Hata: " + err.message);
-    }
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -68,29 +50,7 @@ export default function Login() {
       Giriş Yap
     </button>
 
-    {/* ✅ Kayıt bağlantısı */}
-    <p className="text-sm text-center">
-      Hesabın yok mu?{" "}
-      <button
-        type="button"
-        onClick={() => setShowSignup(true)}
-        className="text-blue-500 underline"
-      >
-        Kayıt Ol
-      </button>
-    </p>
 
-    {/* ✅ Parola sıfırlama bağlantısı */}
-    <p className="text-sm text-center">
-      Şifreni mi unuttun?{" "}
-      <button
-        type="button"
-        onClick={handleResetPassword}
-        className="text-blue-500 underline"
-      >
-        Parolamı Sıfırla
-      </button>
-    </p>
   </form>
   </div>
 );
