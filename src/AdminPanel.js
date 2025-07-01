@@ -262,7 +262,7 @@ export default function AdminPanel() {
                 <th className="px-3 py-2 text-left border-b">Rol</th>
                 <th className="px-3 py-2 text-left border-b">Durum</th>
                 <th className="px-3 py-2 text-left border-b">Düzenle</th>
-                <th className="px-3 py-2 text-left border-b">Admin Yap</th>
+                <th className="px-3 py-2 text-left border-b">Admin/User</th>
                 <th className="px-3 py-2 text-left border-b">Sil</th>
               </tr>
             </thead>
@@ -324,7 +324,7 @@ export default function AdminPanel() {
                   activeList.find((emp) => emp.uid === user.uid)?.status || ""
                 )}
               </td>
-              <td className="p-2 border text-center">
+              <td className="p-2 border text-left">
                 {editingId === user.uid ? (
                   <>
                     <button
@@ -349,7 +349,7 @@ export default function AdminPanel() {
                   </button>
                 )}
               </td>
-              <td className="p-2 border text-center">
+              <td className="p-2 border text-left">
                 <button
                   onClick={() => toggleRole(user)}
                   className="text-blue-600 hover:underline"
@@ -357,7 +357,7 @@ export default function AdminPanel() {
                   🔁 {user.role === "admin" ? "User" : "Admin"} yap
                 </button>
               </td>
-              <td className="p-2 border text-center">
+              <td className="p-2 border text-left">
                 <button
                   onClick={() => deleteUser(user)}
                   className="text-red-600 hover:underline"
