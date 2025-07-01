@@ -5,6 +5,7 @@ import { realtimeDB } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import AdminPanel from "./AdminPanel";
+import { formatTime } from "./timeUtils";
 import { update } from "firebase/database";
 
 
@@ -197,7 +198,7 @@ export default function SiraTakip() {
         activeList.findIndex(emp => emp.status === "Müsait");
 
       const person = activeList[currentUserIndex].name;
-      const timestamp = new Date().toLocaleTimeString();
+      const timestamp = formatTime();
       const yeniLog = [
         { 
           person, 
@@ -232,7 +233,7 @@ export default function SiraTakip() {
     let yeniIndex = currentIndex; // olduğu gibi kalsın, değiştirme
 
     const person = updated[index].name;
-    const timestamp = new Date().toLocaleTimeString();
+    const timestamp = formatTime();
     const yeniLog = [{ person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` }, ...(logByDate[todayKey] || [])].slice(0, 200);
     const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
 
@@ -291,7 +292,7 @@ export default function SiraTakip() {
             <div className="flex items-center gap-[0.25vw] text-[clamp(0.7rem,0.5vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.25vh]">
               <span>🕒</span>
               <span>
-                {time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} -
+                {formatTime(time)} -
                 {time.toLocaleDateString("tr-TR")}
               </span>
             </div>

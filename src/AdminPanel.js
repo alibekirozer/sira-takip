@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
 import { firestoreDB, auth, realtimeDB, functions } from "./firebase";
+import { formatTime } from "./timeUtils";
 import { ref, get, set } from "firebase/database";
 import {
   getAuth,
@@ -88,7 +89,7 @@ export default function AdminPanel() {
     const logData = logSnap.val() || {};
     const entry = {
       person: user.name,
-      time: new Date().toLocaleTimeString(),
+      time: formatTime(),
       action: `Durum: ${oldStatus || "-"} → ${status}`,
     };
     const updatedForToday = [
