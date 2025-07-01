@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
 import { ref, get } from "firebase/database";
-import { firestoreDB, realtimeDB } from "./firebase";
+import { realtimeDB } from "./firebase";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,12 +14,13 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function computeStats(logByDate, users) {
+function computeStats(logByDate, activeUsers) {
   const stats = {};
+  const activeSet = new Set((activeUsers || []).map((u) => u.name));
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
 
-  users.forEach((u) => {
+  activeUsers.forEach((u) => {
     stats[u.name] = {
       name: u.name,
       callCount: 0,
@@ -38,6 +38,7 @@ function computeStats(logByDate, users) {
     const daily = {};
     sorted.forEach((entry) => {
       const person = entry.person;
+      if (!activeSet.has(person)) return;
       if (!stats[person])
         stats[person] = {
           name: person,
@@ -67,6 +68,7 @@ function computeStats(logByDate, users) {
       daily[person] = { lastStatus: newStatus, lastTime: now };
     });
     Object.entries(daily).forEach(([person, data]) => {
+      if (!activeSet.has(person)) return;
       const end = new Date(`${date}T23:59:59`);
       const diff = (end - data.lastTime) / 60000;
       if (data.lastStatus && stats[person].durations[data.lastStatus] !== undefined) {
@@ -86,9 +88,9 @@ export default function Stats() {
     const fetchData = async () => {
       const logSnap = await get(ref(realtimeDB, "siraTakip/logByDate"));
       const logs = logSnap.val() || {};
-      const usersSnap = await getDocs(collection(firestoreDB, "users"));
-      const users = usersSnap.docs.map((d) => d.data());
-      setData(computeStats(logs, users));
+      const activeSnap = await get(ref(realtimeDB, "siraTakip/activeList"));
+      const activeList = activeSnap.val() || [];
+      setData(computeStats(logs, activeList));
       setLoading(false);
     };
     fetchData();
