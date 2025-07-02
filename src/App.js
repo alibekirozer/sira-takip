@@ -436,8 +436,9 @@ export default function SiraTakip() {
               <div
                 key={emp.uid}
                 className={clsx(
-                  "flex flex-col gap-[0.4vh] bg-white rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
-                  i === siradakiMusaitIndex() && "border-2 border-green-500",
+                  "flex flex-col gap-[0.4vh] rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
+                  "bg-white",
+                  i === siradakiMusaitIndex() && "bg-blue-100 border-2 border-green-500",
                   isCurrentUser && "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950"
                 )}
               >
