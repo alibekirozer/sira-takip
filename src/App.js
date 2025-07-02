@@ -281,6 +281,9 @@ export default function SiraTakip() {
       ? indices
       : [...indices.slice(userIndex), ...indices.slice(0, userIndex)];
 
+  const toplamKullanici = activeList.length;
+  const musaitSayisi = activeList.filter(emp => emp.status === "Müsait").length;
+
   return (
     <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]`} style={{ overflowY: 'hidden' }}>
       {/* Üst Bar */}
@@ -452,6 +455,15 @@ export default function SiraTakip() {
                       )}
                     ></div>
                     <p className="text-[clamp(0.9rem,0.7vw,1.1rem)] font-semibold truncate max-w-[50vw]">{emp.name}</p>
+                    {isCurrentUser && (
+                      <span className="flex items-center gap-[0.3vw] ml-[0.4vw] bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-[0.4vw] py-[0.1vh] rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[0.8vw] h-[0.8vw] min-w-[12px] min-h-[12px]">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6c0 2.071-1.679 3.75-3.75 3.75s-3.75-1.679-3.75-3.75S9.929 2.25 12 2.25s3.75 1.679 3.75 3.75z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.501 20.118C4.571 16.037 7.902 12.75 12 12.75s7.428 3.287 7.499 7.369C17.216 21.166 14.676 21.75 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                        Siz
+                      </span>
+                    )}
                   </div>
 
                   {/* Durum veya butonlar */}
@@ -501,6 +513,10 @@ export default function SiraTakip() {
               </div>
             );
             })}
+            <div className="flex justify-end mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 dark:text-gray-300 font-medium">
+              <span className="mr-[1vw]">Toplam kullanıcı sayısı: {toplamKullanici}</span>
+              <span>Müsait: {musaitSayisi}</span>
+            </div>
           </div>
         </div>
         <div className="w-full lg:w-1/4 flex flex-col">
