@@ -424,15 +424,18 @@ export default function SiraTakip() {
       </div>
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-[0.5vw] mt-[2vh] overflow-hidden">
         <div className="w-full lg:w-[75%] pr-0 lg:pr-[0.5vw] space-y-[0.5vh] overflow-visible">
+          <h2 className="text-[clamp(1rem,1vw,1.3rem)] font-semibold mb-[0.8vh]">Aktif Kullanıcılar</h2>
           <div className="space-y-[0.6vh]">
             {displayIndices.map((i) => {
               const emp = activeList[i];
+              const isCurrentUser = emp.uid === auth.currentUser?.uid;
               return (
               <div
                 key={emp.uid}
                 className={clsx(
                   "flex flex-col gap-[0.4vh] bg-white rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
-                  i === siradakiMusaitIndex() && "border-2 border-green-500"
+                  i === siradakiMusaitIndex() && "border-2 border-green-500",
+                  isCurrentUser && "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950"
                 )}
               >
                 {/* Üst Satır: Durum rengi ve isim */}
