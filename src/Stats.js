@@ -46,8 +46,7 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
     const workStart = new Date(`${date}T08:30:00`);
     const workEnd = new Date(`${date}T17:30:00`);
     const sorted = [...logs].sort(
-      (a, b) =>
-        new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
+      (a, b) => new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
     );
     const daily = {};
     sorted.forEach((entry) => {
@@ -59,30 +58,54 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
           callCount: 0,
           durations: { Molada: 0, "Çalışıyor": 0, Müsait: 0, İzinli: 0 },
         };
-      let now = new Date(`${date}T${entry.time}`);
-      if (!daily[person]) {
-        const statusMatch = entry.action?.match(/(Molada|İzinli|Çalışıyor|Müsait)/);
-        const startTime = now < workStart ? workStart : now;
-        daily[person] = { lastStatus: statusMatch ? statusMatch[1] : null, lastTime: startTime };
-        if (now < workStart) return;
-      }
-      const prev = daily[person];
-      const periodStart = Math.max(prev.lastTime.getTime(), workStart.getTime());
-      const periodEnd = Math.min(now.getTime(), workEnd.getTime());
-      const diff = (periodEnd - periodStart) / 60000;
-      if (diff > 0 && prev.lastStatus && stats[person].durations[prev.lastStatus] !== undefined) {
-        stats[person].durations[prev.lastStatus] += diff;
-      }
-      let newStatus = prev.lastStatus;
+      const now = new Date(`${date}T${entry.time}`);
+
       const callMatch = entry.action?.match(/çağrıyı aldı.*: (.*) → Çalışıyor/);
-      const statusMatch = entry.action?.match(/Durum: (.*) → (.*)/);
-      if (callMatch && now >= workStart && now <= workEnd) {
-        newStatus = "Çalışıyor";
-        stats[person].callCount += 1;
-      } else if (statusMatch) {
-        newStatus = statusMatch[2].trim();
+      const statusChangeMatch = entry.action?.match(/Durum: (.*) → (.*)/);
+      const anyStatusMatch = entry.action?.match(/(Molada|İzinli|Çalışıyor|Müsait)/);
+
+      const oldStatus = statusChangeMatch
+        ? statusChangeMatch[1].trim()
+        : callMatch
+        ? callMatch[1].trim()
+        : anyStatusMatch
+        ? anyStatusMatch[1]
+        : null;
+      const newStatus = statusChangeMatch
+        ? statusChangeMatch[2].trim()
+        : callMatch
+        ? "Çalışıyor"
+        : anyStatusMatch
+        ? anyStatusMatch[1]
+        : null;
+
+      if (!daily[person]) {
+        if (now < workStart) {
+          daily[person] = { lastStatus: newStatus, lastTime: workStart };
+          return;
+        }
+        daily[person] = { lastStatus: oldStatus, lastTime: workStart };
       }
-      daily[person] = { lastStatus: newStatus, lastTime: now };
+
+      const prev = daily[person];
+      if (now >= workStart) {
+        const periodStart = Math.max(prev.lastTime.getTime(), workStart.getTime());
+        const periodEnd = Math.min(now.getTime(), workEnd.getTime());
+        const diff = (periodEnd - periodStart) / 60000;
+        if (
+          diff > 0 &&
+          prev.lastStatus &&
+          stats[person].durations[prev.lastStatus] !== undefined
+        ) {
+          stats[person].durations[prev.lastStatus] += diff;
+        }
+      }
+
+      if (callMatch && now >= workStart && now <= workEnd) {
+        stats[person].callCount += 1;
+      }
+
+      daily[person] = { lastStatus: newStatus || prev.lastStatus, lastTime: now };
     });
     Object.entries(daily).forEach(([person, data]) => {
       if (!activeSet.has(person)) return;
