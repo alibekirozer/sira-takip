@@ -439,7 +439,7 @@ export default function SiraTakip() {
                   "flex flex-col gap-[0.4vh] rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
                   "bg-white",
                   i === siradakiMusaitIndex() && "bg-blue-100 border-2 border-green-500",
-                  isCurrentUser && "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950"
+                  // Kullanıcı sadece "Siz" etiketiyle işaretlensin, ekstra vurgulama yapılmasın
                 )}
               >
                 {/* Üst Satır: Durum rengi ve isim */}
