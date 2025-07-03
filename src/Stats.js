@@ -44,7 +44,11 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
     const day = new Date(date);
     if (isNaN(day) || day < start || day > end) continue;
     const workStart = new Date(`${date}T08:30:00`);
-    const workEnd = new Date(`${date}T17:30:00`);
+    let workEnd = new Date(`${date}T17:30:00`);
+    const today = new Date();
+    if (day.toDateString() === today.toDateString() && today < workEnd) {
+      workEnd = today;
+    }
     const sorted = [...logs].sort(
       (a, b) => new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
     );
