@@ -18,7 +18,6 @@ export default function SiraTakip() {
   const [blink, setBlink] = useState(false);
   const [newName, setNewName] = useState("");
   const [log, setLog] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
   const [time, setTime] = useState(new Date());
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [benimAdim, setBenimAdim] = useState("");
@@ -34,25 +33,15 @@ export default function SiraTakip() {
   const durumRengi = (status) => {
     switch (status) {
       case "Molada":
-        return darkMode
-          ? "bg-yellow-400 border-yellow-500 text-black"
-          : "bg-yellow-200 border-yellow-400 text-black";
+        return "bg-yellow-200 border-yellow-400 text-black";
       case "İzinli":
-        return darkMode
-          ? "bg-gray-500 border-gray-400 text-white"
-          : "bg-gray-200 border-gray-400 text-gray-600";
+        return "bg-gray-200 border-gray-400 text-gray-600";
       case "Çalışıyor":
-        return darkMode
-          ? "bg-orange-500 border-red-500 text-white"
-          : "bg-orange-300 border-red-400 text-black";
+        return "bg-orange-300 border-red-400 text-black";
       case "Müsait":
-        return darkMode
-          ? "bg-green-700 border-green-400 text-white"
-          : "bg-green-200 border-green-500 text-black";
+        return "bg-green-200 border-green-500 text-black";
       default:
-        return darkMode
-          ? "bg-slate-800 border-gray-500 text-white"
-          : "bg-white border-gray-300 text-black";
+        return "bg-white border-gray-300 text-black";
     }
   };
 
@@ -285,14 +274,14 @@ export default function SiraTakip() {
   const musaitSayisi = activeList.filter(emp => emp.status === "Müsait").length;
 
   return (
-    <div className={`${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"} min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]`} style={{ overflowY: 'hidden' }}>
+    <div className="bg-white text-black min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]" style={{ overflowY: 'hidden' }}>
       {/* Üst Bar */}
-      <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 dark:border-slate-700/40 py-[0.75vh] mb-[1vh] w-full max-w-full">
+      <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 py-[0.75vh] mb-[1vh] w-full max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[0.5vw] w-full">
           {/* Başlık ve Saat */}
           <div className="min-w-0">
             <h1 className="text-[clamp(1.2rem,1.1vw,2.5rem)] font-semibold tracking-tight truncate">Çağrı Takip</h1>
-            <div className="flex items-center gap-[0.25vw] text-[clamp(0.7rem,0.5vw,1.2rem)] text-gray-600 dark:text-gray-400 mt-[0.25vh]">
+            <div className="flex items-center gap-[0.25vw] text-[clamp(0.7rem,0.5vw,1.2rem)] text-gray-600 mt-[0.25vh]">
               <span>🕒</span>
               <span>
                 {formatTime(time)} -
@@ -303,13 +292,13 @@ export default function SiraTakip() {
           {/* Kullanıcı Bilgisi ve İşlemler */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-[1vw] text-[clamp(1rem,0.8vw,1.8rem)] w-full sm:w-auto">
             <div className="text-right sm:text-left w-full sm:w-auto">
-              <p className="text-gray-800 dark:text-gray-200 truncate">
-                Hoş geldin, <span className="font-semibold text-blue-600 dark:text-blue-400">{userName || "Kullanıcı"}</span>
+              <p className="text-gray-800 truncate">
+                Hoş geldin, <span className="font-semibold text-blue-600">{userName || "Kullanıcı"}</span>
               </p>
               {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
                 <a
                   href="/admin"
-                  className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition"
+                  className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 transition"
                 >
                   🔧 Admin Panel
                 </a>
@@ -319,7 +308,7 @@ export default function SiraTakip() {
               <button
                 onClick={() => signOut(auth)}
                 aria-label="Çıkış Yap"
-                className="p-[0.8vw] rounded hover:bg-red-100 dark:hover:bg-red-900 transition text-red-600 dark:text-red-400"
+                className="p-[0.8vw] rounded hover:bg-red-100 transition text-red-600"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[1.6vw] h-[1.6vw] min-w-[24px] min-h-[24px]">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
@@ -417,7 +406,7 @@ export default function SiraTakip() {
 
           {/* Sağ tarafta bilgi kısmı */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center">
-            <div className="flex items-center gap-[0.4vw] bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded px-[0.8vw] py-[0.5vh] text-[clamp(0.7rem,0.8vw,1.1rem)] font-medium shadow-sm whitespace-nowrap">
+            <div className="flex items-center gap-[0.4vw] bg-blue-100 text-blue-900 rounded px-[0.8vw] py-[0.5vh] text-[clamp(0.7rem,0.8vw,1.1rem)] font-medium shadow-sm whitespace-nowrap">
               <span>
                 Sıradaki kişi: <span className="font-bold">{siradakiKisi()}</span>. Size sıra gelmesine <span className="font-bold">{kalanKisiSayisi()}</span> kişi var.
               </span>
@@ -456,7 +445,7 @@ export default function SiraTakip() {
                     ></div>
                     <p className="text-[clamp(0.9rem,0.7vw,1.1rem)] font-semibold truncate max-w-[50vw]">{emp.name}</p>
                     {isCurrentUser && (
-                      <span className="flex items-center gap-[0.3vw] ml-[0.4vw] bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-[0.4vw] py-[0.1vh] rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">
+                      <span className="flex items-center gap-[0.3vw] ml-[0.4vw] bg-blue-200 text-blue-800 px-[0.4vw] py-[0.1vh] rounded text-[clamp(0.6rem,0.6vw,0.8rem)]">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[0.8vw] h-[0.8vw] min-w-[12px] min-h-[12px]">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6c0 2.071-1.679 3.75-3.75 3.75s-3.75-1.679-3.75-3.75S9.929 2.25 12 2.25s3.75 1.679 3.75 3.75z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.501 20.118C4.571 16.037 7.902 12.75 12 12.75s7.428 3.287 7.499 7.369C17.216 21.166 14.676 21.75 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -471,25 +460,25 @@ export default function SiraTakip() {
                     <div className="flex flex-wrap gap-[0.3vw]">
                       <button
                         onClick={() => durumGuncelle(i, "Molada")}
-                        className="px-[0.7vw] py-[0.3vh] bg-yellow-200 dark:bg-yellow-400 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
+                        className="px-[0.7vw] py-[0.3vh] bg-yellow-200 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
                       >
                         Moladayım
                       </button>
                       <button
                         onClick={() => durumGuncelle(i, "İzinli")}
-                        className="px-[0.7vw] py-[0.3vh] bg-gray-300 dark:bg-gray-500 text-black dark:text-white rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
+                        className="px-[0.7vw] py-[0.3vh] bg-gray-300 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
                       >
                         İzinliyim
                       </button>
                       <button
                         onClick={() => durumGuncelle(i, "Çalışıyor")}
-                        className="px-[0.7vw] py-[0.3vh] bg-orange-400 dark:bg-orange-600 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
+                        className="px-[0.7vw] py-[0.3vh] bg-orange-400 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
                       >
                         Çalışıyorum
                       </button>
                       <button
                         onClick={() => durumGuncelle(i, "Müsait")}
-                        className="px-[0.7vw] py-[0.3vh] bg-green-400 dark:bg-green-600 text-black dark:text-white rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
+                        className="px-[0.7vw] py-[0.3vh] bg-green-400 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
                       >
                         Müsaitim
                       </button>
@@ -513,7 +502,7 @@ export default function SiraTakip() {
               </div>
             );
             })}
-            <div className="flex justify-end mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 dark:text-gray-300 font-medium">
+            <div className="flex justify-end mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 font-medium">
               <span className="mr-[1vw]">Toplam kullanıcı sayısı: {toplamKullanici}</span>
               <span>Müsait: {musaitSayisi}</span>
             </div>
@@ -521,7 +510,7 @@ export default function SiraTakip() {
         </div>
         <div className="w-full lg:w-1/4 flex flex-col">
           <div className="border-l-0 lg:pl-[1.5vw] pr-0" style={{height: 'calc(104vh - 20vw)'}}>
-            <div className="bg-white dark:bg-white border border-gray-300 dark:border-gray-700 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
+            <div className="bg-white border border-gray-300 rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] mr-0 lg:mr-[1vw] h-full flex flex-col">
               <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
               <div className="flex-1 min-h-0 overflow-y-auto">
                 <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
@@ -594,7 +583,7 @@ export default function SiraTakip() {
             </>
           )}
         </div>
-          <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-slate-700 bg-inherit">        
+          <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 bg-inherit">
         <span>Created by Ali Bekir Özer</span>
       </footer>
     </div>
