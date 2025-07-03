@@ -274,7 +274,7 @@ export default function SiraTakip() {
   const musaitSayisi = activeList.filter(emp => emp.status === "Müsait").length;
 
   return (
-    <div className="bg-white text-black min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]" style={{ overflowY: 'hidden' }}>
+    <div className="bg-white text-black min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw] py-[2vh]" style={{ overflowY: 'hidden' }}>
       {/* Üst Bar */}
       <header className="sticky top-0 z-20 bg-inherit backdrop-blur-md border-b border-gray-300/20 py-[0.75vh] mb-[1vh] w-full max-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[0.5vw] w-full">
@@ -415,10 +415,11 @@ export default function SiraTakip() {
         </div>
       </div>
       <div className="flex-1 flex flex-col lg:flex-row w-full gap-[0.5vw] mt-[2vh] overflow-hidden">
-        <div className="w-full lg:w-[75%] pr-0 lg:pr-[0.5vw] space-y-[0.5vh] overflow-visible">
-          <h2 className="text-[clamp(1rem,1vw,1.3rem)] font-semibold mb-[0.8vh]">Aktif Kullanıcılar</h2>
-          <div className="space-y-[0.6vh]">
-            {displayIndices.map((i) => {
+        <div className="w-full lg:w-[75%] pr-0 lg:pr-[0.5vw]" style={{height: 'calc(104vh - 20vw)'}}>
+          <div className="bg-white rounded-[0.7vw] shadow-sm px-[1vw] pt-[1vh] pb-[1vh] h-full flex flex-col">
+            <h2 className="text-[clamp(1rem,1vw,1.3rem)] font-semibold mb-[0.8vh]">Aktif Kullanıcılar</h2>
+            <div className="flex-1 overflow-y-auto space-y-[0.6vh]">
+            {displayIndices.map((i, idx) => {
               const emp = activeList[i];
               const isCurrentUser = emp.uid === auth.currentUser?.uid;
               return (
@@ -428,6 +429,7 @@ export default function SiraTakip() {
                   "flex flex-col gap-[0.4vh] rounded-[0.4vw] shadow-sm p-[0.6vw] duration-200",
                   "bg-white",
                   i === siradakiMusaitIndex() && "bg-blue-50 border-2 border-green-500",
+                  idx === 0 && "sticky top-0 z-10"
                 )}
               >
                 {/* Üst Satır: Durum rengi ve isim */}
