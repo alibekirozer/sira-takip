@@ -40,9 +40,10 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
     };
   });
 
-  for (const [date, logs] of Object.entries(logByDate || {})) {
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const date = d.toISOString().split("T")[0];
+    const logs = logByDate[date] || [];
     const day = new Date(date);
-    if (isNaN(day) || day < start || day > end) continue;
     const workStart = new Date(`${date}T08:30:00`);
     let workEnd = new Date(`${date}T17:30:00`);
     const today = new Date();
@@ -53,6 +54,15 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
       (a, b) => new Date(`${date}T${a.time}`) - new Date(`${date}T${b.time}`)
     );
     const daily = {};
+    activeUsers.forEach((u) => {
+      if (activeSet.has(u.name)) {
+        daily[u.name] = {
+          lastStatus: u.status,
+          lastTime: workStart,
+          fromDefault: true,
+        };
+      }
+    });
     sorted.forEach((entry) => {
       const person = entry.person;
       if (!activeSet.has(person)) return;
@@ -83,15 +93,11 @@ function computeStats(logByDate, activeUsers, startDate, endDate) {
         ? anyStatusMatch[1]
         : null;
 
-      if (!daily[person]) {
-        if (now < workStart) {
-          daily[person] = { lastStatus: newStatus, lastTime: workStart };
-          return;
-        }
-        daily[person] = { lastStatus: oldStatus, lastTime: workStart };
-      }
-
       const prev = daily[person];
+      if (prev.fromDefault && oldStatus) {
+        prev.lastStatus = oldStatus;
+        prev.fromDefault = false;
+      }
       if (now >= workStart) {
         const periodStart = Math.max(prev.lastTime.getTime(), workStart.getTime());
         const periodEnd = Math.min(now.getTime(), workEnd.getTime());
