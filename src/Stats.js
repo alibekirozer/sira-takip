@@ -401,11 +401,11 @@ export default function Stats() {
           <table className="min-w-full text-sm border border-gray-200 rounded-lg">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-3 py-2 text-left border-b">Ad Soyad</th>
-                <th className="px-3 py-2 text-left border-b">Molada (dk)</th>
-                <th className="px-3 py-2 text-left border-b">Çalışıyor (dk)</th>
-                <th className="px-3 py-2 text-left border-b">Müsait (dk)</th>
-                <th className="px-3 py-2 text-left border-b">Çağrı</th>
+                <th className="px-3 py-2 text-left border-b">Kullanıcı</th>
+                <th className="px-3 py-2 text-left border-b">Mola Süresi (dk)</th>
+                <th className="px-3 py-2 text-left border-b">Çalışma Süresi (dk)</th>
+                <th className="px-3 py-2 text-left border-b">Müsait Süresi (dk)</th>
+                <th className="px-3 py-2 text-left border-b">Çağrı Sayısı</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
