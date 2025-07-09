@@ -502,7 +502,7 @@ export default function SiraTakip() {
               </div>
             );
             })}
-            <div className="flex justify-end mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 font-medium">
+            <div className="flex justify-between items-center mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 font-medium p-[0.6vw]">
               <span className="mr-[1vw]">Toplam kullanıcı sayısı: {toplamKullanici}</span>
               <span>Müsait: {musaitSayisi}</span>
             </div>
