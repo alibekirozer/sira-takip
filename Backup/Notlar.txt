@@ -1,9 +1,0 @@
-🔐 Yetkilendirme (kimlik doğrulama ile sadece bazı kişilere açık)
-
-📱 Mobil uyum (ekstra responsive tasarım iyileştirmeleri)
-
-🔔 Sesli uyarı veya bildirim entegrasyonu
-
-📊 Admin paneli: kullanıcı başına çağrı istatistikleri
-
-📆 Günlük sıfırlama veya log arşivleme özelliği
