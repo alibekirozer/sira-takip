@@ -27,6 +27,7 @@ export default function AdminPanel() {
   const [editedEmail, setEditedEmail] = useState("");
   const [editedPassword, setEditedPassword] = useState("");
   const [editedStatus, setEditedStatus] = useState("");
+  const [editedIncluded, setEditedIncluded] = useState(false);
   const [activeList, setActiveList] = useState([]);
   const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
@@ -107,6 +108,7 @@ export default function AdminPanel() {
     setEditedEmail(user.email);
     setEditedPassword("");
     setEditedStatus(activeList.find((emp) => emp.uid === user.uid)?.status || "");
+    setEditedIncluded(activeList.some((emp) => emp.uid === user.uid));
   };
 
   const cancelEdit = () => {
@@ -115,6 +117,7 @@ export default function AdminPanel() {
     setEditedEmail("");
     setEditedPassword("");
     setEditedStatus("");
+    setEditedIncluded(false);
   };
 
   const saveChanges = async (user) => {
@@ -127,16 +130,46 @@ export default function AdminPanel() {
 
       const activeRef = ref(realtimeDB, "siraTakip/activeList");
       const snap = await get(activeRef);
-      const list = snap.val() || [];
-      const updatedList = list.map((emp) =>
-        emp.uid === user.uid ? { ...emp, name: editedName } : emp
-      );
-      await set(activeRef, updatedList);
+      let list = snap.val() || [];
+      const idx = list.findIndex((emp) => emp.uid === user.uid);
+      const wasIncluded = idx !== -1;
+      const currentStatus = wasIncluded ? list[idx].status : "";
 
-      const currentStatus =
-        list.find((emp) => emp.uid === user.uid)?.status || "";
-      if (editedStatus !== "" && editedStatus !== currentStatus) {
-        await updateStatus({ ...user, name: editedName }, editedStatus);
+      if (editedIncluded) {
+        if (wasIncluded) {
+          list = list.map((emp) =>
+            emp.uid === user.uid
+              ? { ...emp, name: editedName, status: editedStatus || emp.status }
+              : emp
+          );
+        } else {
+          list = [
+            ...list,
+            { uid: user.uid, name: editedName, status: editedStatus || "Müsait" },
+          ];
+        }
+        await set(activeRef, list);
+        setActiveList(list);
+        if (editedStatus !== "" && editedStatus !== currentStatus) {
+          await updateStatus({ ...user, name: editedName }, editedStatus || "Müsait");
+        }
+      } else if (wasIncluded) {
+        const removedStatus = list[idx].status;
+        list = list.filter((emp) => emp.uid !== user.uid);
+        await set(activeRef, list);
+        setActiveList(list);
+        const logRef = ref(realtimeDB, "siraTakip/logByDate");
+        const logSnap = await get(logRef);
+        const logData = logSnap.val() || {};
+        const entry = {
+          person: editedName,
+          time: formatTime(),
+          action: `Durum: ${removedStatus} → -`,
+        };
+        const updatedForToday = [entry, ...(logData[todayKey] || [])].slice(0, 200);
+        const updatedLogs = { ...logData, [todayKey]: updatedForToday };
+        await set(logRef, updatedLogs);
+        setLogByDate(updatedLogs);
       }
 
       if (editedEmail !== user.email || editedPassword) {
@@ -260,6 +293,7 @@ export default function AdminPanel() {
                 <th className="px-3 py-2 text-left border-b">Email</th>
                 <th className="px-3 py-2 text-left border-b">Şifre</th>
                 <th className="px-3 py-2 text-left border-b">Rol</th>
+                <th className="px-3 py-2 text-left border-b">Takipte</th>
                 <th className="px-3 py-2 text-left border-b">Durum</th>
                 <th className="px-3 py-2 text-left border-b">Düzenle</th>
                 <th className="px-3 py-2 text-left border-b">Admin/User</th>
@@ -307,6 +341,17 @@ export default function AdminPanel() {
                 )}
               </td>
               <td className="p-2 border capitalize">{user.role}</td>
+              <td className="p-2 border text-center">
+                {editingId === user.uid ? (
+                  <input
+                    type="checkbox"
+                    checked={editedIncluded}
+                    onChange={(e) => setEditedIncluded(e.target.checked)}
+                  />
+                ) : (
+                  activeList.some((emp) => emp.uid === user.uid) ? "✅" : "❌"
+                )}
+              </td>
               <td className="p-2 border">
                 {editingId === user.uid ? (
                   <select
