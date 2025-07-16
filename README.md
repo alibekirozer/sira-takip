@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Updating the Teams webhook
+
+Cloud Functions send notifications to Microsoft Teams. The webhook URL can be
+configured via the `TEAMS_WEBHOOK_URL` environment variable. If the variable is
+not set, the default URL defined in `functions/index.js` will be used.
+
+After changing the webhook or the function code, deploy the functions again:
+
+```bash
+firebase deploy --only functions
+```
+
