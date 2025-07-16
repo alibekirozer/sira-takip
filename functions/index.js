@@ -26,6 +26,7 @@ exports.bildirimGonder = onValueWritten(
       "summary": "Sıra Takip Bildirimi",
       "themeColor": "0076D7",
       "title": "📢 Yeni Çağrı",
+      "username": "Çağrı Takip Bildirimi",
       "text": `Şu an çağrı sırası **${after.val()}** kişisine geçti.`,
     };
 
