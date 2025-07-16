@@ -7,10 +7,7 @@ admin.initializeApp();
 
 const { onValueUpdated } = require("firebase-functions/v2/database"); 
 const DEFAULT_TEAMS_WEBHOOK_URL =
-  "https://kocsistem.webhook.office.com/webhookb2/" +
-  "44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/" +
-  "IncomingWebhook/bd5a4b1dd18543fe9381425d84d08aaa/" +
-  "cf410a20-3801-452e-8fea-eb078c94b436/V2QSlF6jzNTcJreNEzHOHslp9jCAnGRgGWhPTBz-nB4hA1";
+  "https://kocsistem.webhook.office.com/webhookb2/abeee0d5-b203-43f5-929d-391659e259b8@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/5f03de4551964d6ba81df8bf80da3033/cf410a20-3801-452e-8fea-eb078c94b436/V2RZ3eafed3jWqluMpw99nOfO1_WWRaaMhKQf6sUTBbkI1";
 
 const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL || DEFAULT_TEAMS_WEBHOOK_URL;
