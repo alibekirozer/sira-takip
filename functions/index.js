@@ -6,7 +6,8 @@ const fetch = require("node-fetch");
 admin.initializeApp();
 
 const { onValueUpdated } = require("firebase-functions/v2/database"); 
-const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/8a107ec665ce4fbabd00e1bb112f83f5/cf410a20-3801-452e-8fea-eb078c94b436/V2McyqjP01K0v7vSLa2uUHYEF0ZDDagGcAuiCZQ1uX6wc1";
+//const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/8a107ec665ce4fbabd00e1bb112f83f5/cf410a20-3801-452e-8fea-eb078c94b436/V2McyqjP01K0v7vSLa2uUHYEF0ZDDagGcAuiCZQ1uX6wc1";
+const TEAMS_WEBHOOK_URL = "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/ce0973a327a1430798ad13e1c6c63667/cf410a20-3801-452e-8fea-eb078c94b436/V26zCYUU6fumPx8x4S_URaF8ZBPfIOOGbUv9b3kCFPqv81";
 
 exports.bildirimGonder = onValueWritten(
   {
