@@ -8,7 +8,7 @@ admin.initializeApp();
 const { onValueUpdated } = require("firebase-functions/v2/database"); 
 const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL ||
-  "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/feaff87babfa4ad79698fecd90506c45/cf410a20-3801-452e-8fea-eb078c94b436/V2HLOiBO5dUtI99j9l0VGzP03M3uYj5rDVrSbNsMtuEl01";
+  "https://kocsistem.webhook.office.com/webhookb2/44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/ee9e8e581a9947978427c0251aa55949/cf410a20-3801-452e-8fea-eb078c94b436/V2s7VscePkYeDL_oi1CU0E1isjutKTu5F0uKoQJeD_L9Q1";
 exports.bildirimGonder = onValueWritten(
   {
     region: "europe-west1",
@@ -22,11 +22,11 @@ exports.bildirimGonder = onValueWritten(
 
     const payload = {
       "@type": "MessageCard",
-      "@context": "http://schema.org/extensions",
+      //"@context": "http://schema.org/extensions",
       "summary": "Çağrı Takip Bildirimi",
       "themeColor": "0076D7",
       "title": "📢 Yeni Çağrı",
-      "name": "Çağrı Takip Bildirimi",
+      "username": "Çağrı Takip Bildirimi",
       "text": `Şu an çağrı sırası **${after.val()}** kişisine geçti.`,
     };
 
