@@ -9,8 +9,8 @@ const { onValueUpdated } = require("firebase-functions/v2/database");
 const DEFAULT_TEAMS_WEBHOOK_URL =
   "https://kocsistem.webhook.office.com/webhookb2/" +
   "44660f66-4726-4a54-842b-1c313fd46f06@1e1aa76b-4b02-45f4-9417-2e13eb0da973/" +
-  "IncomingWebhook/ee9e8e581a9947978427c0251aa55949/" +
-  "cf410a20-3801-452e-8fea-eb078c94b436/V2s7VscePkYeDL_oi1CU0E1isjutKTu5F0uKoQJeD_L9Q1";
+  "IncomingWebhook/bd5a4b1dd18543fe9381425d84d08aaa/" +
+  "cf410a20-3801-452e-8fea-eb078c94b436/V2QSlF6jzNTcJreNEzHOHslp9jCAnGRgGWhPTBz-nB4hA1";
 
 const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL || DEFAULT_TEAMS_WEBHOOK_URL;
