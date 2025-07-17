@@ -4,12 +4,11 @@ import { ref, set, onValue } from "firebase/database";
 import { realtimeDB } from "./firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
-import AdminPanel from "./AdminPanel";
 import { formatTime, ensure24Hour } from "./timeUtils";
 import { update } from "firebase/database";
 
 
-export default function SiraTakip() {
+export default function SiraTakip({ isAdmin }) {
   const [allEmployees, setAllEmployees] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
   const [activeList, setActiveList] = useState([]);
@@ -294,7 +293,7 @@ export default function SiraTakip() {
               <p className="text-gray-800 truncate">
                 Hoş geldin, <span className="font-semibold text-blue-600">{userName || "Kullanıcı"}</span>
               </p>
-              {auth.currentUser?.email === "muhammedalibekir@gmail.com" && (
+              {isAdmin && (
                 <a
                   href="/admin"
                   className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 transition"
