@@ -271,7 +271,6 @@ export default function SiraTakip() {
       : [...indices.slice(userIndex), ...indices.slice(0, userIndex)];
 
   const toplamKullanici = activeList.length;
-  const musaitSayisi = activeList.filter(emp => emp.status === "Müsait").length;
 
   return (
     <div className="bg-white text-black min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col box-border px-[0.5vw]" style={{ overflowY: 'hidden' }}>
@@ -504,7 +503,6 @@ export default function SiraTakip() {
             })}
             <div className="flex justify-between items-center mt-[0.6vh] text-[clamp(0.8rem,0.7vw,1rem)] text-gray-600 font-medium p-[0.6vw]">
               <span>Toplam kullanıcı sayısı: {toplamKullanici}</span>
-              <span className="w-[10ch] whitespace-nowrap mr-[0.4vw]">Müsait: {musaitSayisi}</span>
             </div>
           </div>
         </div>
