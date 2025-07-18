@@ -511,14 +511,12 @@ export default function SiraTakip({ isAdmin }) {
               <h2 className="text-[clamp(1rem,1vw,1.5rem)] font-semibold mb-[0.8vh]">📋 Bugünkü Çağrı Kayıtları</h2>
               <div className="flex-1 min-h-0 overflow-y-auto">
                 <ul className="list-disc pl-[1vw] sm:pl-[1.5vw] text-[clamp(0.65rem,0.7vw,1rem)] space-y-[0.4vh]">
-                  {(logByDate[todayKey] || [])
-                    .filter((entry) => entry.person === userName)
-                    .map((entry, index) => (
-                      <li key={index}>
-                        {ensure24Hour(entry.time)} - {entry.person}{" "}
-                        {entry.action ? entry.action : "çağrıyı aldı"}
-                      </li>
-                    ))}
+                  {(logByDate[todayKey] || []).map((entry, index) => (
+                    <li key={index}>
+                      {ensure24Hour(entry.time)} - {entry.person}{" "}
+                      {entry.action ? entry.action : "çağrıyı aldı"}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
