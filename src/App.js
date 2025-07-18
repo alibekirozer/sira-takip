@@ -22,6 +22,8 @@ export default function SiraTakip({ isAdmin }) {
   const [benimAdim, setBenimAdim] = useState("");
   const [logByDate, setLogByDate] = useState({});
   const [showLegend, setShowLegend] = useState(true);
+  const [workInfoIndex, setWorkInfoIndex] = useState(null);
+  const [workInfoText, setWorkInfoText] = useState("");
   const todayKey = new Date().toISOString().split("T")[0];
 
   const currentUserId = auth.currentUser?.uid;
@@ -212,7 +214,7 @@ export default function SiraTakip({ isAdmin }) {
       set(ref(realtimeDB, "/siradakiKisi"), yeniSiradaki);
     }
   };
-  const durumGuncelle = (index, status) => {
+  const durumGuncelle = (index, status, info = "") => {
     const updated = [...activeList];
     const eskiStatus = updated[index].status;
     updated[index].status = status;
@@ -222,7 +224,9 @@ export default function SiraTakip({ isAdmin }) {
 
     const person = updated[index].name;
     const timestamp = formatTime();
-    const yeniLog = [{ person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` }, ...(logByDate[todayKey] || [])].slice(0, 200);
+    const logEntry = { person, time: timestamp, action: `Durum: ${eskiStatus} → ${status}` };
+    if (info) logEntry.info = info;
+    const yeniLog = [logEntry, ...(logByDate[todayKey] || [])].slice(0, 200);
     const updatedLogByDate = { ...logByDate, [todayKey]: yeniLog };
 
     setActiveList(updated);
@@ -469,7 +473,10 @@ export default function SiraTakip({ isAdmin }) {
                         İzinliyim
                       </button>
                       <button
-                        onClick={() => durumGuncelle(i, "Çalışıyor")}
+                        onClick={() => {
+                          setWorkInfoIndex(i);
+                          setWorkInfoText("");
+                        }}
                         className="px-[0.7vw] py-[0.3vh] bg-orange-400 text-black rounded text-[clamp(0.6rem,0.6vw,0.8rem)]"
                       >
                         Çalışıyorum
@@ -515,6 +522,7 @@ export default function SiraTakip({ isAdmin }) {
                     <li key={index}>
                       {ensure24Hour(entry.time)} - {entry.person}{" "}
                       {entry.action ? entry.action : "çağrıyı aldı"}
+                      {entry.info ? ` - ${entry.info}` : ""}
                     </li>
                   ))}
                 </ul>
@@ -581,6 +589,47 @@ export default function SiraTakip({ isAdmin }) {
           <footer className="w-full text-center py-2 mt-auto text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 bg-inherit">
         <span>Created by Ali Bekir Özer</span>
       </footer>
+      {workInfoIndex !== null && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded shadow flex flex-col gap-2 w-80 max-w-[90vw]">
+            <textarea
+              className="border p-2 rounded w-full"
+              rows="3"
+              placeholder="Ne üzerinde çalışıyorsunuz?"
+              value={workInfoText}
+              onChange={(e) => setWorkInfoText(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setWorkInfoIndex(null);
+                  setWorkInfoText("");
+                }}
+                className="px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                İptal
+              </button>
+              <button
+                onClick={() => {
+                  if (workInfoText.trim().length >= 6) {
+                    durumGuncelle(workInfoIndex, "Çalışıyor", workInfoText.trim());
+                    setWorkInfoIndex(null);
+                    setWorkInfoText("");
+                  }
+                }}
+                disabled={workInfoText.trim().length < 6}
+                className={`px-3 py-1 rounded text-white ${
+                  workInfoText.trim().length < 6
+                    ? "bg-blue-300 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
+              >
+                Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
