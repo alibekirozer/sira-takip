@@ -235,6 +235,22 @@ export default function AdminPanel() {
     }
   };
 
+  const moveUp = async (index) => {
+    if (index <= 0) return;
+    const newList = [...activeList];
+    [newList[index - 1], newList[index]] = [newList[index], newList[index - 1]];
+    await set(ref(realtimeDB, "siraTakip/activeList"), newList);
+    setActiveList(newList);
+  };
+
+  const moveDown = async (index) => {
+    if (index >= activeList.length - 1) return;
+    const newList = [...activeList];
+    [newList[index], newList[index + 1]] = [newList[index + 1], newList[index]];
+    await set(ref(realtimeDB, "siraTakip/activeList"), newList);
+    setActiveList(newList);
+  };
+
   if (loading) return <div className="p-4 text-center">Yükleniyor...</div>;
 
   return (
@@ -412,6 +428,45 @@ export default function AdminPanel() {
               </td>
             </tr>
           ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-semibold mt-8 mb-2">Çağrı Takip Sırası</h3>
+        <div className="overflow-x-auto mb-6">
+          <table className="min-w-full text-sm border border-gray-200 rounded-lg">
+            <thead className="bg-gray-50 text-gray-700">
+              <tr>
+                <th className="px-3 py-2 text-left border-b">Sıra</th>
+                <th className="px-3 py-2 text-left border-b">Ad Soyad</th>
+                <th className="px-3 py-2 text-left border-b">Durum</th>
+                <th className="px-3 py-2 text-left border-b">İşlem</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {activeList.map((emp, idx) => (
+                <tr key={emp.uid} className="hover:bg-gray-50">
+                  <td className="p-2 border text-center">{idx + 1}</td>
+                  <td className="p-2 border">{emp.name}</td>
+                  <td className="p-2 border">{emp.status}</td>
+                  <td className="p-2 border text-left">
+                    <button
+                      onClick={() => moveUp(idx)}
+                      disabled={idx === 0}
+                      className="text-blue-600 hover:underline disabled:text-gray-400 mr-2"
+                    >
+                      ⬆️ Yukarı
+                    </button>
+                    <button
+                      onClick={() => moveDown(idx)}
+                      disabled={idx === activeList.length - 1}
+                      className="text-blue-600 hover:underline disabled:text-gray-400"
+                    >
+                      ⬇️ Aşağı
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
