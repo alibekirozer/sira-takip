@@ -11,6 +11,11 @@ const DEFAULT_TEAMS_WEBHOOK_URL =
 
 const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL || DEFAULT_TEAMS_WEBHOOK_URL;
+
+const DEFAULT_PENDING_WEBHOOK_URL =
+  "https://kocsistem.webhook.office.com/webhookb2/a2b9f712-5224-4cbe-86fc-9b9568069844@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/6a583f56dfd644e29726b5f87b8528dc/cf410a20-3801-452e-8fea-eb078c94b436/V2s7L_yUXp0mevdBEBEKFGT_LSGl2kmOuNYsxyC83tl4M1";
+const PENDING_WEBHOOK_URL =
+  process.env.PENDING_WEBHOOK_URL || DEFAULT_PENDING_WEBHOOK_URL;
 exports.bildirimGonder = onValueWritten(
   {
     region: "europe-west1",
@@ -66,6 +71,43 @@ exports.currentIndexTakip = onValueUpdated(
 
     await admin.database().ref("siradakiKisi").set(kisi.name);
     console.log(`siradakiKisi güncellendi: ${kisi.name}`);
+  }
+);
+
+exports.callCountNotify = onValueUpdated(
+  {
+    region: "europe-west1",
+    ref: "siraTakip/callCount",
+  },
+  async (event) => {
+    const before = event.data.before.val();
+    const after = event.data.after.val();
+
+    if (typeof before === "number" && typeof after === "number" && after > before) {
+      const payload = {
+        "@type": "MessageCard",
+        "summary": "Çağrı Takip Bildirimi",
+        "themeColor": "D00000",
+        "title": "\uD83D\uDD51 Bekleyen Çağrı",
+        "text": `Sistemde bekleyen çağrı sayısı **${after}**.`,
+      };
+
+      try {
+        const response = await fetch(PENDING_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          console.error("Pending call webhook başarısız:", await response.text());
+        } else {
+          console.log("Pending call Teams bildirimi gönderildi.");
+        }
+      } catch (err) {
+        console.error("Pending call webhook gönderim hatası:", err);
+      }
+    }
   }
 );
 
