@@ -13,7 +13,7 @@ const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL || DEFAULT_TEAMS_WEBHOOK_URL;
 
 const DEFAULT_PENDING_WEBHOOK_URL =
-  "https://kocsistem.webhook.office.com/webhookb2/a2b9f712-5224-4cbe-86fc-9b9568069844@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/6a583f56dfd644e29726b5f87b8528dc/cf410a20-3801-452e-8fea-eb078c94b436/V2s7L_yUXp0mevdBEBEKFGT_LSGl2kmOuNYsxyC83tl4M1";
+  "https://kocsistem.webhook.office.com/webhookb2/a2b9f712-5224-4cbe-86fc-9b9568069844@1e1aa76b-4b02-45f4-9417-2e13eb0da973/IncomingWebhook/ac8849d47cf348f99f87e0ab4685c311/cf410a20-3801-452e-8fea-eb078c94b436/V2O5uK3Sjtply8LJrC24w6TcvTu-2WXBGsv0qXE0BDkRU1";
 const PENDING_WEBHOOK_URL =
   process.env.PENDING_WEBHOOK_URL || DEFAULT_PENDING_WEBHOOK_URL;
 exports.bildirimGonder = onValueWritten(
