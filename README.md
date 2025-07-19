@@ -75,6 +75,10 @@ Cloud Functions send notifications to Microsoft Teams. The webhook URL can be
 configured via the `TEAMS_WEBHOOK_URL` environment variable. If the variable is
 not set, the default URL defined in `functions/index.js` will be used.
 
+Pending call alerts are sent using the `PENDING_WEBHOOK_URL` environment
+variable. If this is not specified, the fallback webhook in
+`functions/index.js` will be used.
+
 After changing the webhook or the function code, deploy the functions again:
 
 ```bash
