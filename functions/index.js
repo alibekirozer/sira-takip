@@ -25,7 +25,7 @@ exports.bildirimGonder = onValueWritten(
     const before = event.data.before;
     const after = event.data.after;
 
-    if (!after.exists() || before.val() === after.val()) return;
+    if (!after.exists()) return;
 
     const payload = {
       "@type": "MessageCard",
