@@ -1,5 +1,6 @@
 const { onValueWritten } = require("firebase-functions/v2/database");
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
 
@@ -135,3 +136,36 @@ exports.updateUserCredentials = onCall({ region: "europe-west1" }, async (reques
     throw new HttpsError("internal", err.message);
   }
 });
+
+exports.rotateDailyToOguz = onSchedule(
+  {
+    region: "europe-west1",
+    schedule: "0 18 * * *",
+    timeZone: "Europe/Istanbul",
+  },
+  async () => {
+    const db = admin.database();
+    const activeSnap = await db.ref("siraTakip/activeList").once("value");
+    const list = activeSnap.val() || [];
+
+    const oguzIndex = list.findIndex((emp) => emp.name === "Oğuz");
+    if (oguzIndex === -1) {
+      console.log("Oğuz bulunamadı");
+      return;
+    }
+
+    let newIndex = oguzIndex;
+    for (let i = 0; i < list.length; i++) {
+      const idx = (oguzIndex + i) % list.length;
+      if (list[idx] && list[idx].status !== "İzinli") {
+        newIndex = idx;
+        break;
+      }
+    }
+
+    await db.ref("siraTakip/currentIndex").set(newIndex);
+    const nextName = list[newIndex]?.name || "-";
+    await db.ref("siradakiKisi").set(nextName);
+    console.log(`Günlük devir yapıldı, yeni sıra: ${nextName}`);
+  }
+);
