@@ -177,23 +177,23 @@ export default function SiraTakip({ isAdmin }) {
 
     if (currentUserIndex !== -1) {
       const updated = [...activeList];
-      const oldStatus = updated[currentUserIndex].status;
-      updated[currentUserIndex].status = "Çalışıyor";
+
+      // Durumu değiştirme, Müsait olarak kalsın
 
       // Sıradaki müsait kişiye geç
-      const nextMusait = activeList.findIndex((emp, idx) => 
+      const nextMusait = activeList.findIndex((emp, idx) =>
         idx > currentUserIndex && emp.status === "Müsait"
       );
-      const yeniIndex = nextMusait !== -1 ? nextMusait : 
+      const yeniIndex = nextMusait !== -1 ? nextMusait :
         activeList.findIndex(emp => emp.status === "Müsait");
 
       const person = activeList[currentUserIndex].name;
       const timestamp = formatTime();
       const yeniLog = [
-        { 
-          person, 
+        {
+          person,
           time: timestamp,
-          action: "çağrıyı aldı ve durumu değişti: " + oldStatus + " → Çalışıyor"
+          action: "çağrıyı aldı"
         },
         ...(logByDate[todayKey] || [])
       ].slice(0, 200);
@@ -204,8 +204,8 @@ export default function SiraTakip({ isAdmin }) {
       setLogByDate(updatedLogByDate);
       setCurrentIndex(yeniIndex);
 
-      guncelleFirebase({ 
-        activeList: updated, 
+      guncelleFirebase({
+        activeList: updated,
         callCount: callCount > 0 ? callCount - 1 : 0,
         logByDate: updatedLogByDate,
         currentIndex: yeniIndex
