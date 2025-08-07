@@ -169,3 +169,57 @@ exports.rotateDailyToOguz = onSchedule(
     console.log(`Günlük devir yapıldı, yeni sıra: ${nextName}`);
   }
 );
+
+exports.resetStatusesNightly = onSchedule(
+  {
+    region: "europe-west1",
+    schedule: "15 1 * * *",
+    timeZone: "Europe/Istanbul",
+  },
+  async () => {
+    const db = admin.database();
+    const activeRef = db.ref("siraTakip/activeList");
+    const logRef = db.ref("siraTakip/logByDate");
+
+    const [activeSnap, logSnap] = await Promise.all([
+      activeRef.once("value"),
+      logRef.once("value"),
+    ]);
+
+    const list = activeSnap.val() || [];
+    const logs = logSnap.val() || {};
+
+    let changed = false;
+    const now = new Date();
+    const time = now.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const todayKey = now.toISOString().split("T")[0];
+    const newEntries = [];
+
+    const updatedList = list.map((emp) => {
+      if (emp.status === "Çalışıyor" || emp.status === "Molada") {
+        changed = true;
+        newEntries.push({
+          person: emp.name,
+          time,
+          action: `Durum: ${emp.status} → Müsait`,
+        });
+        return { ...emp, status: "Müsait" };
+      }
+      return emp;
+    });
+
+    if (changed) {
+      await activeRef.set(updatedList);
+      const updatedLogs = {
+        ...logs,
+        [todayKey]: [...newEntries, ...(logs[todayKey] || [])].slice(0, 200),
+      };
+      await logRef.set(updatedLogs);
+    }
+  }
+);
