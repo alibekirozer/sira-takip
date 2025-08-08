@@ -8,6 +8,7 @@ import App from "./App";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
 import Stats from "./Stats";
+import PermissionPage from "./PermissionPage";
 
 export default function MainApp() {
   const [user, setUser] = useState(null);
@@ -60,6 +61,16 @@ export default function MainApp() {
               element={
                 isAdmin ? (
                   <Stats />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route
+              path="/permissions"
+              element={
+                !isAdmin ? (
+                  <PermissionPage />
                 ) : (
                   <Navigate to="/" />
                 )

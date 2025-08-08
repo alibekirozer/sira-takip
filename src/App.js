@@ -297,12 +297,19 @@ export default function SiraTakip({ isAdmin }) {
               <p className="text-gray-800 truncate">
                 Hoş geldin, <span className="font-semibold text-blue-600">{userName || "Kullanıcı"}</span>
               </p>
-              {isAdmin && (
+              {isAdmin ? (
                 <a
                   href="/admin"
                   className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 transition"
                 >
                   🔧 Admin Panel
+                </a>
+              ) : (
+                <a
+                  href="/permissions"
+                  className="inline-block mt-[0.5vh] text-[clamp(0.7rem,0.5vw,1.2rem)] text-blue-500 hover:underline hover:text-blue-600 transition"
+                >
+                  📝 İzin Paneli
                 </a>
               )}
             </div>
