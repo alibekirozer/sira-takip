@@ -15,14 +15,16 @@ export default function PermissionPage() {
     fetchList();
   }, []);
 
-  const toggleIzin = async (emp) => {
+  const setIzinStatus = async (emp, status) => {
     const activeRef = ref(realtimeDB, "siraTakip/activeList");
     const snap = await get(activeRef);
     const list = snap.val() || [];
     const idx = list.findIndex((e) => e.uid === emp.uid);
     if (idx === -1) return;
-    const newStatus = list[idx].status === "İzinli" ? "Müsait" : "İzinli";
-    list[idx].status = newStatus;
+
+    if (list[idx].status === status) return; // no change
+
+    list[idx].status = status;
     await set(activeRef, list);
     setActiveList(list);
 
@@ -39,7 +41,7 @@ export default function PermissionPage() {
       person: changerName,
       time: formatTime(),
       action:
-        newStatus === "İzinli"
+        status === "İzinli"
           ? `${emp.name} izinli yapıldı`
           : `${emp.name} izinden çıkarıldı`,
     };
@@ -58,23 +60,40 @@ export default function PermissionPage() {
         <thead className="bg-gray-50 text-gray-700">
           <tr>
             <th className="px-3 py-2 text-left border-b">Ad</th>
-            <th className="px-3 py-2 text-center border-b">İzinli</th>
-            <th className="px-3 py-2 text-left border-b">İşlem</th>
+            <th className="px-3 py-2 text-center border-b">Durum</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           {activeList.map((emp) => (
             <tr key={emp.uid} className="hover:bg-gray-50">
-              <td className="p-2 border">{emp.name}</td>
-              <td className="p-2 border text-center">
-                {emp.status === "İzinli" ? "✅" : "❌"}
+              <td className="p-2 border flex items-center gap-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    emp.status === "İzinli" ? "bg-gray-400" : "bg-green-500"
+                  }`}
+                ></span>
+                {emp.name}
               </td>
-              <td className="p-2 border text-left">
+              <td className="p-2 border text-center space-x-2">
                 <button
-                  onClick={() => toggleIzin(emp)}
-                  className="text-blue-600 hover:underline"
+                  onClick={() => setIzinStatus(emp, "İzinli")}
+                  className={`px-2 py-1 rounded ${
+                    emp.status === "İzinli"
+                      ? "bg-gray-400 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
                 >
-                  {emp.status === "İzinli" ? "İzni Kaldır" : "İzin Ver"}
+                  İzinli
+                </button>
+                <button
+                  onClick={() => setIzinStatus(emp, "Müsait")}
+                  className={`px-2 py-1 rounded ${
+                    emp.status === "Müsait"
+                      ? "bg-green-500 text-white"
+                      : "bg-green-200 text-green-800"
+                  }`}
+                >
+                  Müsait
                 </button>
               </td>
             </tr>
