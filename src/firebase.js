@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "sira-takip.firebaseapp.com",
   databaseURL: "https://sira-takip-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "sira-takip",
-  storageBucket: "sira-takip.firebasestorage.app",
+  storageBucket: "sira-takip.appspot.com",
   messagingSenderId: "886629696694",
   appId: "1:886629696694:web:6bb16773cf15307b511217"
 };
