@@ -3,6 +3,7 @@ import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getFunctions } from "firebase/functions";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB8JAzcgLPRP0MXYO3iC49vTpQFxSW-6K4",
@@ -19,4 +20,5 @@ export const auth = getAuth(app);
 export const realtimeDB = getDatabase(app);
 export const firestoreDB = getFirestore(app);
 export const functions = getFunctions(app, "europe-west1");
+export const storage = getStorage(app);
 
