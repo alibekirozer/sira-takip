@@ -9,7 +9,6 @@ import Login from "./Login";
 import AdminPanel from "./AdminPanel";
 import Stats from "./Stats";
 import PermissionPage from "./PermissionPage";
-import PhotoUpload from "./PhotoUpload";
 
 export default function MainApp() {
   const [user, setUser] = useState(null);
@@ -47,7 +46,6 @@ export default function MainApp() {
         ) : (
           <>
             <Route path="/" element={<App isAdmin={isAdmin} />} />
-            <Route path="/upload" element={<PhotoUpload />} />
             <Route
               path="/admin"
               element={
