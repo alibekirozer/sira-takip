@@ -29,7 +29,6 @@ export default function AdminPanel() {
   const [editedStatus, setEditedStatus] = useState("");
   const [editedIncluded, setEditedIncluded] = useState(false);
   const [activeList, setActiveList] = useState([]);
-  const [logByDate, setLogByDate] = useState({});
   const todayKey = new Date().toISOString().split("T")[0];
 
   const fetchUsers = async () => {
@@ -43,7 +42,6 @@ export default function AdminPanel() {
     const snap = await get(ref(realtimeDB, "siraTakip"));
     const data = snap.val() || {};
     setActiveList(data.activeList || []);
-    setLogByDate(data.logByDate || {});
   };
 
   useEffect(() => {
@@ -99,7 +97,6 @@ export default function AdminPanel() {
     ].slice(0, 200);
     const updatedLogs = { ...logData, [todayKey]: updatedForToday };
     await set(logRef, updatedLogs);
-    setLogByDate(updatedLogs);
   };
 
   const startEdit = (user) => {
@@ -169,7 +166,6 @@ export default function AdminPanel() {
         const updatedForToday = [entry, ...(logData[todayKey] || [])].slice(0, 200);
         const updatedLogs = { ...logData, [todayKey]: updatedForToday };
         await set(logRef, updatedLogs);
-        setLogByDate(updatedLogs);
       }
 
       if (editedEmail !== user.email || editedPassword) {

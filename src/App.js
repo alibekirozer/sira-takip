@@ -9,16 +9,11 @@ import { update } from "firebase/database";
 
 
 export default function SiraTakip({ isAdmin }) {
-  const [allEmployees, setAllEmployees] = useState([]);
-  const [selectedNames, setSelectedNames] = useState([]);
   const [activeList, setActiveList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [callCount, setCallCount] = useState(0);
   const [blink, setBlink] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [log, setLog] = useState([]);
   const [time, setTime] = useState(new Date());
-  const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [benimAdim, setBenimAdim] = useState("");
   const [logByDate, setLogByDate] = useState({});
   const [showLegend, setShowLegend] = useState(true);
@@ -30,30 +25,36 @@ export default function SiraTakip({ isAdmin }) {
   const userEntry = activeList.find((emp) => emp.uid === currentUserId);
   const userName = userEntry?.name || auth.currentUser?.displayName || "Kullanıcı";
 
-  // Durum rengi fonksiyonu: durum adları ve renkler güncellendi
-  const durumRengi = (status) => {
-    switch (status) {
-      case "Molada":
-        return "bg-yellow-200 border-yellow-400 text-black";
-      case "İzinli":
-        return "bg-gray-200 border-gray-400 text-gray-600";
-      case "Çalışıyor":
-        return "bg-orange-300 border-red-400 text-black";
-      case "Müsait":
-        return "bg-green-200 border-green-500 text-black";
-      default:
-        return "bg-white border-gray-300 text-black";
-    }
-  };
-
   useEffect(() => {
     if (Notification.permission !== "granted") Notification.requestPermission();
   }, []);
 
   useEffect(() => {
-    const index = siradakiIndex();
+    const index = (() => {
+      if (activeList.length === 0) return -1;
+      const startIndex = currentIndex >= 0 ? currentIndex : 0;
+      for (let i = 0; i < activeList.length; i++) {
+        const idx = (startIndex + i) % activeList.length;
+        if (activeList[idx]?.status === "Müsait") return idx;
+      }
+      return -1;
+    })();
+
     const siradaki = activeList[index]?.name;
-    if (siradaki && siradaki === benimAdim) bildirimGonder(benimAdim);
+    if (siradaki && siradaki === benimAdim) {
+      if (Notification.permission === "granted") {
+        navigator.serviceWorker.ready
+          .then((registration) => {
+            registration.showNotification("Sıra Sende!", {
+              body: `${benimAdim}, çağrıyı sen alacaksın.`,
+              icon: "/favicon.ico"
+            });
+          })
+          .catch((error) => {
+            console.error("Bildirim gönderme hatası:", error);
+          });
+      }
+    }
   }, [currentIndex, activeList, benimAdim]);
 
   useEffect(() => {
@@ -71,14 +72,12 @@ export default function SiraTakip({ isAdmin }) {
 
   useEffect(() => {
     const dataRef = ref(realtimeDB, "siraTakip");
-    onValue(dataRef, (snapshot) => {
+    const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setActiveList(data.activeList || []);
         setCurrentIndex(data.currentIndex || 0);
         setCallCount(data.callCount || 0);
-        setAllEmployees(data.allEmployees || []);
-        setSelectedNames(data.selectedNames || []);
         setLogByDate(data.logByDate || {});
 
         if (!data.logByDate?.[todayKey]) {
@@ -88,7 +87,8 @@ export default function SiraTakip({ isAdmin }) {
         }
       }
     });
-  }, []);
+    return unsubscribe;
+  }, [todayKey]);
 
   useEffect(() => {
     if (callCount > 0) {
@@ -96,31 +96,6 @@ export default function SiraTakip({ isAdmin }) {
       return () => clearInterval(interval);
     } else setBlink(false);
   }, [callCount]);
-
-  const bildirimGonder = async (isim) => {
-  if (Notification.permission === "granted") {
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      registration.showNotification("Sıra Sende!", {
-        body: `${isim}, çağrıyı sen alacaksın.`,
-        icon: "/favicon.ico"
-      });
-    } catch (error) {
-      console.error('Bildirim gönderme hatası:', error);
-    }
-  }
-};
-
-
-  const siradakiIndex = () => {
-    if (activeList.length === 0) return -1;
-    const startIndex = currentIndex >= 0 ? currentIndex : 0;
-    for (let i = 0; i < activeList.length; i++) {
-      const idx = (startIndex + i) % activeList.length;
-      if (activeList[idx]?.status === "Müsait") return idx;
-    }
-    return -1; // Hiç müsait yoksa -1 döndür
-  };
 
   // Bilgi kısmı için yardımcı fonksiyonlar
   const siradakiMusaitIndex = () => {
@@ -243,27 +218,6 @@ export default function SiraTakip({ isAdmin }) {
   const guncelleFirebase = (yeniVeriler) => {
       update(ref(realtimeDB, "siraTakip"), yeniVeriler);
     };
-
-
-  const toggleName = (name) => {
-    if (selectedNames.includes(name)) {
-      const updated = selectedNames.filter((n) => n !== name);
-      const updatedList = activeList.filter((emp) => emp.name !== name);
-      setSelectedNames(updated);
-      setActiveList(updatedList);
-      guncelleFirebase({ selectedNames: updated, activeList: updatedList });
-    } else {
-      const updated = [...selectedNames, name];
-      const updatedList = [...activeList, {
-       name,
-       status: "Müsait",
-       uid: auth.currentUser?.uid || null
-     }];
-      setSelectedNames(updated);
-      setActiveList(updatedList);
-      guncelleFirebase({ selectedNames: updated, activeList: updatedList });
-    }
-  };
 
   // Logged in kullanıcıyı en başta göstermek için liste sıralaması
   const userIndex = activeList.findIndex(emp => emp.uid === auth.currentUser?.uid);
